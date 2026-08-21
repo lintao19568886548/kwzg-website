@@ -40,7 +40,7 @@ const tasks = [
               <p>工作台 / 运营总览</p>
               <h2>园区经营总览</h2>
             </div>
-            <span>ONLINE</span>
+            <span class="kw-status-breathe">ONLINE</span>
           </div>
 
           <div class="kw-dashboard__metrics">
@@ -62,12 +62,40 @@ const tasks = [
                 <h3>经营回款脉搏</h3>
                 <span>应收 / 实收</span>
               </div>
-              <div class="kw-dashboard__empty-chart">
-                <UiLinearIcon name="chart" :size="24" />
-                <strong>演示账单写入后显示回款脉搏</strong>
-                <span>当前不虚构截图中没有的数据趋势。</span>
+              <div
+                class="kw-dashboard__payment-snapshot"
+                role="img"
+                aria-label="演示数据当前口径对比：累计应收 126.8 万元，累计实收 118.6 万元，待收余额 8.2 万元，回款完成度 93.5%"
+              >
+                <p class="kw-dashboard__payment-caption">
+                  <span>当前口径对比</span>
+                  <em>演示数据</em>
+                </p>
+                <div class="kw-dashboard__payment-row">
+                  <div>
+                    <span>累计应收</span>
+                    <strong>126.8 <small>万</small></strong>
+                  </div>
+                  <i class="kw-dashboard__payment-track" aria-hidden="true">
+                    <b style="--kw-payment-value: 1" />
+                  </i>
+                </div>
+                <div class="kw-dashboard__payment-row kw-dashboard__payment-row--received">
+                  <div>
+                    <span>累计实收</span>
+                    <strong>118.6 <small>万</small></strong>
+                  </div>
+                  <i class="kw-dashboard__payment-track" aria-hidden="true">
+                    <b style="--kw-payment-value: 0.935" />
+                  </i>
+                </div>
+                <p class="kw-dashboard__payment-balance">
+                  <span>待收余额</span>
+                  <strong>8.2 万</strong>
+                  <em>当前余额 · 演示</em>
+                </p>
               </div>
-              <div class="kw-dashboard__progress"><span>回款完成度</span><i><b style="width: 64%" /></i><em>演示</em></div>
+              <div class="kw-dashboard__progress"><span>回款完成度</span><i><b style="width: 93.5%" /></i><em>93.5% · 演示</em></div>
             </section>
 
             <section class="kw-dashboard__tasks">

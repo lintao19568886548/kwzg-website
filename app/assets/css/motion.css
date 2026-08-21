@@ -1,0 +1,155 @@
+:root {
+  --kw-motion-fast: 160ms;
+  --kw-motion-base: 320ms;
+  --kw-motion-slow: 680ms;
+  --kw-motion-ambient: 18s;
+  --kw-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --kw-motion-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --kw-motion-shift: 1.25rem;
+}
+
+.kw-page-enter-active,
+.kw-page-leave-active {
+  transition: opacity var(--kw-motion-base) var(--kw-motion-ease), transform var(--kw-motion-base) var(--kw-motion-ease);
+}
+
+.kw-page-enter-from {
+  opacity: 0;
+  transform: translateY(0.5rem);
+}
+
+.kw-page-leave-to {
+  opacity: 0;
+  transform: translateY(-0.25rem);
+}
+
+[data-reveal-state='pending'] {
+  opacity: 0;
+  transform: translate3d(0, var(--kw-motion-shift), 0);
+}
+
+[data-reveal='left'][data-reveal-state='pending'] {
+  transform: translate3d(calc(var(--kw-motion-shift) * -1), 0, 0);
+}
+
+[data-reveal='right'][data-reveal-state='pending'] {
+  transform: translate3d(var(--kw-motion-shift), 0, 0);
+}
+
+[data-reveal-state='visible'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms), transform var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms);
+}
+
+a,
+button,
+input,
+select,
+textarea,
+.kw-card,
+.kw-capability-card,
+.kw-park-card,
+.kw-stage2-card {
+  transition: color var(--kw-motion-fast) var(--kw-motion-ease-soft), border-color var(--kw-motion-fast) var(--kw-motion-ease-soft), background-color var(--kw-motion-fast) var(--kw-motion-ease-soft), box-shadow var(--kw-motion-base) var(--kw-motion-ease), transform var(--kw-motion-base) var(--kw-motion-ease);
+}
+
+button:active,
+.kw-button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.kw-stage2-card:hover,
+.kw-capability-card:hover,
+.kw-park-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 1.25rem 2.5rem rgba(0, 35, 89, 0.12);
+}
+
+.kw-tech-field::before,
+.kw-tech-field::after {
+  animation: kw-tech-drift var(--kw-motion-ambient) linear infinite;
+  animation-play-state: paused;
+}
+
+.kw-tech-field[data-motion-active='true']::before,
+.kw-tech-field[data-motion-active='true']::after {
+  animation-play-state: running;
+}
+
+html[data-document-visibility='hidden'] .kw-tech-field::before,
+html[data-document-visibility='hidden'] .kw-tech-field::after {
+  animation-play-state: paused;
+}
+
+@keyframes kw-tech-drift {
+  from { transform: translate3d(-2%, 0, 0); }
+  50% { transform: translate3d(2%, -1%, 0); }
+  to { transform: translate3d(-2%, 0, 0); }
+}
+
+.kw-status-breathe {
+  animation: kw-status-breathe 2.8s var(--kw-motion-ease-soft) infinite;
+}
+
+@keyframes kw-status-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(159, 57, 40, 0); }
+  50% { box-shadow: 0 0 0 0.3rem rgba(159, 57, 40, 0.1); }
+}
+
+html[data-motion='off'] *,
+html[data-motion='off'] *::before,
+html[data-motion='off'] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
+}
+
+html[data-motion='off'] [data-reveal-state],
+html[data-motion='off'] [data-reveal-state='pending'] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+html[data-motion='off'] .kw-case-detail-hero__media img,
+html[data-motion='off'] .kw-case-gallery-thumb img,
+html[data-motion='off'] .kw-case-card__media img {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  [data-reveal-state] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .kw-case-detail-hero__media img,
+  .kw-case-gallery-thumb img,
+  .kw-case-card__media img {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 48rem), (update: slow) {
+  .kw-tech-field::before,
+  .kw-tech-field::after,
+  .kw-status-breathe {
+    animation: none !important;
+  }
+
+  [data-reveal-state='pending'] {
+    transform: translate3d(0, 0.5rem, 0);
+  }
+}

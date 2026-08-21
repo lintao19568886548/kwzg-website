@@ -1,4 +1,4 @@
-export function usePageSeo({ title, description }) {
+export function usePageSeo({ title, description, image = '' }) {
   const route = useRoute()
   const config = useRuntimeConfig()
   const canonicalUrl = computed(() => (
@@ -7,6 +7,7 @@ export function usePageSeo({ title, description }) {
   const robots = String(config.public.indexable) === 'true'
     ? 'index, follow'
     : 'noindex, nofollow'
+  const socialImage = image ? new URL(image, config.public.siteUrl).toString() : undefined
 
   useSeoMeta({
     title,
@@ -16,9 +17,11 @@ export function usePageSeo({ title, description }) {
     ogDescription: description,
     ogType: 'website',
     ogUrl: canonicalUrl,
+    ogImage: socialImage,
     twitterCard: 'summary_large_image',
     twitterTitle: title,
     twitterDescription: description,
+    twitterImage: socialImage,
   })
 
   useHead({
@@ -27,4 +30,3 @@ export function usePageSeo({ title, description }) {
     ],
   })
 }
-

@@ -5,15 +5,14 @@ const parks = [
   {
     name: '同富园区',
     location: '东莞',
-    images: ['/assets/cases/tongfu-01.webp', '/assets/cases/tongfu-02.webp', '/assets/cases/tongfu-03.webp'],
+    images: ['/assets/cases/tongfu-main.webp'],
   },
   {
     name: '佛山乐从园区',
     location: '佛山',
-    images: ['/assets/cases/foshan-lecong-01.webp', '/assets/cases/foshan-lecong-02.webp', '/assets/cases/foshan-lecong-03.webp'],
+    images: ['/assets/cases/foshan-lecong-01.webp', '/assets/cases/foshan-lecong-03.webp'],
   },
   { name: '深圳坑梓园区', location: '深圳', images: ['/assets/cases/shenzhen-kengzi-01.webp'] },
-  { name: '佛山九江园区', location: '佛山 · 图片待更新', images: [] },
   { name: '新塘西州', location: '广州', images: ['/assets/cases/xintang-xizhou-01.webp'] },
   { name: '高埗同兴园区', location: '东莞', images: ['/assets/cases/gaobu-tongxing-01.webp'] },
 ]
@@ -66,10 +65,10 @@ const deployment = [
 
 <template>
   <div class="kw-home">
-    <section class="kw-home-hero">
+    <section v-motion-active class="kw-home-hero kw-tech-field">
       <div class="kw-home-hero__pattern" aria-hidden="true" />
       <div class="kw-container kw-home-hero__grid">
-        <div class="kw-home-hero__copy">
+        <div v-reveal class="kw-home-hero__copy">
           <UiBaseTag>面向工业园区的经营管理系统</UiBaseTag>
           <h1>让工业园区少空置，<br>让每一笔经营更清楚</h1>
           <p>
@@ -88,23 +87,24 @@ const deployment = [
           </ul>
         </div>
 
-        <HomeDashboardOverview />
+        <HomeDashboardOverview v-reveal:right />
       </div>
     </section>
 
     <section class="kw-section kw-trust-section" aria-labelledby="trust-title">
       <div class="kw-container">
-        <div class="kw-section-heading kw-section-heading--split">
+        <div v-reveal class="kw-section-heading kw-section-heading--split">
           <div>
             <span class="kw-section-kicker">园区实践</span>
             <h2 id="trust-title">真实园区，真实在用</h2>
           </div>
-          <p>六个园区均已正式使用瞰维智管；仅展示已获授权的园区名称与实景，不公开出租率、租金、欠费或收入等经营数据。</p>
+          <p>多个园区均已正式使用瞰维智管；仅展示本阶段纳入案例页的授权园区名称与实景，不公开出租率、租金、欠费或收入等经营数据。</p>
         </div>
         <div class="kw-park-grid">
           <HomeParkCard
             v-for="park in parks"
             :key="park.name"
+            v-reveal
             :name="park.name"
             :location="park.location"
             :images="park.images"
@@ -115,13 +115,13 @@ const deployment = [
 
     <section class="kw-section kw-problems" aria-labelledby="problems-title">
       <div class="kw-container">
-        <div class="kw-section-heading kw-section-heading--center">
+        <div v-reveal class="kw-section-heading kw-section-heading--center">
           <span class="kw-section-kicker">经营视角</span>
           <h2 id="problems-title">园区老板真正关心的问题</h2>
           <p>不是多一套菜单，而是随时能看清问题、找到进度、推动结果。</p>
         </div>
         <div class="kw-problem-grid">
-          <UiBaseCard v-for="problem in problems" :key="problem.number">
+          <UiBaseCard v-for="problem in problems" :key="problem.number" v-reveal>
             <div class="kw-problem-card__top">
               <span><UiLinearIcon :name="problem.icon" :size="25" /></span>
               <em>{{ problem.number }}</em>
@@ -134,13 +134,13 @@ const deployment = [
 
     <section class="kw-section kw-loops" aria-labelledby="loops-title">
       <div class="kw-container">
-        <div class="kw-section-heading">
+        <div v-reveal class="kw-section-heading">
           <span class="kw-section-kicker">真实页面边界</span>
           <h2 id="loops-title">每个管理页面，只表达能够核验的内容</h2>
           <p>招商客户、客户详情、合同管理和账单管理保持各自的信息口径，不把多个页面拼成一个虚构流程。</p>
         </div>
         <div class="kw-loop-grid">
-          <article v-for="loop in loops" :key="loop.label" class="kw-loop-card">
+          <article v-for="loop in loops" :key="loop.label" v-reveal class="kw-loop-card">
             <div class="kw-loop-card__intro">
               <UiBaseTag :tone="loop.label === '招商管理' ? 'red' : 'blue'">{{ loop.label }}</UiBaseTag>
               <h3>{{ loop.title }}</h3>
@@ -159,7 +159,7 @@ const deployment = [
 
     <section class="kw-section kw-capabilities" aria-labelledby="capabilities-title">
       <div class="kw-container">
-        <div class="kw-section-heading kw-section-heading--split">
+        <div v-reveal class="kw-section-heading kw-section-heading--split">
           <div>
             <span class="kw-section-kicker">产品能力</span>
             <h2 id="capabilities-title">围绕园区经营，形成六大能力</h2>
@@ -167,7 +167,7 @@ const deployment = [
           <NuxtLink class="kw-text-link" to="/products">查看产品能力 <span aria-hidden="true">→</span></NuxtLink>
         </div>
         <div class="kw-capability-grid">
-          <article v-for="(item, index) in capabilities" :key="item.title" class="kw-capability-card">
+          <article v-for="(item, index) in capabilities" :key="item.title" v-reveal class="kw-capability-card">
             <span class="kw-capability-card__icon"><UiLinearIcon :name="item.icon" :size="27" /></span>
             <small>0{{ index + 1 }}</small>
             <h3>{{ item.title }}</h3>
@@ -179,7 +179,7 @@ const deployment = [
 
     <section class="kw-section kw-showcase" aria-labelledby="showcase-title">
       <div class="kw-container">
-        <div class="kw-section-heading kw-section-heading--center kw-section-heading--light">
+        <div v-reveal class="kw-section-heading kw-section-heading--center kw-section-heading--light">
           <span class="kw-section-kicker">系统界面</span>
           <h2 id="showcase-title">让经营信息清楚地摆在眼前</h2>
           <p>以下每张界面均对应一个已经核验的真实系统页面，不使用生产截图或生产数据。</p>
@@ -188,6 +188,7 @@ const deployment = [
           <article
             v-for="(item, index) in interfaces"
             :key="item.type"
+            v-reveal
             class="kw-showcase-item"
           >
             <div class="kw-showcase-item__copy">
@@ -203,30 +204,30 @@ const deployment = [
     </section>
 
     <section class="kw-section kw-ai-section" aria-labelledby="ai-title">
-      <div class="kw-container kw-ai-card">
+      <div v-reveal class="kw-container kw-ai-card">
         <div class="kw-ai-card__icon"><UiLinearIcon name="search" :size="34" /></div>
         <div class="kw-ai-card__copy">
-          <UiBaseTag tone="planning">规划中</UiBaseTag>
-          <span class="kw-section-kicker">下一步，让招商更智能</span>
+          <UiBaseTag>现有能力</UiBaseTag>
+          <span class="kw-section-kicker">让招商更智能</span>
           <h2 id="ai-title">AI 招商匹配</h2>
-          <p>结合空置房源条件与客户需求，辅助招商人员发现更合适的匹配机会。</p>
-          <strong>本能力属于产品规划，暂未作为当前正式功能交付。</strong>
+          <p>瞰维智管已具备 AI 招商匹配能力，为园区招商工作提供智能匹配辅助。</p>
+          <strong>能力状态已确认，具体界面与功能呈现以实际交付版本为准。</strong>
         </div>
         <div class="kw-ai-card__visual" aria-hidden="true">
-          <span>房源条件</span><i /><span>客户需求</span><i /><span>匹配建议</span>
+          <span>AI 招商匹配</span><i /><span>智能辅助</span><i /><span>现有能力</span>
         </div>
       </div>
     </section>
 
     <section class="kw-section kw-deployment" aria-labelledby="deployment-title">
       <div class="kw-container">
-        <div class="kw-section-heading kw-section-heading--center">
+        <div v-reveal class="kw-section-heading kw-section-heading--center">
           <span class="kw-section-kicker">灵活交付</span>
           <h2 id="deployment-title">适配不同园区的使用与部署方式</h2>
           <p>以云端 SaaS 为主，同时支持按项目边界规划私有化部署，并通过 PC 管理后台承载经营管理工作。</p>
         </div>
         <div class="kw-deployment-grid">
-          <article v-for="item in deployment" :key="item.title">
+          <article v-for="item in deployment" :key="item.title" v-reveal>
             <span><UiLinearIcon :name="item.icon" :size="28" /></span>
             <h3>{{ item.title }}</h3>
             <p>{{ item.text }}</p>
@@ -235,9 +236,11 @@ const deployment = [
       </div>
     </section>
 
+    <QualificationSection mode="compact" />
+
     <section class="kw-final-cta" aria-labelledby="cta-title">
       <div class="kw-final-cta__pattern" aria-hidden="true" />
-      <div class="kw-container kw-final-cta__grid">
+      <div v-reveal class="kw-container kw-final-cta__grid">
         <div>
           <span class="kw-section-kicker">预约沟通</span>
           <h2 id="cta-title">想先看看瞰维智管是否适合你的园区？</h2>

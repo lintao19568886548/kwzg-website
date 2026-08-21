@@ -5,23 +5,44 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
+    "start": "node scripts/validate-runtime.js && node scripts/migrate.js && node .output/server/index.mjs",
     "build": "nuxt build",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "check": "npm run lint && npm run build"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:api": "node tests/api-e2e.mjs",
+    "db:migrate": "node scripts/migrate.js",
+    "db:rollback": "node scripts/rollback.js",
+    "admin:hash": "node scripts/generate-admin-hash.js",
+    "qr:generate": "node scripts/generate-contact-qr.js",
+    "qualification:images": "node scripts/process-qualification-images.js",
+    "security:scan": "node scripts/security-scan.js",
+    "check": "npm run lint && npm run test && npm run build"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.1.0",
+    "knex": "^3.3.0",
+    "mysql2": "^3.23.4",
     "nuxt": "4.5.2",
     "vue": "3.5.41",
     "vue-router": "5.2.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "1.17.0",
-    "eslint": "10.8.1"
+    "@vitejs/plugin-vue": "6.0.8",
+    "@vue/test-utils": "^2.4.11",
+    "eslint": "10.8.1",
+    "happy-dom": "^20.11.6",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0",
+    "qrcode": "1.5.4",
+    "sharp": "0.35.3",
+    "vitest": "^4.1.11"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.19.0"
   }
 }

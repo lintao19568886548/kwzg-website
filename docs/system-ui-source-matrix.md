@@ -39,7 +39,7 @@
 | 可确认业务关系 | 应收、实收、待收、在租面积与待办在同一总览页汇总；未据此推断新的计算公式或自动流程 |
 | 允许的视觉优化 | 深蓝顶栏、砖红提示、卡片层级、间距、圆角、图标、演示数据与响应式排列 |
 | 官网原来存在但截图无法证明的内容 | 空置厂房数量、本周招商新增、本月应收趋势折线、具体园区任务名称、虚构的日期口径 |
-| 已删除或修正 | 指标改为截图可证明的四项；删除趋势图，改为截图中存在的回款脉搏空态；待办改为真实状态名称；移除真实系统中的内部空间名与版本字样 |
+| 已删除或修正 | 指标改为截图可证明的四项；删除趋势图，回款脉搏仅展示累计应收、累计实收、待收余额与回款完成度的当前口径演示对比，不含时间轴、趋势点或实时变化；待办改为真实状态名称；移除真实系统中的内部空间名与版本字样 |
 | 结论 | **PASS** |
 
 ## 2. 招商客户
@@ -154,9 +154,27 @@
 
 ## AI 能力边界
 
-- AI 招商匹配仅位于独立“规划能力”区域并明确标注“规划中”。
-- AI 招商匹配未进入任何真实系统页面重构图，不展示匹配结果、执行记录或可操作界面。
+- 2026-08-21，产品方明确确认 AI 招商匹配为系统现有能力，官网状态由“规划中”修正为“现有能力”。
+- 当前本地脱敏截图集中尚无 AI 招商匹配的独立系统页面证据，因此官网仅作独立能力介绍，不进入六张已完成页面溯源的系统界面组。
+- 在补齐真实页面证据前，不展示 AI 招商匹配的具体字段、按钮、状态、匹配结果、执行记录或可操作界面。
 - AI 经营问数、自动催缴、RAG 客服和合同智能审查未作为已上线能力展示。
+
+## Stage 2 客户案例详情页扩展映射
+
+案例详情页不新增系统来源、字段、按钮、状态或数据关系，只通过 `app/components/cases/CaseFunctionShowcase.vue` 复用本矩阵已经 PASS 的 `HomeDashboardOverview` 与 `HomeInterfacePreview`。标题统一为“相关功能展示”，不声称具体园区实际部署了某个模块。
+
+| 公开路由 | 相关功能展示 | 复用组件与类型 | 对应真实菜单与证据 | 结论 |
+| --- | --- | --- | --- | --- |
+| `/cases/tongfu` | 园区经营总览、合同管理、账单管理、报修工单 | `DashboardOverview.vue`；`InterfacePreview.vue` 的 `contract`、`bill`、`repair` | 工作台 > 运营总览；租赁 > 合同管理；财务 > 账单管理；维护管理 > 报修工单；证据沿用 `01-operation-overview.png`、`04-contract-list.png`、`04-bill-payment.png`、`05-inspection-list.png` | **PASS** |
+| `/cases/foshan-lecong` | 招商客户、客户详情、合同管理 | `InterfacePreview.vue` 的 `leasing-list`、`followup`、`contract` | 招商管理 > 招商客户及客户详情；租赁 > 合同管理；证据沿用 `03-leasing-customer-list.png`、`03-followup-detail.png`、`04-contract-list.png` | **PASS** |
+| `/cases/shenzhen-kengzi` | 园区经营总览、合同管理、账单管理 | `DashboardOverview.vue`；`InterfacePreview.vue` 的 `contract`、`bill` | 工作台 > 运营总览；租赁 > 合同管理；财务 > 账单管理；证据沿用 `01-operation-overview.png`、`04-contract-list.png`、`04-bill-payment.png` | **PASS** |
+| `/cases/xintang-xizhou` | 招商客户、客户详情 | `InterfacePreview.vue` 的 `leasing-list`、`followup` | 招商管理 > 招商客户及客户详情；证据沿用 `03-leasing-customer-list.png`、`03-followup-detail.png` | **PASS** |
+| `/cases/gaobu-tongxing` | 园区经营总览、报修工单、合同管理、账单管理 | `DashboardOverview.vue`；`InterfacePreview.vue` 的 `repair`、`contract`、`bill` | 工作台 > 运营总览；维护管理 > 报修工单；租赁 > 合同管理；财务 > 账单管理；证据沿用 `01-operation-overview.png`、`05-inspection-list.png`、`04-contract-list.png`、`04-bill-payment.png` | **PASS** |
+
+- 案例公开生产截图：0
+- 案例真实客户经营数据：0
+- 案例新增无证据系统内容：0
+- 佛山九江案例与相关推荐：0
 
 ## 审计结论
 

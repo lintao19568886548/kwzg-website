@@ -1,0 +1,14 @@
+.git
+.nuxt
+.output
+node_modules
+.env
+.env.*
+!.env.example
+private-reference
+incoming
+assets/raw/*
+!assets/raw/certifications/
+.audit-private
+npm-debug.log*
+docs

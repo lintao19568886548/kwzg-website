@@ -21,29 +21,120 @@
   color: var(--kw-muted);
 }
 
-.kw-dashboard__empty-chart {
+.kw-dashboard__payment-snapshot {
   display: grid !important;
   min-height: 7.5rem;
-  place-items: center;
   align-content: center;
   margin-top: 0.75rem;
-  padding: 1rem;
-  border: 1px dashed #D8DEE8;
+  padding: 0.75rem;
+  border: 1px solid #E1E7F0;
   border-radius: 0.625rem;
-  color: #8A96A8;
-  background: #FAFBFC;
-  gap: 0.35rem !important;
-  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(26, 61, 114, 0.035), transparent 52%),
+    #FAFBFD;
+  gap: 0.55rem !important;
 }
 
-.kw-dashboard__empty-chart strong {
-  color: #5C687A;
-  font-size: 0.625rem;
+.kw-dashboard__payment-caption,
+.kw-dashboard__payment-balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  gap: 0.5rem;
 }
 
-.kw-dashboard__empty-chart span {
-  color: #98A2B3;
+.kw-dashboard__payment-caption span {
+  color: #536176;
   font-size: 0.55rem;
+  font-weight: 700;
+}
+
+.kw-dashboard__payment-caption em {
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
+  color: var(--kw-data-blue);
+  background: rgba(45, 108, 223, 0.08);
+  font-size: 0.5rem;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.kw-dashboard__payment-row {
+  display: grid;
+  align-items: center;
+  gap: 0.65rem;
+  grid-template-columns: minmax(4.5rem, auto) 1fr;
+}
+
+.kw-dashboard__payment-row > div {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.kw-dashboard__payment-row span {
+  color: #667085;
+  font-size: 0.55rem;
+}
+
+.kw-dashboard__payment-row strong {
+  color: var(--kw-blue);
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.kw-dashboard__payment-row small {
+  font-size: 0.5rem;
+  font-weight: 600;
+}
+
+.kw-dashboard__payment-track {
+  display: block;
+  height: 0.48rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #E7EBF1;
+}
+
+.kw-dashboard__payment-track b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7994BF, var(--kw-blue));
+  transform: scaleX(var(--kw-payment-value));
+  transform-origin: left center;
+  animation: kw-payment-fill 0.9s var(--kw-motion-ease-soft) both;
+}
+
+.kw-dashboard__payment-row--received .kw-dashboard__payment-track b {
+  background: linear-gradient(90deg, #4C82E6, var(--kw-data-blue));
+}
+
+.kw-dashboard__payment-balance {
+  padding-top: 0.5rem;
+  border-top: 1px solid #E6EAF0;
+}
+
+.kw-dashboard__payment-balance span,
+.kw-dashboard__payment-balance em {
+  color: var(--kw-muted);
+  font-size: 0.5rem;
+  font-style: normal;
+}
+
+.kw-dashboard__payment-balance strong {
+  margin-left: auto;
+  color: var(--kw-red);
+  font-size: 0.6rem;
+}
+
+@keyframes kw-payment-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(var(--kw-payment-value)); }
 }
 
 .kw-dashboard__progress {
@@ -1536,12 +1627,18 @@
 
 @media (max-width: 64rem) {
   .kw-header__bar {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .kw-header__nav {
-    gap: 1rem;
+    gap: 0.75rem;
   }
+
+  .kw-header__nav a { font-size: 0.875rem; }
+
+  .kw-header .kw-brand-logo img { height: 2.75rem; }
+
+  .kw-header__actions { gap: 0.75rem; }
 
   .kw-home-hero {
     min-height: auto;
@@ -1622,13 +1719,32 @@
   }
 
   .kw-header__mobile-nav a {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.875rem 0;
+    margin-inline: -0.75rem;
+    padding: 0.875rem 0.75rem;
     border-bottom: 1px solid #EEF1F5;
     color: var(--kw-blue);
     font-weight: 700;
+  }
+
+  .kw-header__mobile-nav a.is-active {
+    border-radius: 0.5rem;
+    background: rgba(0, 35, 89, 0.06);
+    font-weight: 850;
+  }
+
+  .kw-header__mobile-nav a.is-active::before {
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    left: 0;
+    width: 0.125rem;
+    border-radius: 999px;
+    background: var(--kw-red);
+    content: '';
   }
 
   .kw-header__mobile-nav a:last-child {

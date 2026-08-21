@@ -1,0 +1,67 @@
+name: kwzg_stage2_test
+
+services:
+  db:
+    image: mariadb:11.4.5
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${KWZG_DB_NAME:-kwzg_website}
+      MARIADB_USER: ${KWZG_DB_USER:-kwzg_app}
+      MARIADB_PASSWORD: ${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${KWZG_DB_ROOT_PASSWORD:?KWZG_DB_ROOT_PASSWORD is required}
+    volumes:
+      - kwzg_stage2_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - kwzg_internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:-kwzg_app}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:-kwzg_website}
+      NUXT_ADMIN_USERNAME: ${NUXT_ADMIN_USERNAME:?NUXT_ADMIN_USERNAME is required}
+      NUXT_ADMIN_PASSWORD_HASH: ${NUXT_ADMIN_PASSWORD_HASH:?NUXT_ADMIN_PASSWORD_HASH is required}
+      NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD:?NUXT_SESSION_PASSWORD is required}
+      NUXT_TRUSTED_PROXY_ADDRESSES: ${NUXT_TRUSTED_PROXY_ADDRESSES:-}
+      NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-http://127.0.0.1:3212}
+      NUXT_PUBLIC_INDEXABLE: "false"
+      NUXT_ENABLE_HSTS: "false"
+    ports:
+      - "127.0.0.1:${KWZG_APP_PORT:-3212}:3000"
+    networks:
+      - kwzg_internal
+      - kwzg_public
+
+  test:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TEST_DATABASE_URL: mysql://${KWZG_DB_USER:-kwzg_app}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:-kwzg_website}
+    command: ["npm", "run", "test"]
+    networks:
+      - kwzg_internal
+
+networks:
+  kwzg_internal:
+    internal: true
+  kwzg_public:
+    driver: bridge
+
+volumes:
+  kwzg_stage2_db:

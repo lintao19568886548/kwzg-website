@@ -3,7 +3,7 @@ import { siteConfig } from '~/config/site'
 </script>
 
 <template>
-  <footer class="kw-footer">
+  <footer class="kw-footer" data-motion-footer>
     <div class="kw-container kw-footer__main">
       <div class="kw-footer__brand">
         <BrandLogo inverse with-tagline />

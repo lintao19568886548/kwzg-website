@@ -29,8 +29,8 @@ const logoWidth = computed(() => props.withTagline ? 670 : 778)
     }"
     to="/"
     :aria-label="withTagline
-      ? '瞰维智管首页：给园区管理装上大脑和翅膀，少操心，赚更多。'
-      : '瞰维智管首页'"
+      ? '瞰维智管官网首页：给园区管理装上大脑和翅膀，少操心，赚更多。'
+      : '瞰维智管官网首页'"
   >
     <img
       :src="logoImage"

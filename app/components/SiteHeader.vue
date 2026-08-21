@@ -1,31 +1,104 @@
 <script setup>
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { siteConfig } from '~/config/site'
 
 const mobileOpen = ref(false)
+const scrolled = ref(false)
+const headerElement = ref(null)
+const menuButton = ref(null)
 const route = useRoute()
+let scrollObserver
+let pendingHomeScroll = false
 
 const navigation = [
+  { label: '首页', to: '/', exact: true },
   { label: '产品能力', to: '/products' },
   { label: '解决方案', to: '/solutions' },
   { label: '客户案例', to: '/cases' },
   { label: '关于我们', to: '/about' },
 ]
 
-watch(() => route.fullPath, () => {
+function isCurrentNavigation(item) {
+  if (item.exact) return route.path === item.to
+  return route.path === item.to || route.path.startsWith(`${item.to}/`)
+}
+
+function scrollToHomeTop() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.dataset.motion === 'off'
+  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+}
+
+function handleHomeLink(event) {
   mobileOpen.value = false
+  if (route.path === '/') {
+    event.preventDefault()
+    scrollToHomeTop()
+    return
+  }
+  pendingHomeScroll = true
+}
+
+function handleNavigation(item, event) {
+  mobileOpen.value = false
+  if (item.to === '/') handleHomeLink(event)
+}
+
+function closeMobileMenu({ restoreFocus = false } = {}) {
+  if (!mobileOpen.value) return
+  mobileOpen.value = false
+  if (restoreFocus) nextTick(() => menuButton.value?.focus())
+}
+
+function handleDocumentKeydown(event) {
+  if (event.key === 'Escape') closeMobileMenu({ restoreFocus: true })
+}
+
+function handleDocumentPointerdown(event) {
+  if (mobileOpen.value && !headerElement.value?.contains(event.target)) closeMobileMenu()
+}
+
+watch(() => route.fullPath, async () => {
+  mobileOpen.value = false
+  if (pendingHomeScroll && route.path === '/') {
+    pendingHomeScroll = false
+    await nextTick()
+    scrollToHomeTop()
+  }
+})
+
+onMounted(() => {
+  document.addEventListener('keydown', handleDocumentKeydown)
+  document.addEventListener('pointerdown', handleDocumentPointerdown)
+  const sentinel = document.getElementById('kw-scroll-sentinel')
+  if (!sentinel) return
+  scrollObserver = new IntersectionObserver(([entry]) => {
+    scrolled.value = !entry.isIntersecting
+  })
+  scrollObserver.observe(sentinel)
+})
+
+onBeforeUnmount(() => {
+  scrollObserver?.disconnect()
+  document.removeEventListener('keydown', handleDocumentKeydown)
+  document.removeEventListener('pointerdown', handleDocumentPointerdown)
 })
 </script>
 
 <template>
-  <header class="kw-header">
+  <header ref="headerElement" class="kw-header" :class="{ 'is-scrolled': scrolled, 'is-menu-open': mobileOpen }">
     <div class="kw-container kw-header__bar">
-      <BrandLogo />
+      <BrandLogo @click="handleHomeLink" />
 
       <nav class="kw-header__nav" aria-label="主导航">
         <NuxtLink
           v-for="item in navigation"
           :key="item.to"
           :to="item.to"
+          :class="{ 'is-active': isCurrentNavigation(item) }"
+          :aria-current="isCurrentNavigation(item) ? 'page' : undefined"
+          @click="handleNavigation(item, $event)"
         >
           {{ item.label }}
         </NuxtLink>
@@ -42,6 +115,7 @@ watch(() => route.fullPath, () => {
           预约演示
         </UiBaseButton>
         <button
+          ref="menuButton"
           class="kw-header__menu-button"
           type="button"
           aria-controls="mobile-navigation"
@@ -67,6 +141,9 @@ watch(() => route.fullPath, () => {
             v-for="item in navigation"
             :key="item.to"
             :to="item.to"
+            :class="{ 'is-active': isCurrentNavigation(item) }"
+            :aria-current="isCurrentNavigation(item) ? 'page' : undefined"
+            @click="handleNavigation(item, $event)"
           >
             {{ item.label }}
             <span aria-hidden="true">→</span>
