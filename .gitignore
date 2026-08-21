@@ -8,4 +8,6 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 *.local
-
+.audit-private/
+private-reference/
+incoming/

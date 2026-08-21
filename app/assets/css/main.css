@@ -1,26 +1,35 @@
 :root {
-  --color-deep-blue: #0D2A45;
-  --color-brick-red: #A94B3C;
-  --color-warm-white: #F6F1E8;
-  --color-ink: #162634;
-  --color-muted: #5F6B73;
+  --color-deep-blue: #002359;
+  --color-deep-blue-hover: #001A42;
+  --color-brick-red: #9C3A2B;
+  --color-brick-red-hover: #7F2D22;
+  --color-warm-white: #F5F1E9;
+  --color-ink: #172033;
+  --color-muted: #667085;
+  --color-data-blue: #2D6CDF;
   --color-white: #FFFFFF;
-  --color-line: rgba(13, 42, 69, 0.14);
-  --font-sans: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
+  --color-line: #D8DEE8;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-display: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
   --space-8: 5rem;
-  --radius-small: 0.5rem;
-  --radius-medium: 1rem;
-  --radius-large: 1.5rem;
-  --shadow-soft: 0 1rem 3rem rgba(13, 42, 69, 0.1);
-  --content-width: 75rem;
+  --radius-small: 0.75rem;
+  --radius-medium: 0.875rem;
+  --radius-large: 1rem;
+  --shadow-soft: 0 0.75rem 2.5rem rgba(0, 35, 89, 0.08);
+  --shadow-card: 0 0.5rem 1.5rem rgba(0, 35, 89, 0.06);
+  --content-width: 78rem;
   --content-narrow: 64rem;
+  --breakpoint-mobile: 30rem;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-laptop: 64rem;
+  --breakpoint-desktop: 90rem;
 }
 
 *,
@@ -41,7 +50,7 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--color-warm-white);
+  background: var(--color-white);
 }
 
 a {

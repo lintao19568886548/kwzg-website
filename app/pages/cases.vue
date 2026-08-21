@@ -1,13 +1,13 @@
 <script setup>
 usePageSeo({
   title: '客户案例',
-  description: '瞰维智管客户案例页面骨架，当前不包含真实客户与经营数据。',
+  description: '瞰维智管已在六个获授权公开名称的园区正式使用，案例不展示租金、出租率或收入等经营数据。',
 })
 
 const items = [
-  { title: '案例目录占位', description: '仅在取得客户授权并完成脱敏后使用真实案例素材。' },
-  { title: '成果说明占位', description: '不得展示未经确认的经营指标、客户名称或内部数据。' },
-  { title: '案例详情占位', description: '后续统一设计案例结构与展示规范。' },
+  { title: '东莞园区实践', description: '同富园区、高埗同兴园区；仅展示已授权的园区名称与实景。' },
+  { title: '佛山园区实践', description: '佛山乐从园区、佛山九江园区；九江无水印原图补齐前不公开照片。' },
+  { title: '深圳与广州园区实践', description: '深圳坑梓园区、新塘西州；仅使用已经核验并获授权的园区实景。' },
 ]
 </script>
 
@@ -15,8 +15,7 @@ const items = [
   <PagePlaceholder
     eyebrow="Customer stories"
     title="客户案例"
-    summary="客户案例页面路由已建立。本阶段不放置真实客户信息、经营数据或未经授权的素材。"
+    summary="六个园区均已正式使用瞰维智管。官网不公开出租率、租金、欠费、收入或租户经营信息。"
     :items="items"
   />
 </template>
-
