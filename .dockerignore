@@ -19,4 +19,5 @@ npm-debug.log*
 *.sql
 *.dump
 *.bak
-docs
+docs/*
+!docs/website-full-capability-source-matrix.md

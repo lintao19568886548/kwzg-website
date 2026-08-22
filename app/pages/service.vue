@@ -22,10 +22,10 @@ usePageSeo({
         </div>
         <aside v-reveal:right class="kw-stage2-hero__aside">
           <strong>服务原则</strong>
-          <span>演示真实能力</span>
-          <span>确认使用范围</span>
-          <span>评估部署条件</span>
-          <span>不承诺固定上线周期</span>
+          <span>演示已上线页面</span>
+          <span>配置组织与业务规则</span>
+          <span>评估软硬件和部署条件</span>
+          <span>规划能力单独说明</span>
         </aside>
       </div>
     </section>
@@ -56,7 +56,7 @@ usePageSeo({
       <div class="kw-container">
         <div v-reveal class="kw-section-heading">
           <span class="kw-section-kicker">服务范围</span>
-          <h2 id="scope-title">标准能力、评估项目与当前边界分别说明</h2>
+          <h2 id="scope-title">四种能力状态，对应四类实施边界</h2>
         </div>
         <ServiceScope />
       </div>
@@ -81,7 +81,7 @@ usePageSeo({
             <span class="kw-section-kicker">常见问题</span>
             <h2 id="faq-title">购买、部署和使用前常见的问题</h2>
           </div>
-          <p>所有回答都以当前已核实能力与项目评估边界为准。</p>
+          <p>所有回答都以当前能力状态、项目配置与评估接入边界为准。</p>
         </div>
         <ServiceFaqAccordion />
       </div>

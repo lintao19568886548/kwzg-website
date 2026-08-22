@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { serviceFaqs, verifiedCapabilities } from '../../app/data/verified-capabilities.js'
+import { serviceFaqs } from '../../app/data/verified-capabilities.js'
+import { productCapabilities } from '../../app/data/product-capabilities.js'
 
 const readSource = path => readFileSync(new URL(path, import.meta.url), 'utf8')
 const homeSource = readSource('../../app/components/home/HomeStageOne.vue')
@@ -11,21 +12,16 @@ const demoSource = readSource('../../app/pages/demo.vue')
 const headerSource = readSource('../../app/components/SiteHeader.vue')
 const nuxtSource = readSource('../../nuxt.config.js')
 
-describe('verified website content integration', () => {
-  it('publishes exactly the six traced capabilities', () => {
-    expect(verifiedCapabilities.map(item => item.title)).toEqual([
-      '园区经营总览',
-      '招商客户',
-      '客户详情',
-      '合同管理',
-      '账单管理',
-      '报修工单',
-    ])
-    expect(homeSource).toContain('verifiedCapabilities.map')
-    expect(productSource).toContain('verifiedCapabilities.map')
+describe('website content integration', () => {
+  it('publishes a complete shared capability landscape with status boundaries', () => {
+    expect(productCapabilities).toHaveLength(12)
+    expect(homeSource).toContain('productCapabilities')
+    expect(productSource).toContain('productCapabilities')
+    expect(solutionSource).toContain('getCapability')
+    expect(headerSource).toContain('megaMenuGroups')
   })
 
-  it('adds the implementation journey and FAQ route', () => {
+  it('keeps the implementation journey and FAQ route', () => {
     expect(headerSource).toContain("{ label: '实施服务', to: '/service' }")
     expect(nuxtSource).toContain("'/service'")
     expect(serviceSource).toContain('id="faq"')
@@ -37,14 +33,14 @@ describe('verified website content integration', () => {
     expect(serviceSource).toContain('<ServiceFaqAccordion />')
   })
 
-  it('organizes the home and solution pages around the approved journey', () => {
+  it('organizes home and solutions around landscape, flow and roles', () => {
     expect(homeSource).toContain('<ParkManagementCheck')
-    expect(homeSource).toContain('<VerifiedBusinessFlow />')
-    expect(homeSource).toContain('<VerifiedCapabilityGrid compact />')
-    expect(homeSource).toContain('<BeforeAfterComparison />')
+    expect(homeSource).toContain('<CapabilityFlowMap />')
+    expect(homeSource).toContain('<CapabilityLandscape compact />')
+    expect(homeSource).toContain('<RoleSolutionExplorer />')
     expect(homeSource).toContain('to="/service#faq"')
-    expect(solutionSource).toContain('三类资产场景')
-    expect(solutionSource).toContain('四类岗位视角')
+    expect(solutionSource).toContain('按园区类型')
+    expect(solutionSource).toContain('按岗位角色')
   })
 
   it('keeps the existing local demo API and explains the next steps', () => {

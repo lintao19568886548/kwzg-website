@@ -84,11 +84,11 @@ export const implementationSteps = Object.freeze([
 
 export const serviceFaqs = Object.freeze([
   Object.freeze({ question: '适合哪些园区？', answer: '主要面向工业园区、厂房和仓库经营管理场景。是否适合需要结合资产范围、使用岗位、现有资料与管理重点进一步沟通。' }),
-  Object.freeze({ question: '当前可以演示哪些功能？', answer: '当前公开演示园区经营总览、招商客户、客户详情、合同管理、账单管理和报修工单六项已经完成页面溯源的能力。' }),
+  Object.freeze({ question: '当前可以演示哪些功能？', answer: '官网完整展示经营决策、招商租赁、账务财务、园区服务、组织协同、AI、权限部署与软硬件接入，并逐项标注已上线、按项目配置、评估接入或规划中。预约时会优先演示已有真实页面证据的界面，再结合园区情况说明其他能力边界。' }),
   Object.freeze({ question: '原有 Excel 资料如何处理？', answer: '需要先确认资料结构、字段质量和使用范围，再评估整理与迁移方式；官网不承诺未经检查即可直接导入。' }),
   Object.freeze({ question: '支持 SaaS 和私有化吗？', answer: '支持云端 SaaS 使用。私有化部署需根据服务器、数据库、网络、安全和运维责任进行技术评估。' }),
   Object.freeze({ question: '为什么官网不公开价格？', answer: '园区范围、使用岗位、部署方式和评估项目不同，服务边界需要先沟通确认，因此官网不提供未经确认的统一价格。' }),
-  Object.freeze({ question: 'AI 招商匹配上线了吗？', answer: 'AI 招商匹配目前属于规划能力，统一标注“AI招商匹配 · 规划中”，不作为当前已上线能力或可操作界面展示。' }),
+  Object.freeze({ question: 'AI 能力目前是什么状态？', answer: 'AI 招商匹配已由产品方确认为现有能力，官网标注“按项目配置”，但在补齐独立页面证据前不展示具体操作界面。AI 催缴、OCR、异常告警、租金分析、经营助手、经营问答和票据检查分别标注“规划中”。' }),
   Object.freeze({ question: '能保证没有空置和欠费吗？', answer: '不能。系统用于帮助团队集中查看信息、查询状态与保留记录，不对出租率、欠费或经营结果作必然承诺。' }),
   Object.freeze({ question: '预约信息保存在哪里？', answer: '预约信息只写入官网独立 MariaDB/MySQL 数据库，供官网管理员查看；不会自动写入 yizuw.cn，也不会自动发送企业微信、短信或邮件。' }),
   Object.freeze({ question: '硬件和第三方系统可以接入吗？', answer: '需要根据设备协议、接口条件、网络环境、安全要求和责任边界进行技术评估，官网不承诺任何硬件都能接入。' }),

@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     '~/assets/css/qualification.css',
     '~/assets/css/modern-chinese.css',
     '~/assets/css/content-integration.css',
+    '~/assets/css/full-capability.css',
   ],
   runtimeConfig: {
     databaseUrl: process.env.NUXT_DATABASE_URL || '',
@@ -47,7 +48,7 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'zh-CN' },
       titleTemplate: '%s | 瞰维智管',
       meta: [
-        { name: 'description', content: '瞰维智管面向工业园区、厂房和仓库，汇总经营总览、招商客户、合同、账单与报修工单。' },
+        { name: 'description', content: '瞰维智管连接园区招商、租赁、合同、账单、财务、设备、门禁、维护、人事和经营数据，让老板看清经营、团队协同执行。' },
         { name: 'theme-color', content: '#002359' },
         { property: 'og:site_name', content: '瞰维智管' },
         { property: 'og:locale', content: 'zh_CN' },

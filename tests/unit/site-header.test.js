@@ -38,6 +38,7 @@ async function mountHeader(path = '/') {
       stubs: {
         NuxtLink: RouterLink,
         BrandLogo: { template: '<RouterLink class="logo-stub" to="/" aria-label="瞰维智管官网首页"><span>瞰维智管</span></RouterLink>' },
+        CapabilityStatusTag: { props: ['status'], template: '<span class="status-stub">{{ status }}</span>' },
         UiBaseButton: { props: ['to'], template: '<RouterLink :to="to"><slot /></RouterLink>' },
       },
     },

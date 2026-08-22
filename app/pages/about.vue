@@ -50,10 +50,10 @@ usePageSeo({
 
     <section class="kw-section kw-about-boundary" aria-labelledby="about-boundary-title">
       <div class="kw-container">
-        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">我们坚持</span><h2 id="about-boundary-title">清楚地表达已经具备的能力</h2><p>官网系统界面全部来自已核实真实页面，并使用演示数据重构；不以虚构资历、规模或经营数字建立信任。</p></div>
+        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">我们坚持</span><h2 id="about-boundary-title">完整呈现能力，也把状态与边界说清楚</h2><p>官网真实系统界面来自页面证据并使用演示数据重构；扩展能力分别标注已上线、按项目配置、评估接入或规划中，不以虚构资历、规模或经营数字建立信任。</p></div>
         <div class="kw-about-values">
           <article v-reveal class="kw-stage2-card"><span>01</span><h3>不夸大</h3><p>不承诺软件直接保证出租率、回款结果或消除经营风险。</p></article>
-          <article v-reveal="80" class="kw-stage2-card"><span>02</span><h3>不虚构</h3><p>官网系统界面只展示已核实能力，规划能力明确标注。</p></article>
+          <article v-reveal="80" class="kw-stage2-card"><span>02</span><h3>不虚构</h3><p>真实界面只展示有页面证据的功能；配置、接入与规划能力使用状态卡和关系图，不伪装成后台截图。</p></article>
           <article v-reveal="160" class="kw-stage2-card"><span>03</span><h3>不模糊</h3><p>标准功能、规划能力、部署评估和非标准服务分别说明。</p></article>
         </div>
       </div>

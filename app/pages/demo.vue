@@ -82,7 +82,7 @@ async function handleSubmit() {
           <UiBaseTag v-reveal>预约产品演示</UiBaseTag>
           <h1 v-reveal="80">结合你的园区，<br>看看经营管理怎么更清楚</h1>
           <p v-reveal="160">只填写姓名、手机号和园区数量。信息仅保存到官网独立数据库，供官网单管理员查看与跟进。</p>
-          <ul v-reveal="220"><li><UiLinearIcon name="check" :size="18" />围绕园区实际经营问题沟通</li><li><UiLinearIcon name="check" :size="18" />查看已完成溯源核验的真实系统页面</li><li><UiLinearIcon name="check" :size="18" />不连接或写入 yizuw.cn 生产系统</li></ul>
+          <ul v-reveal="220"><li><UiLinearIcon name="check" :size="18" />围绕园区实际经营问题沟通</li><li><UiLinearIcon name="check" :size="18" />查看真实系统页面与完整能力状态</li><li><UiLinearIcon name="check" :size="18" />不连接或写入 yizuw.cn 生产系统</li></ul>
           <address v-reveal="280" class="kw-contact-panel"><strong>直接联系官方客服</strong><a :href="siteConfig.contact.phoneHref">{{ siteConfig.contact.phone }}</a><span>{{ siteConfig.contact.address }}</span><HomeQrPlaceholder /></address>
         </div>
 
