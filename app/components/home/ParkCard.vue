@@ -23,7 +23,7 @@ defineProps({
         :alt="`${name}实景`"
         width="1200"
         height="750"
-        loading="eager"
+        loading="lazy"
         decoding="async"
       >
       <span v-if="images.length > 1">实景 {{ images.length }} 张</span>

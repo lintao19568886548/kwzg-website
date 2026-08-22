@@ -15,6 +15,7 @@ import { siteConfig } from '~/config/site'
         <NuxtLink to="/products">产品能力</NuxtLink>
         <NuxtLink to="/solutions">解决方案</NuxtLink>
         <NuxtLink to="/cases">客户案例</NuxtLink>
+        <NuxtLink to="/service">实施服务</NuxtLink>
         <NuxtLink to="/demo">预约演示</NuxtLink>
       </div>
 
@@ -22,13 +23,14 @@ import { siteConfig } from '~/config/site'
         <h2>联系我们</h2>
         <a :href="siteConfig.contact.phoneHref">电话咨询：{{ siteConfig.contact.phone }}</a>
         <p>联系地址：{{ siteConfig.contact.address }}</p>
+        <p>企业微信：{{ siteConfig.wecom.displayName }}</p>
         <a :href="siteConfig.siteUrl">官方网站：yizuw.org</a>
       </div>
 
       <div class="kw-footer__group">
         <h2>服务方式</h2>
         <p>云端 SaaS</p>
-        <p>私有化部署</p>
+        <p>私有化部署评估</p>
         <a
           :href="siteConfig.systemUrl"
           target="_blank"

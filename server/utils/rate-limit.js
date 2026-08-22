@@ -5,6 +5,7 @@ export async function consumeRateLimit(db, options) {
   const expiresAt = new Date(now.getTime() + options.windowMs)
 
   return db.transaction(async (trx) => {
+    await trx('rate_limits').where('expires_at', '<=', now).delete()
     let bucket = await trx('rate_limits').where({ bucket_key: options.bucketKey }).forUpdate().first()
 
     if (!bucket) {

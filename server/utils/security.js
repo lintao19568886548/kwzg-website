@@ -27,10 +27,27 @@ export function getClientAddress(event, trustedProxyAddresses = '') {
   return getRequestIP(event, { xForwardedFor: true }) || directAddress
 }
 
-export function assertSameOrigin(event) {
+function normalizeAllowedOrigin(value) {
+  const url = new URL(value)
+  if (!['http:', 'https:'].includes(url.protocol) || url.origin !== value || url.username || url.password) {
+    throw new Error('invalid origin')
+  }
+  return url.origin
+}
+
+export function parseTrustedOrigins(value = '') {
+  try {
+    return String(value).split(',').map(origin => origin.trim()).filter(Boolean).map(normalizeAllowedOrigin)
+  } catch {
+    throw createKwError(503, 'SERVER_CONFIGURATION_ERROR', '服务暂时不可用，请稍后再试。')
+  }
+}
+
+export function assertSameOrigin(event, trustedOrigins = '') {
   const origin = getRequestHeader(event, 'origin')
   const referer = getRequestHeader(event, 'referer')
   const requestOrigin = getRequestURL(event).origin
+  const allowedOrigins = new Set([requestOrigin, ...parseTrustedOrigins(trustedOrigins)])
   let suppliedOrigin
 
   try {
@@ -39,7 +56,7 @@ export function assertSameOrigin(event) {
     throw createKwError(403, 'ORIGIN_REJECTED', '请求来源验证失败。')
   }
 
-  if (!suppliedOrigin || suppliedOrigin !== requestOrigin) {
+  if (!suppliedOrigin || !allowedOrigins.has(suppliedOrigin)) {
     throw createKwError(403, 'ORIGIN_REJECTED', '请求来源验证失败。')
   }
 }

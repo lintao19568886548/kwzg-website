@@ -101,5 +101,22 @@ async function handleSubmit() {
         </div>
       </div>
     </section>
+
+    <section class="kw-section kw-demo-next" aria-labelledby="demo-next-title">
+      <div class="kw-container">
+        <div v-reveal class="kw-section-heading kw-section-heading--center">
+          <span class="kw-section-kicker">提交后会发生什么</span>
+          <h2 id="demo-next-title">信息进入官网后台，再由工作人员联系</h2>
+          <p>不会自动发送企业微信、短信或邮件，也不会自动写入 yizuw.cn 园区生产系统。</p>
+        </div>
+        <ol class="kw-demo-next__steps">
+          <li v-reveal><span>01</span><strong>提交信息</strong><small>完成隐私同意</small></li>
+          <li v-reveal="60"><span>02</span><strong>写入数据库</strong><small>官网独立存储</small></li>
+          <li v-reveal="120"><span>03</span><strong>后台查看</strong><small>工作人员处理</small></li>
+          <li v-reveal="180"><span>04</span><strong>电话联系</strong><small>不承诺固定时限</small></li>
+          <li v-reveal="240"><span>05</span><strong>安排演示</strong><small>按园区场景沟通</small></li>
+        </ol>
+      </div>
+    </section>
   </div>
 </template>

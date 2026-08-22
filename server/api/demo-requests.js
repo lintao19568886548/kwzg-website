@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readStrictJsonBody(event, { limit: 4096 })
-    assertSameOrigin(event)
+    const config = useRuntimeConfig(event)
+    assertSameOrigin(event, config.trustedOrigins)
     assertExactKeys(body, DEMO_BODY_KEYS)
     const normalized = validateDemoRequest(body)
     const idempotencyKey = validateIdempotencyKey(getRequestHeader(event, 'x-idempotency-key'))
-    const config = useRuntimeConfig(event)
     const db = getDatabase(config)
     const result = await createDemoRequest(db, normalized, {
       idempotencyKey,

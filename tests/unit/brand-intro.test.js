@@ -249,9 +249,9 @@ describe('brand intro implementation contract', () => {
   })
 
   it('contains both JS and CSS fail-safes without routes, redirects or reloads', () => {
-    expect(BRAND_INTRO_TIMINGS.desktop.watchdog).toBe(3200)
-    expect(BRAND_INTRO_TIMINGS.compact.watchdog).toBe(2400)
-    expect(introSource).toContain('kw-brand-intro-failsafe 3.2s')
+    expect(BRAND_INTRO_TIMINGS.desktop.watchdog).toBe(4800)
+    expect(BRAND_INTRO_TIMINGS.compact.watchdog).toBe(3800)
+    expect(introSource).toContain('kw-brand-intro-failsafe 4.8s')
     expect(introSource).toContain('kw-brand-intro-reduced-failsafe')
     expect(introSource).not.toMatch(/window\.location\.(?:href|assign|replace|reload)|navigateTo\(|router\.(?:push|replace)/)
   })

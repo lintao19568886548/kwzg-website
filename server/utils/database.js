@@ -7,6 +7,7 @@ let connectionUrl
 const DATABASE_CONNECTION_CODES = new Set([
   'ECONNREFUSED',
   'ECONNRESET',
+  'EAI_AGAIN',
   'EHOSTUNREACH',
   'ENETUNREACH',
   'ENOTFOUND',
@@ -41,6 +42,13 @@ export function assertSafeDatabaseUrl(databaseUrl) {
   return parsed
 }
 
+export function configureUtcConnection(connection, done) {
+  connection.query("SET time_zone = '+00:00'", (timeZoneError) => {
+    if (timeZoneError) return done(timeZoneError, connection)
+    connection.query("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci", (charsetError) => done(charsetError, connection))
+  })
+}
+
 export function getDatabase(config) {
   const databaseUrl = config.databaseUrl
   assertSafeDatabaseUrl(databaseUrl)
@@ -63,6 +71,7 @@ export function getDatabase(config) {
       acquireTimeoutMillis: 8000,
       idleTimeoutMillis: 30000,
       createTimeoutMillis: 8000,
+      afterCreate: configureUtcConnection,
     },
   })
 

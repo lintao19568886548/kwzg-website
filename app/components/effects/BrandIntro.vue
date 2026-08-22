@@ -90,7 +90,7 @@ function handleSkip(event) {
   color: #F7F2E8;
   background: transparent;
   pointer-events: auto;
-  animation: kw-brand-intro-failsafe 3.2s steps(1, end) forwards;
+  animation: kw-brand-intro-failsafe 4.8s steps(1, end) forwards;
   isolation: isolate;
 }
 
@@ -150,11 +150,11 @@ function handleSkip(event) {
 }
 
 .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__door--left {
-  animation: kw-brand-intro-door-left 550ms cubic-bezier(0.76, 0, 0.24, 1) 2250ms both;
+  animation: kw-brand-intro-door-left 700ms cubic-bezier(0.76, 0, 0.24, 1) 3550ms both;
 }
 
 .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__door--right {
-  animation: kw-brand-intro-door-right 550ms cubic-bezier(0.76, 0, 0.24, 1) 2250ms both;
+  animation: kw-brand-intro-door-right 700ms cubic-bezier(0.76, 0, 0.24, 1) 3550ms both;
 }
 
 .kw-brand-intro__grid {
@@ -168,7 +168,7 @@ function handleSkip(event) {
 }
 
 .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__grid {
-  animation: kw-brand-intro-grid 2.25s ease 100ms both;
+  animation: kw-brand-intro-grid 3.2s ease 100ms both;
 }
 
 .kw-brand-intro__content {
@@ -260,7 +260,7 @@ function handleSkip(event) {
 }
 
 .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__content {
-  animation: kw-brand-intro-content-exit 240ms ease 2150ms both;
+  animation: kw-brand-intro-content-exit 300ms ease 3350ms both;
 }
 
 .kw-brand-intro__opening-line {
@@ -276,7 +276,7 @@ function handleSkip(event) {
 }
 
 .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__opening-line {
-  animation: kw-brand-intro-opening-line 430ms ease-out 2220ms both;
+  animation: kw-brand-intro-opening-line 520ms ease-out 3450ms both;
 }
 
 .kw-brand-intro__skip {
@@ -386,7 +386,7 @@ function handleSkip(event) {
 
 @media (max-width: 48rem), (pointer: coarse), (update: slow) {
   .kw-brand-intro {
-    animation-duration: 2.4s;
+    animation-duration: 3.8s;
   }
 
   .kw-brand-intro__door::after {
@@ -441,19 +441,19 @@ function handleSkip(event) {
   }
 
   .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__content {
-    animation-delay: 1470ms;
-    animation-duration: 180ms;
+    animation-delay: 2600ms;
+    animation-duration: 240ms;
   }
 
   .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__opening-line {
-    animation-delay: 1520ms;
-    animation-duration: 320ms;
+    animation-delay: 2700ms;
+    animation-duration: 430ms;
   }
 
   .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__door--left,
   .kw-brand-intro.is-active:not(.is-reduced) .kw-brand-intro__door--right {
-    animation-delay: 1550ms;
-    animation-duration: 400ms;
+    animation-delay: 2750ms;
+    animation-duration: 550ms;
   }
 
   .kw-brand-intro__skip {

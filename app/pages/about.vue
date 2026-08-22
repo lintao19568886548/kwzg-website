@@ -41,7 +41,7 @@ usePageSeo({
             <div class="kw-contact-action"><small>联系电话</small><a :href="siteConfig.contact.phoneHref">{{ siteConfig.contact.phone }}</a></div>
             <div class="kw-contact-action"><small>联系地址</small><strong>{{ siteConfig.contact.address }}</strong></div>
             <div><small>官方网站</small><a class="kw-about-contact__site" :href="siteConfig.siteUrl">yizuw.org</a></div>
-            <div><small>系统登录</small><a class="kw-about-contact__site" :href="siteConfig.systemUrl" target="_blank" rel="noopener noreferrer nofollow">yz.furong.org</a></div>
+            <div><small>系统登录</small><a class="kw-about-contact__site" :href="siteConfig.systemUrl" target="_blank" rel="noopener noreferrer nofollow">yizuw.cn</a></div>
           </address>
           <HomeQrPlaceholder />
         </aside>
@@ -52,9 +52,9 @@ usePageSeo({
       <div class="kw-container">
         <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">我们坚持</span><h2 id="about-boundary-title">清楚地表达已经具备的能力</h2><p>官网系统界面全部来自已核实真实页面，并使用演示数据重构；不以虚构资历、规模或经营数字建立信任。</p></div>
         <div class="kw-about-values">
-          <article v-reveal class="kw-stage2-card"><span>01</span><h3>真实溯源</h3><p>每个公开系统面板都有真实菜单和页面证据。</p></article>
-          <article v-reveal="80" class="kw-stage2-card"><span>02</span><h3>边界清楚</h3><p>规划能力与已经上线的系统能力分开表达。</p></article>
-          <article v-reveal="160" class="kw-stage2-card"><span>03</span><h3>数据克制</h3><p>公开页面不使用客户经营数据或生产系统截图。</p></article>
+          <article v-reveal class="kw-stage2-card"><span>01</span><h3>不夸大</h3><p>不承诺软件直接保证出租率、回款结果或消除经营风险。</p></article>
+          <article v-reveal="80" class="kw-stage2-card"><span>02</span><h3>不虚构</h3><p>官网系统界面只展示已核实能力，规划能力明确标注。</p></article>
+          <article v-reveal="160" class="kw-stage2-card"><span>03</span><h3>不模糊</h3><p>标准功能、规划能力、部署评估和非标准服务分别说明。</p></article>
         </div>
       </div>
     </section>

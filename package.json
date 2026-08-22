@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
-    "start": "node scripts/validate-runtime.js && node scripts/migrate.js && node .output/server/index.mjs",
+    "start": "node scripts/validate-runtime.js && node .output/server/index.mjs",
+    "start:migrate": "node scripts/validate-runtime.js && node scripts/migrate.js && node .output/server/index.mjs",
     "build": "nuxt build",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -20,6 +21,7 @@
     "qr:generate": "node scripts/generate-contact-qr.js",
     "qualification:images": "node scripts/process-qualification-images.js",
     "security:scan": "node scripts/security-scan.js",
+    "audit:local": "node scripts/prelaunch-local-audit.js",
     "check": "npm run lint && npm run test && npm run build"
   },
   "dependencies": {

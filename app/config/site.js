@@ -35,5 +35,5 @@ export const siteConfig = Object.freeze({
     detailAlt: '东莞市宜租网络科技有限公司科技型中小企业资质牌匾及证书实拍',
   }),
   siteUrl: officialSiteUrl,
-  systemUrl: 'https://yz.furong.org',
+  systemUrl: 'https://yizuw.cn',
 })

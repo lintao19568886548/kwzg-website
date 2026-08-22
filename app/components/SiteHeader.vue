@@ -16,6 +16,7 @@ const navigation = [
   { label: '产品能力', to: '/products' },
   { label: '解决方案', to: '/solutions' },
   { label: '客户案例', to: '/cases' },
+  { label: '实施服务', to: '/service' },
   { label: '关于我们', to: '/about' },
 ]
 
@@ -89,7 +90,9 @@ onBeforeUnmount(() => {
 <template>
   <header ref="headerElement" class="kw-header" :class="{ 'is-scrolled': scrolled, 'is-menu-open': mobileOpen }">
     <div class="kw-container kw-header__bar">
-      <BrandLogo @click="handleHomeLink" />
+      <div class="kw-header__brand">
+        <BrandLogo @click="handleHomeLink" />
+      </div>
 
       <nav class="kw-header__nav" aria-label="主导航">
         <NuxtLink
@@ -146,6 +149,10 @@ onBeforeUnmount(() => {
             @click="handleNavigation(item, $event)"
           >
             {{ item.label }}
+            <span aria-hidden="true">→</span>
+          </NuxtLink>
+          <NuxtLink to="/demo" @click="mobileOpen = false">
+            预约演示
             <span aria-hidden="true">→</span>
           </NuxtLink>
           <a

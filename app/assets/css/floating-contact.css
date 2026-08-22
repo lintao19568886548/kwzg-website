@@ -36,7 +36,7 @@
   box-shadow: 0 0.8rem 2rem rgba(0, 35, 89, 0.2);
   cursor: pointer;
   font: inherit;
-  font-size: 0.69rem;
+  font-size: 0.75rem;
   line-height: 1.2;
   text-align: center;
 }
@@ -75,10 +75,9 @@
 .kw-contact-popover-host {
   position: absolute;
   right: calc(100% + 0.8rem);
-  top: 50%;
+  bottom: 0;
   width: 19rem;
   pointer-events: auto;
-  transform: translate3d(0, -50%, 0);
 }
 
 .kw-contact-panel {
@@ -102,7 +101,7 @@
 
 .kw-contact-panel__header span {
   color: var(--color-brick-red);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.14em;
 }
@@ -194,7 +193,7 @@
 .kw-contact-popover-enter-from.kw-contact-popover-host,
 .kw-contact-popover-leave-to.kw-contact-popover-host {
   opacity: 0;
-  transform: translate3d(0.75rem, -50%, 0);
+  transform: translateX(0.75rem);
 }
 
 .kw-contact-popover-enter-from.kw-contact-overlay,

@@ -1,0 +1,82 @@
+name: kwzg_production
+
+services:
+  db:
+    image: mariadb:11.4.5
+    restart: unless-stopped
+    environment:
+      TZ: UTC
+      MARIADB_DATABASE: ${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+      MARIADB_USER: ${KWZG_DB_USER:?KWZG_DB_USER is required}
+      MARIADB_PASSWORD: ${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${KWZG_DB_ROOT_PASSWORD:?KWZG_DB_ROOT_PASSWORD is required}
+    volumes:
+      - kwzg_database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - database
+
+  migrate:
+    image: kwzg-official-website:${KWZG_IMAGE_TAG:?KWZG_IMAGE_TAG is required}
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TZ: UTC
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:?KWZG_DB_USER is required}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+    command: ["npm", "run", "db:migrate"]
+    networks:
+      - database
+
+  app:
+    image: kwzg-official-website:${KWZG_IMAGE_TAG:?KWZG_IMAGE_TAG is required}
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      TZ: UTC
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:?KWZG_DB_USER is required}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+      NUXT_ADMIN_USERNAME: ${NUXT_ADMIN_USERNAME:?NUXT_ADMIN_USERNAME is required}
+      NUXT_ADMIN_PASSWORD_HASH: ${NUXT_ADMIN_PASSWORD_HASH:?NUXT_ADMIN_PASSWORD_HASH is required}
+      NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD:?NUXT_SESSION_PASSWORD is required}
+      NUXT_TRUSTED_ORIGINS: https://yizuw.org,https://www.yizuw.org
+      NUXT_TRUSTED_PROXY_ADDRESSES: ${NUXT_TRUSTED_PROXY_ADDRESSES:?NUXT_TRUSTED_PROXY_ADDRESSES is required}
+      NUXT_PUBLIC_SITE_URL: https://yizuw.org
+      NUXT_PUBLIC_INDEXABLE: ${NUXT_PUBLIC_INDEXABLE:-false}
+      NUXT_ENABLE_HSTS: ${NUXT_ENABLE_HSTS:-false}
+    expose:
+      - "3000"
+    stop_grace_period: 20s
+    networks:
+      - database
+      - web
+
+  proxy:
+    image: nginx:1.27.4-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/yizuw.org.conf.example:/etc/nginx/conf.d/default.conf:ro
+      - ${KWZG_TLS_DIR:?KWZG_TLS_DIR is required}:/etc/letsencrypt:ro
+    networks:
+      - web
+
+networks:
+  database:
+    internal: true
+  web:
+    driver: bridge
+
+volumes:
+  kwzg_database:

@@ -1,4 +1,8 @@
 <script setup>
+const props = defineProps({
+  floating: Boolean,
+})
+
 const metrics = [
   { label: '累计应收', value: '126.8 万', note: '账单应收总额 · 演示', tone: 'blue' },
   { label: '累计实收', value: '118.6 万', note: '回款率 93.5% · 演示', tone: 'blue' },
@@ -12,10 +16,20 @@ const tasks = [
   { title: '待处理报销', description: '等待审批或复核', count: '1' },
   { title: '报修工单', description: '尚未完成的维修任务', count: '3' },
 ]
+
+const verifiedNavigation = [
+  {
+    group: '工作台',
+    items: [{ label: '运营总览', icon: 'chart', active: true }],
+  },
+]
 </script>
 
 <template>
-  <div class="kw-dashboard-source">
+  <div
+    class="kw-dashboard-source"
+    :class="{ 'kw-dashboard-source--floating': props.floating }"
+  >
     <article class="kw-dashboard" aria-label="园区经营总览演示界面">
       <header class="kw-dashboard__topbar">
         <div class="kw-dashboard__brand">
@@ -26,12 +40,24 @@ const tasks = [
       </header>
 
       <div class="kw-dashboard__body">
-        <aside class="kw-dashboard__sidebar" aria-hidden="true">
-          <span class="is-active"><UiLinearIcon name="chart" :size="17" /></span>
-          <span><UiLinearIcon name="building" :size="17" /></span>
-          <span><UiLinearIcon name="users" :size="17" /></span>
-          <span><UiLinearIcon name="wallet" :size="17" /></span>
-          <span><UiLinearIcon name="wrench" :size="17" /></span>
+        <aside class="kw-dashboard__sidebar" aria-label="已核实功能导航示意">
+          <section
+            v-for="navigationGroup in verifiedNavigation"
+            :key="navigationGroup.group"
+            class="kw-dashboard__nav-group"
+          >
+            <strong>{{ navigationGroup.group }}</strong>
+            <ul>
+              <li
+                v-for="item in navigationGroup.items"
+                :key="item.label"
+                :class="{ 'is-active': item.active }"
+              >
+                <UiLinearIcon :name="item.icon" :size="17" />
+                <span>{{ item.label }}</span>
+              </li>
+            </ul>
+          </section>
         </aside>
 
         <div class="kw-dashboard__content">
@@ -119,6 +145,5 @@ const tasks = [
       </div>
     </article>
 
-    <p class="kw-interface-source__notice">本界面基于瞰维智管现有功能进行视觉优化展示，使用演示数据，具体界面以实际交付版本为准。</p>
   </div>
 </template>

@@ -18,6 +18,7 @@ const routes = [
   '/cases/shenzhen-kengzi',
   '/cases/xintang-xizhou',
   '/cases/gaobu-tongxing',
+  '/service',
   '/about',
   '/demo',
   '/privacy',
@@ -67,9 +68,11 @@ afterEach(() => {
 })
 
 describe('SiteHeader home navigation', () => {
-  it('uses the centralized Furong system login target on desktop and mobile', async () => {
+  it('uses the centralized production system login target on desktop and mobile', async () => {
     const { wrapper } = await mountHeader('/')
-    expect(siteConfig.systemUrl).toBe('https://yz.furong.org')
+    expect(siteConfig.systemUrl).toBe('https://yizuw.cn')
+    expect(wrapper.find('.kw-header__tagline').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain(siteConfig.brand.tagline)
     const desktopLogin = wrapper.get('.kw-header__login')
     expect(desktopLogin.attributes('href')).toBe(siteConfig.systemUrl)
     expect(desktopLogin.attributes('target')).toBe('_blank')
@@ -82,10 +85,10 @@ describe('SiteHeader home navigation', () => {
 
   it('renders the required shared order and exactly one current desktop item', async () => {
     const { router, wrapper } = await mountHeader('/')
-    const expected = ['首页', '产品能力', '解决方案', '客户案例', '关于我们']
+    const expected = ['首页', '产品能力', '解决方案', '客户案例', '实施服务', '关于我们']
     expect(wrapper.findAll('.kw-header__nav a').map(link => link.text().trim())).toEqual(expected)
     await wrapper.get('.kw-header__menu-button').trigger('click')
-    expect(wrapper.findAll('.kw-header__mobile-nav a').slice(0, 5).map(link => link.text().replace('→', '').trim())).toEqual(expected)
+    expect(wrapper.findAll('.kw-header__mobile-nav a').slice(0, 6).map(link => link.text().replace('→', '').trim())).toEqual(expected)
     expect(wrapper.findAll('.kw-header__nav a.is-active')).toHaveLength(1)
     expect(wrapper.get('.kw-header__nav a.is-active').text()).toBe('首页')
     expect(wrapper.get('.kw-header__nav a.is-active').attributes('aria-current')).toBe('page')
@@ -111,6 +114,7 @@ describe('SiteHeader home navigation', () => {
     ['/cases/shenzhen-kengzi', '客户案例'],
     ['/cases/xintang-xizhou', '客户案例'],
     ['/cases/gaobu-tongxing', '客户案例'],
+    ['/service', '实施服务'],
     ['/about', '关于我们'],
     ['/demo', null],
     ['/privacy', null],

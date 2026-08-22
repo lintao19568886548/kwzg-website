@@ -50,7 +50,7 @@ onMounted(loadCsrf)
 <template>
   <div class="kw-admin-login">
     <section v-reveal class="kw-admin-login__panel">
-      <NuxtLink to="/" class="kw-admin-login__brand"><BrandLogo /></NuxtLink>
+      <div class="kw-admin-login__brand"><BrandLogo /></div>
       <span>官网独立后台</span><h1>管理员登录</h1><p>仅用于查看和跟进官网预约线索，与 yizuw.cn 生产系统完全隔离。</p>
       <form novalidate @submit.prevent="login">
         <label for="admin-username">管理员账号</label><input id="admin-username" v-model="form.username" type="text" autocomplete="username" maxlength="128">

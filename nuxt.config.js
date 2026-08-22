@@ -1,10 +1,11 @@
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://yizuw.org'
 const indexable = process.env.NUXT_PUBLIC_INDEXABLE === 'true'
 const hstsEnabled = process.env.NUXT_ENABLE_HSTS === 'true'
+const upgradeInsecureRequests = siteUrl.startsWith('https://') ? '; upgrade-insecure-requests' : ''
 const brandIntroPrepaint = `(()=>{const root=document.documentElement;const key='kwzg_brand_intro_seen_v1';if(window.location.pathname!=='/'){root.dataset.kwzgIntro='skip';return}try{if(window.sessionStorage.getItem(key)){root.dataset.kwzgIntro='skip';return}window.sessionStorage.setItem(key,'1');root.dataset.kwzgIntro='show'}catch{root.dataset.kwzgIntro='skip'}})();`
 
 const securityHeaders = {
-  'Content-Security-Policy': "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
+  'Content-Security-Policy': `default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'${upgradeInsecureRequests}`,
   'Permissions-Policy': 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Content-Type-Options': 'nosniff',
@@ -24,6 +25,8 @@ export default defineNuxtConfig({
     '~/assets/css/stage2.css',
     '~/assets/css/floating-contact.css',
     '~/assets/css/qualification.css',
+    '~/assets/css/modern-chinese.css',
+    '~/assets/css/content-integration.css',
   ],
   runtimeConfig: {
     databaseUrl: process.env.NUXT_DATABASE_URL || '',
@@ -31,6 +34,7 @@ export default defineNuxtConfig({
     adminPasswordHash: process.env.NUXT_ADMIN_PASSWORD_HASH || '',
     sessionPassword: process.env.NUXT_SESSION_PASSWORD || '',
     trustedProxyAddresses: process.env.NUXT_TRUSTED_PROXY_ADDRESSES || '',
+    trustedOrigins: process.env.NUXT_TRUSTED_ORIGINS || '',
     enableHsts: hstsEnabled,
     public: {
       siteUrl,
@@ -65,8 +69,8 @@ export default defineNuxtConfig({
     routeRules: {
       '/**': { headers: securityHeaders },
       '/call': { headers: { ...securityHeaders, 'X-Robots-Tag': 'noindex, nofollow' } },
-      '/admin/**': { headers: { ...securityHeaders, 'Cache-Control': 'no-store, max-age=0' } },
-      '/api/admin/**': { headers: { ...securityHeaders, 'Cache-Control': 'no-store, max-age=0' } },
+      '/admin/**': { headers: { ...securityHeaders, 'Cache-Control': 'no-store, max-age=0', 'X-Robots-Tag': 'noindex, nofollow, noarchive' } },
+      '/api/admin/**': { headers: { ...securityHeaders, 'Cache-Control': 'no-store, max-age=0', 'X-Robots-Tag': 'noindex, nofollow, noarchive' } },
     },
     prerender: {
       routes: [
@@ -79,6 +83,7 @@ export default defineNuxtConfig({
         '/cases/shenzhen-kengzi',
         '/cases/xintang-xizhou',
         '/cases/gaobu-tongxing',
+        '/service',
         '/about',
         '/demo',
         '/call',

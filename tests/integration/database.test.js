@@ -6,6 +6,7 @@ import { authenticateAdmin, createAdminSession, requireAdminSession, revokeAdmin
 import { createDemoRequest } from '../../server/utils/demo-requests.js'
 import { consumeRateLimit } from '../../server/utils/rate-limit.js'
 import { updateLead } from '../../server/utils/leads.js'
+import { configureUtcConnection } from '../../server/utils/database.js'
 
 const databaseUrl = process.env.TEST_DATABASE_URL
 const suite = databaseUrl ? describe : describe.skip
@@ -16,7 +17,7 @@ suite('MariaDB integration', () => {
   const secret = 'integration-secret-'.padEnd(48, 's')
 
   beforeAll(async () => {
-    db = knexFactory({ client: 'mysql2', connection: databaseUrl, pool: { min: 0, max: 6 } })
+    db = knexFactory({ client: 'mysql2', connection: databaseUrl, pool: { min: 0, max: 6, afterCreate: configureUtcConnection } })
     await db.migrate.latest({ directory: migrationsDirectory })
     await db.migrate.latest({ directory: migrationsDirectory })
     await db('lead_audit').del()
@@ -39,12 +40,14 @@ suite('MariaDB integration', () => {
     expect(userRows[0].currentUser.toLowerCase().startsWith('root@')).toBe(false)
     const [charsetRows] = await db.raw("SELECT CCSA.character_set_name AS charset FROM information_schema.TABLES T JOIN information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA ON CCSA.collation_name = T.table_collation WHERE T.table_schema = DATABASE() AND T.table_name = 'leads'")
     expect(charsetRows[0].charset).toBe('utf8mb4')
+    const [timeZoneRows] = await db.raw('SELECT @@session.time_zone AS timeZone')
+    expect(timeZoneRows[0].timeZone).toBe('+00:00')
   })
 
   it('creates the required indexes, enum constraint and audit foreign key', async () => {
     const [indexRows] = await db.raw('SHOW INDEX FROM leads')
     const indexNames = new Set(indexRows.map(row => row.Key_name))
-    for (const indexName of ['PRIMARY', 'leads_status_created_idx', 'leads_phone_idx', 'leads_name_idx']) {
+    for (const indexName of ['PRIMARY', 'leads_status_created_idx', 'leads_phone_idx', 'leads_name_idx', 'idx_leads_updated_at']) {
       expect(indexNames).toContain(indexName)
     }
     expect(indexRows.some(row => row.Column_name === 'idempotency_key' && Number(row.Non_unique) === 0)).toBe(true)
@@ -54,6 +57,8 @@ suite('MariaDB integration', () => {
 
     const [foreignKeyRows] = await db.raw("SELECT CONSTRAINT_NAME AS constraintName FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_audit'")
     expect(foreignKeyRows.map(row => row.constraintName)).toContain('lead_audit_lead_fk')
+    const [sessionIndexRows] = await db.raw('SHOW INDEX FROM admin_sessions')
+    expect(new Set(sessionIndexRows.map(row => row.Key_name))).toContain('idx_admin_sessions_revoked_at')
   })
 
   it('rolls back failed transactions', async () => {
@@ -133,7 +138,7 @@ suite('MariaDB integration', () => {
   })
 
   it('rolls back and reapplies the versioned migration cleanly', async () => {
-    await db.migrate.rollback({ directory: migrationsDirectory })
+    await db.migrate.rollback({ directory: migrationsDirectory }, true)
     expect(await db.schema.hasTable('leads')).toBe(false)
     await db.migrate.latest({ directory: migrationsDirectory })
     expect(await db.schema.hasTable('leads')).toBe(true)

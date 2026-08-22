@@ -9,8 +9,8 @@
   --color-data-blue: #2D6CDF;
   --color-white: #FFFFFF;
   --color-line: #D8DEE8;
-  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-  --font-display: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  --font-sans: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --font-display: var(--font-sans);
   --space-1: 0.5rem;
   --space-2: 1rem;
   --space-3: 1.5rem;
@@ -43,6 +43,8 @@ html {
   color: var(--color-ink);
   background: var(--color-warm-white);
   font-family: var(--font-sans);
+  font-synthesis: none;
+  font-weight: 400;
   line-height: 1.6;
   scroll-behavior: smooth;
 }
@@ -337,7 +339,7 @@ h2 {
   border-radius: var(--radius-medium);
   color: var(--color-deep-blue);
   background: var(--color-warm-white);
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .route-card:hover {

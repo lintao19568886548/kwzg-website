@@ -41,7 +41,7 @@ onBeforeUnmount(() => sectionObserver?.disconnect())
         <nav v-reveal aria-label="隐私政策章节"><strong>阅读位置</strong><a v-for="(section, index) in sections" :key="section.id" :href="`#${section.id}`" :class="{ 'is-active': activeSection === section.id }"><span>0{{ index + 1 }}</span>{{ section.title }}</a></nav>
         <div class="kw-policy-content">
           <article v-for="section in sections" :id="section.id" :key="section.id" ref="sectionElements" v-reveal><h2>{{ section.title }}</h2><p>{{ section.text }}</p></article>
-          <aside v-reveal class="kw-policy-contact"><strong>联系渠道</strong><a :href="siteConfig.contact.phoneHref">{{ siteConfig.contact.phone }}</a><span>{{ siteConfig.wecom.displayName }}</span><small>企业微信认证主体：{{ siteConfig.wecom.verification }}</small></aside>
+          <aside v-reveal class="kw-policy-contact"><strong>联系渠道</strong><span>{{ siteConfig.company.legalName }}</span><a :href="siteConfig.contact.phoneHref">{{ siteConfig.contact.phone }}</a><span>{{ siteConfig.contact.address }}</span><span>{{ siteConfig.wecom.displayName }}</span><small>企业微信认证主体：{{ siteConfig.wecom.verification }}</small></aside>
         </div>
       </div>
     </section>

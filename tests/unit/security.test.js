@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { assertSafeDatabaseUrl, normalizeDatabaseError } from '../../server/utils/database.js'
-import { getClientAddress, keyedDigest, maskPhone, safeEqual } from '../../server/utils/security.js'
+import { assertSameOrigin, getClientAddress, keyedDigest, maskPhone, parseTrustedOrigins, safeEqual } from '../../server/utils/security.js'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -36,6 +36,10 @@ describe('security helpers', () => {
       statusCode: 503,
       code: 'DATABASE_UNAVAILABLE',
     })
+    expect(normalizeDatabaseError(Object.assign(new Error('temporary name resolution failure'), { code: 'EAI_AGAIN' }))).toMatchObject({
+      statusCode: 503,
+      code: 'DATABASE_UNAVAILABLE',
+    })
     expect(normalizeDatabaseError(Object.assign(new Error('table missing'), { code: 'ER_NO_SUCH_TABLE' }))).toMatchObject({
       statusCode: 503,
       code: 'DATABASE_MIGRATION_REQUIRED',
@@ -50,5 +54,19 @@ describe('security helpers', () => {
     expect(getClientAddress(event)).toBe('172.20.0.10')
     expect(getClientAddress(event, '172.20.0.11')).toBe('172.20.0.10')
     expect(getClientAddress(event, '172.20.0.10')).toBe('203.0.113.15')
+  })
+
+  it('accepts only exact configured origins for write requests', () => {
+    vi.stubGlobal('getRequestHeader', vi.fn((event, name) => event.headers[name]))
+    vi.stubGlobal('getRequestURL', vi.fn(event => new URL(event.url)))
+    const event = { url: 'http://app:3000/api/demo-requests', headers: { origin: 'https://yizuw.org' } }
+    expect(() => assertSameOrigin(event, 'https://yizuw.org,https://www.yizuw.org')).not.toThrow()
+    expect(() => assertSameOrigin({ ...event, headers: { origin: 'https://attacker.invalid' } }, 'https://yizuw.org')).toThrow()
+  })
+
+  it('rejects malformed trusted origin configuration without exposing values', () => {
+    expect(parseTrustedOrigins('https://yizuw.org,https://www.yizuw.org')).toEqual(['https://yizuw.org', 'https://www.yizuw.org'])
+    expect(() => parseTrustedOrigins('https://yizuw.org/path')).toThrow()
+    expect(() => parseTrustedOrigins('javascript:alert(1)')).toThrow()
   })
 })

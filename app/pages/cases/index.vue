@@ -17,7 +17,6 @@ const filteredCases = computed(() => activeRegion.value === '全部案例'
     <section class="kw-stage2-hero kw-cases-hero">
       <div class="kw-container kw-stage2-hero__grid">
         <div v-reveal>
-          <UiBaseTag>Customer stories</UiBaseTag>
           <h1>客户案例</h1>
           <p class="kw-cases-hero__lead">来自真实园区的数字化管理实践</p>
           <p class="kw-cases-hero__notice">案例内容基于已授权园区名称、实景图片及瞰维智管已核实功能整理，不披露出租率、租金、欠费、收入或租户经营信息。</p>
@@ -52,7 +51,7 @@ const filteredCases = computed(() => activeRegion.value === '全部案例'
 
     <section v-reveal class="kw-container kw-case-index-cta" aria-labelledby="case-index-cta-title">
       <div><span>了解产品</span><h2 id="case-index-cta-title">从案例出发，看看哪些管理页面适合你的园区</h2></div>
-      <UiBaseButton to="/demo">预约演示 <span aria-hidden="true">→</span></UiBaseButton>
+      <UiBaseButton to="/demo">预约同类园区演示 <span aria-hidden="true">→</span></UiBaseButton>
     </section>
   </div>
 </template>

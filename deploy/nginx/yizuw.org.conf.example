@@ -1,0 +1,100 @@
+server_tokens off;
+
+limit_req_zone $binary_remote_addr zone=kwzg_forms:10m rate=10r/m;
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name yizuw.org www.yizuw.org;
+    return 301 https://yizuw.org$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.yizuw.org;
+
+    ssl_certificate /etc/letsencrypt/live/yizuw.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yizuw.org/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    return 301 https://yizuw.org$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name yizuw.org;
+
+    ssl_certificate /etc/letsencrypt/live/yizuw.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yizuw.org/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    client_max_body_size 1m;
+    keepalive_timeout 65s;
+
+    location /_nuxt/ {
+        proxy_pass http://app:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr;
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+    }
+
+    location /assets/ {
+        proxy_pass http://app:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr;
+        expires 7d;
+        add_header Cache-Control "public, max-age=604800" always;
+    }
+
+    location = /api/demo-requests {
+        limit_req zone=kwzg_forms burst=5 nodelay;
+        proxy_pass http://app:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        add_header Cache-Control "no-store" always;
+    }
+
+    location ~ ^/(admin|api/admin)(/|$) {
+        proxy_pass http://app:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        add_header Cache-Control "no-store" always;
+    }
+
+    location / {
+        proxy_pass http://app:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+        proxy_send_timeout 30s;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # Add HSTS only after HTTPS and certificate renewal have been observed as stable.
+    # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+}

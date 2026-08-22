@@ -10,7 +10,7 @@ import { siteConfig } from '~/config/site'
       :alt="`${siteConfig.wecom.displayName}企业微信二维码`"
       width="480"
       height="480"
-      loading="eager"
+      loading="lazy"
       decoding="async"
     >
     <div v-else class="kw-qr-placeholder__missing" role="img" aria-label="企业微信二维码待补充">

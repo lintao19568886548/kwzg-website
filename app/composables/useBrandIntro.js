@@ -2,8 +2,8 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 export const BRAND_INTRO_STORAGE_KEY = 'kwzg_brand_intro_seen_v1'
 export const BRAND_INTRO_TIMINGS = Object.freeze({
-  desktop: Object.freeze({ duration: 2800, watchdog: 3200 }),
-  compact: Object.freeze({ duration: 1950, watchdog: 2400 }),
+  desktop: Object.freeze({ duration: 4300, watchdog: 4800 }),
+  compact: Object.freeze({ duration: 3350, watchdog: 3800 }),
   reduced: Object.freeze({ duration: 650, watchdog: 900 }),
   skip: 200,
 })

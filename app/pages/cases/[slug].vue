@@ -62,9 +62,10 @@ onBeforeUnmount(() => {
       <div class="kw-container kw-case-detail-hero__grid">
         <div v-reveal class="kw-case-detail-hero__copy">
           <span class="kw-section-kicker">{{ item.region }} · Customer story</span>
+          <small class="kw-case-detail-hero__type">{{ item.parkType }}</small>
           <h1 id="case-title">{{ item.name }}<small>{{ item.title }}</small></h1>
           <p>{{ item.summary }}</p>
-          <UiBaseButton to="/demo" size="large">预约演示 <span aria-hidden="true">→</span></UiBaseButton>
+          <UiBaseButton to="/demo" size="large">预约同类园区演示 <span aria-hidden="true">→</span></UiBaseButton>
         </div>
         <figure v-reveal:right class="kw-case-detail-hero__media">
           <img ref="heroImage" :src="item.coverImage" :alt="item.gallery[0].alt" width="1200" height="750" fetchpriority="high">

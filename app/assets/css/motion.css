@@ -3,6 +3,7 @@
   --kw-motion-base: 320ms;
   --kw-motion-slow: 680ms;
   --kw-motion-ambient: 18s;
+  --kw-motion-float: 7.5s;
   --kw-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --kw-motion-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   --kw-motion-shift: 1.25rem;
@@ -38,7 +39,7 @@
 
 [data-reveal-state='visible'] {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: none;
   transition: opacity var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms), transform var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms);
 }
 
@@ -88,6 +89,69 @@ html[data-document-visibility='hidden'] .kw-tech-field::after {
   to { transform: translate3d(-2%, 0, 0); }
 }
 
+.kw-dashboard-source--floating {
+  position: relative;
+  isolation: isolate;
+}
+
+.kw-dashboard-source--floating > .kw-dashboard {
+  position: relative;
+  z-index: 1;
+  animation: none;
+  transform: none;
+  will-change: auto;
+}
+
+.kw-dashboard-source--floating::before,
+.kw-dashboard-source--floating::after {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  content: '';
+}
+
+.kw-dashboard-source--floating::before {
+  inset: 8% 5% -2%;
+  border-radius: 1.25rem;
+  background: radial-gradient(ellipse at center, rgba(0, 35, 89, 0.2), rgba(0, 35, 89, 0) 72%);
+  opacity: 0.36;
+  animation: kw-dashboard-shadow-float var(--kw-motion-float) var(--kw-motion-ease-soft) infinite;
+  animation-play-state: paused;
+  will-change: opacity, transform;
+}
+
+.kw-dashboard-source--floating::after {
+  inset: -0.35rem;
+  border: 1px solid rgba(45, 108, 223, 0.16);
+  border-radius: 1.2rem;
+  opacity: 0.28;
+  animation: kw-dashboard-float var(--kw-motion-float) var(--kw-motion-ease-soft) infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.kw-home-hero[data-motion-active='true'] .kw-dashboard-source--floating::before,
+.kw-home-hero[data-motion-active='true'] .kw-dashboard-source--floating::after {
+  animation-play-state: running;
+}
+
+html[data-document-visibility='hidden'] .kw-dashboard-source--floating::before,
+html[data-document-visibility='hidden'] .kw-dashboard-source--floating::after {
+  animation-play-state: paused;
+}
+
+@keyframes kw-dashboard-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  42% { transform: translate3d(0, -0.5rem, 0); }
+  70% { transform: translate3d(0.2rem, -0.2rem, 0); }
+}
+
+@keyframes kw-dashboard-shadow-float {
+  0%, 100% { opacity: 0.3; transform: scale(0.96); }
+  42% { opacity: 0.2; transform: scale(0.93); }
+  70% { opacity: 0.25; transform: translate3d(0.15rem, 0, 0) scale(0.95); }
+}
+
 .kw-status-breathe {
   animation: kw-status-breathe 2.8s var(--kw-motion-ease-soft) infinite;
 }
@@ -119,6 +183,13 @@ html[data-motion='off'] .kw-case-card__media img {
   transform: none !important;
 }
 
+html[data-motion='off'] .kw-dashboard-source--floating::before,
+html[data-motion='off'] .kw-dashboard-source--floating::after {
+  animation: none !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -140,6 +211,22 @@ html[data-motion='off'] .kw-case-card__media img {
   .kw-case-card__media img {
     transform: none !important;
   }
+
+  .kw-dashboard-source--floating::before,
+  .kw-dashboard-source--floating::after {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
+
+@media (max-width: 48rem) {
+  .kw-dashboard-source--floating::before,
+  .kw-dashboard-source--floating::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 @media (max-width: 48rem), (update: slow) {
@@ -151,5 +238,14 @@ html[data-motion='off'] .kw-case-card__media img {
 
   [data-reveal-state='pending'] {
     transform: translate3d(0, 0.5rem, 0);
+  }
+}
+
+@media (update: slow) {
+  .kw-dashboard-source--floating::before,
+  .kw-dashboard-source--floating::after {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
   }
 }

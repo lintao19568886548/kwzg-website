@@ -5,6 +5,7 @@ services:
     image: mariadb:11.4.5
     restart: unless-stopped
     environment:
+      TZ: UTC
       MARIADB_DATABASE: ${KWZG_DB_NAME:-kwzg_website}
       MARIADB_USER: ${KWZG_DB_USER:-kwzg_app}
       MARIADB_PASSWORD: ${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}
@@ -19,20 +20,45 @@ services:
     networks:
       - kwzg_internal
 
-  app:
+  migrate:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: unless-stopped
+      args:
+        NUXT_PUBLIC_SITE_URL: ${KWZG_BUILD_SITE_URL:-http://127.0.0.1:3212}
+        NUXT_PUBLIC_INDEXABLE: "false"
+        NUXT_ENABLE_HSTS: "false"
+    restart: "no"
     depends_on:
       db:
         condition: service_healthy
     environment:
+      TZ: UTC
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:-kwzg_app}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:-kwzg_website}
+    command: ["npm", "run", "db:migrate"]
+    networks:
+      - kwzg_internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NUXT_PUBLIC_SITE_URL: ${KWZG_BUILD_SITE_URL:-http://127.0.0.1:3212}
+        NUXT_PUBLIC_INDEXABLE: "false"
+        NUXT_ENABLE_HSTS: "false"
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      TZ: UTC
       NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:-kwzg_app}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:-kwzg_website}
       NUXT_ADMIN_USERNAME: ${NUXT_ADMIN_USERNAME:?NUXT_ADMIN_USERNAME is required}
       NUXT_ADMIN_PASSWORD_HASH: ${NUXT_ADMIN_PASSWORD_HASH:?NUXT_ADMIN_PASSWORD_HASH is required}
       NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD:?NUXT_SESSION_PASSWORD is required}
       NUXT_TRUSTED_PROXY_ADDRESSES: ${NUXT_TRUSTED_PROXY_ADDRESSES:-}
+      NUXT_TRUSTED_ORIGINS: ${NUXT_TRUSTED_ORIGINS:-http://127.0.0.1:3212}
       NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-http://127.0.0.1:3212}
       NUXT_PUBLIC_INDEXABLE: "false"
       NUXT_ENABLE_HSTS: "false"
@@ -41,6 +67,7 @@ services:
     networks:
       - kwzg_internal
       - kwzg_public
+    stop_grace_period: 20s
 
   test:
     profiles: ["test"]
@@ -48,12 +75,19 @@ services:
       context: .
       dockerfile: Dockerfile
       target: builder
+      args:
+        NUXT_PUBLIC_SITE_URL: ${KWZG_BUILD_SITE_URL:-http://127.0.0.1:3212}
+        NUXT_PUBLIC_INDEXABLE: "false"
+        NUXT_ENABLE_HSTS: "false"
     depends_on:
       db:
         condition: service_healthy
     environment:
+      TZ: UTC
       TEST_DATABASE_URL: mysql://${KWZG_DB_USER:-kwzg_app}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:-kwzg_website}
     command: ["npm", "run", "test"]
+    volumes:
+      - ./assets/raw:/app/assets/raw:ro
     networks:
       - kwzg_internal
 

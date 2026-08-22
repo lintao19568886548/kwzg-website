@@ -27,7 +27,7 @@ export function createLoginCsrf(event, config) {
 }
 
 export function validateLoginCsrf(event, config) {
-  assertSameOrigin(event)
+  assertSameOrigin(event, config.trustedOrigins)
   const token = getRequestHeader(event, 'x-csrf-token') || ''
   const cookie = getCookie(event, LOGIN_CSRF_COOKIE) || ''
   const [expiresText, signature] = cookie.split('.')
@@ -85,6 +85,7 @@ export async function createAdminSession(db, config, event) {
   }
 
   const now = new Date()
+  await cleanupAdminSessions(db, now)
   const token = randomToken(48)
   const csrfToken = randomToken(32)
   const tokenHash = keyedDigest(config.sessionPassword, 'session', token)
@@ -134,7 +135,7 @@ export async function requireAdminSession(db, config, event, options = {}) {
   })
 
   if (options.csrf) {
-    assertSameOrigin(event)
+    assertSameOrigin(event, config.trustedOrigins)
     const csrfToken = getRequestHeader(event, 'x-csrf-token') || ''
     const csrfHash = keyedDigest(config.sessionPassword, 'csrf', csrfToken)
     if (!csrfToken || !safeEqual(csrfHash, session.csrf_token_hash)) {
@@ -143,6 +144,11 @@ export async function requireAdminSession(db, config, event, options = {}) {
   }
 
   return { ...session, tokenHash }
+}
+
+export async function cleanupAdminSessions(db, now = new Date()) {
+  const revokedRetention = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  await db('admin_sessions').where('absolute_expires_at', '<=', now).orWhere(builder => builder.whereNotNull('revoked_at').andWhere('revoked_at', '<=', revokedRetention)).delete()
 }
 
 export async function rotateSessionCsrf(db, config, session) {

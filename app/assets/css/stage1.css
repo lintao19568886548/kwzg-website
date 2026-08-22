@@ -29,8 +29,6 @@
 body {
   color: var(--kw-ink);
   background: var(--kw-white);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -139,7 +137,7 @@ button {
   color: var(--kw-blue);
   background: rgba(45, 108, 223, 0.07);
   font-size: 0.75rem;
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: 0.04em;
 }
 
@@ -183,6 +181,7 @@ button {
   display: block;
   width: auto;
   height: 3.25rem;
+  image-rendering: auto;
 }
 
 .kw-footer .kw-brand-logo--tagline img {
@@ -194,9 +193,8 @@ button {
   top: 0;
   z-index: 100;
   border-bottom: 1px solid rgba(216, 222, 232, 0.8);
-  background: rgba(255, 255, 255, 0.94);
+  background: #FFFFFF;
   box-shadow: 0 0.25rem 1.25rem rgba(0, 35, 89, 0.04);
-  backdrop-filter: blur(0.75rem);
 }
 
 .kw-header__bar {
@@ -205,6 +203,12 @@ button {
   align-items: center;
   gap: 2rem;
   grid-template-columns: auto 1fr auto;
+}
+
+.kw-header__brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
 }
 
 .kw-header__nav {
@@ -219,7 +223,7 @@ button {
   padding: 1.75rem 0;
   color: #455268;
   font-size: 0.9375rem;
-  font-weight: 650;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -337,7 +341,7 @@ button {
   align-items: center;
   gap: 0.5rem;
   color: var(--kw-blue);
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .kw-text-link:hover {
@@ -398,7 +402,7 @@ button {
   margin: 1.25rem 0 1.5rem;
   color: var(--kw-blue);
   font-size: clamp(3rem, 5vw, 4.75rem);
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: -0.055em;
   line-height: 1.08;
 }
@@ -478,29 +482,57 @@ button {
 
 .kw-dashboard__body {
   display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr);
+  grid-template-columns: 7.25rem minmax(0, 1fr);
 }
 
 .kw-dashboard__sidebar {
   display: flex;
   min-height: 30rem;
-  align-items: center;
   flex-direction: column;
   padding: 1.25rem 0.625rem;
-  gap: 0.75rem;
+  gap: 0.9rem;
   background: #F0F3F8;
 }
 
-.kw-dashboard__sidebar > span {
+.kw-dashboard__nav-group {
   display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
+  gap: 0.35rem;
+}
+
+.kw-dashboard__nav-group > strong {
+  padding: 0 0.5rem;
+  color: #667085;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.kw-dashboard__sidebar ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 0.2rem;
+  list-style: none;
+}
+
+.kw-dashboard__sidebar li {
+  display: flex;
+  min-height: 2.05rem;
+  align-items: center;
+  padding: 0.35rem 0.55rem;
+  gap: 0.5rem;
   border-radius: 0.625rem;
   color: #8A96A8;
 }
 
-.kw-dashboard__sidebar > span.is-active {
+.kw-dashboard__sidebar li span {
+  color: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.kw-dashboard__sidebar li.is-active {
   color: var(--kw-white);
   background: var(--kw-data-blue);
   box-shadow: 0 0.4rem 0.8rem rgba(45, 108, 223, 0.2);
@@ -522,7 +554,7 @@ button {
 .kw-dashboard__heading p {
   margin-bottom: 0.125rem;
   color: var(--kw-muted);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
 }
 
 .kw-dashboard__heading h2 {
@@ -537,7 +569,7 @@ button {
   border-radius: 0.5rem;
   color: var(--kw-muted);
   background: var(--kw-white);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
 }
 
 .kw-dashboard__metrics {
@@ -578,7 +610,7 @@ button {
 
 .kw-dashboard__metric > span {
   color: var(--kw-muted);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
 }
 
 .kw-dashboard__metric strong {
@@ -592,7 +624,7 @@ button {
 
 .kw-dashboard__metric small {
   color: #8993A3;
-  font-size: 0.6rem;
+  font-size: 0.6875rem;
 }
 
 .kw-dashboard__lower {
@@ -628,7 +660,7 @@ button {
 
 .kw-dashboard__chart > div > span {
   color: var(--kw-muted);
-  font-size: 0.55rem;
+  font-size: 0.6875rem;
 }
 
 .kw-dashboard__tasks-heading > strong {
@@ -639,7 +671,7 @@ button {
   border-radius: 50%;
   color: var(--kw-white);
   background: var(--kw-red);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
 }
 
 .kw-dashboard__tasks ul {
@@ -662,7 +694,7 @@ button {
   border-radius: 0.3rem;
   color: var(--kw-data-blue);
   background: rgba(45, 108, 223, 0.08);
-  font-size: 0.5rem;
+  font-size: 0.625rem;
 }
 
 .kw-dashboard__tasks li strong,
@@ -672,13 +704,13 @@ button {
 
 .kw-dashboard__tasks li strong {
   color: #344054;
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
 }
 
 .kw-dashboard__tasks li small {
   margin-top: 0.125rem;
   color: #98A2B3;
-  font-size: 0.5rem;
+  font-size: 0.625rem;
 }
 
 .kw-trust-section {
@@ -690,7 +722,7 @@ button {
 .kw-park-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .kw-park-card {
@@ -966,4 +998,17 @@ button {
 .kw-capability-card p {
   margin-bottom: 0;
   color: var(--kw-muted);
+}
+
+.kw-capability-card > em {
+  display: inline-flex;
+  margin-top: 1.25rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(45, 108, 223, 0.14);
+  border-radius: 999px;
+  color: #5F7190;
+  background: rgba(45, 108, 223, 0.055);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 700;
 }

@@ -136,6 +136,5 @@ const billStates = [
       </div>
     </div>
 
-    <p class="kw-interface-source__notice">本界面基于瞰维智管现有功能进行视觉优化展示，使用演示数据，具体界面以实际交付版本为准。</p>
   </div>
 </template>

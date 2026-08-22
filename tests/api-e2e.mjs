@@ -32,12 +32,15 @@ async function jsonRequest(path, options = {}) {
   return { response, data }
 }
 
-const publicRoutes = ['/', '/products', '/solutions', '/cases', '/cases/tongfu', '/cases/foshan-lecong', '/cases/shenzhen-kengzi', '/cases/xintang-xizhou', '/cases/gaobu-tongxing', '/about', '/demo', '/call', '/privacy']
+const publicRoutes = ['/', '/products', '/solutions', '/cases', '/cases/tongfu', '/cases/foshan-lecong', '/cases/shenzhen-kengzi', '/cases/xintang-xizhou', '/cases/gaobu-tongxing', '/service', '/about', '/demo', '/call', '/privacy']
 const contactBarRoutes = publicRoutes.filter(route => route !== '/call')
 for (const route of [...publicRoutes, '/admin/login']) {
   const response = await fetch(`${baseUrl}${route}`, { redirect: 'manual' })
   assert.equal(response.status, 200, `${route} should return 200`)
   const html = await response.text()
+  assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, `${route} should render one h1`)
+  assert.match(html, /<title>[^<]+<\/title>/, `${route} should render a title`)
+  assert.match(html, /<meta[^>]+name="description"[^>]+content="[^"]+"|<meta[^>]+content="[^"]+"[^>]+name="description"/, `${route} should render a description`)
   assert.equal(html.includes('data-floating-contact-bar'), contactBarRoutes.includes(route), `${route} contact bar boundary`)
   if (route === '/' || route === '/about') {
     for (const value of ['科技型中小企业', '东莞市宜租网络科技有限公司', '2026441901A0001155', '广东省科学技术厅', '2026年8月11日']) {
@@ -49,6 +52,14 @@ for (const route of [...publicRoutes, '/admin/login']) {
   if (route === '/') {
     assert.match(response.headers.get('content-security-policy') || '', /frame-ancestors 'none'/)
     assert.equal(response.headers.get('x-content-type-options'), 'nosniff')
+    assert.match(html, /<meta[^>]+name="robots"[^>]+content="noindex, nofollow"|<meta[^>]+content="noindex, nofollow"[^>]+name="robots"/)
+    assert.match(html, new RegExp(`<link[^>]+rel="canonical"[^>]+href="${siteConfig.siteUrl}/"|<link[^>]+href="${siteConfig.siteUrl}/"[^>]+rel="canonical"`))
+    assert.equal(/(?:127\.0\.0\.1|localhost):\d+/.test(html), false)
+  }
+  if (route === '/admin/login') {
+    assert.equal(response.headers.get('cache-control'), 'no-store, max-age=0')
+    assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow, noarchive')
+    assert.match(html, /<meta[^>]+name="robots"[^>]+content="noindex, nofollow, noarchive"|<meta[^>]+content="noindex, nofollow, noarchive"[^>]+name="robots"/)
   }
   if (route === '/call') {
     assert.ok(html.includes(siteConfig.contact.phone), '/call should include the public phone number')
@@ -66,13 +77,34 @@ remember('public-and-login-routes')
 remember('floating-contact-route-boundary')
 remember('qualification-route-content')
 
-const invalidCase = await fetch(`${baseUrl}/cases/not-a-real-case`, { redirect: 'manual' })
+const robots = await fetch(`${baseUrl}/robots.txt`)
+assert.equal(robots.status, 200)
+assert.equal(await robots.text(), 'User-agent: *\nDisallow: /\n')
+assert.match(robots.headers.get('cache-control') || '', /no-store/)
+const sitemap = await fetch(`${baseUrl}/sitemap.xml`)
+assert.equal(sitemap.status, 200)
+const sitemapXml = await sitemap.text()
+assert.equal((sitemapXml.match(/<url>/g) || []).length, 13)
+assert.equal(sitemapXml.includes('/call</loc>'), false)
+assert.equal(sitemapXml.includes('/admin'), false)
+assert.equal(sitemapXml.includes('/api/'), false)
+assert.equal(sitemap.headers.get('x-robots-tag'), 'noindex, nofollow')
+remember('robots-and-sitemap-noindex-mode')
+
+const invalidCase = await fetch(`${baseUrl}/cases/not-a-real-case`, {
+  redirect: 'manual',
+  headers: { Accept: 'text/html' },
+})
 assert.equal(invalidCase.status, 404)
+assert.ok((await invalidCase.text()).includes('页面没有找到'))
 remember('case-detail-routes-and-404')
 
 const protectedPage = await fetch(`${baseUrl}/admin/leads`, { redirect: 'manual' })
 assert.ok([302, 307].includes(protectedPage.status))
 assert.match(protectedPage.headers.get('location') || '', /admin\/login/)
+assert.equal(protectedPage.headers.get('cache-control'), 'no-store, max-age=0')
+assert.equal(protectedPage.headers.get('x-robots-tag'), 'noindex, nofollow, noarchive')
+assert.equal((await protectedPage.text()).includes('+8613'), false)
 const unauthList = await jsonRequest('/api/admin/leads')
 assert.equal(unauthList.response.status, 401)
 assert.equal(unauthList.response.headers.get('cache-control'), 'no-store, max-age=0')
@@ -89,7 +121,7 @@ assert.equal(publicBadOrigin.response.status, 403)
 assert.equal(publicBadOrigin.data.error.code, 'ORIGIN_REJECTED')
 remember('method-content-type-body-limit-and-public-origin')
 
-const validBody = (phone = '13800000000', name = '演示联系人') => ({ name, phone, parkCount: 2, privacy: true, companyWebsite: '', startedAt: Date.now() - 4000 })
+const validBody = (phone = '13800000000', name = '上线前审计测试') => ({ name, phone, parkCount: 2, privacy: true, companyWebsite: '', startedAt: Date.now() - 4000 })
 const invalidCases = [
   [{ ...validBody(), phone: '123' }, 'invalid-phone-key-000000000001', 422],
   [{ ...validBody(), privacy: false }, 'privacy-required-key-000000001', 422],
@@ -159,6 +191,7 @@ const list = await jsonRequest('/api/admin/leads', { headers: { Cookie: `kwzg_ad
 assert.equal(list.response.status, 200)
 assert.ok(list.data.items.length >= 1)
 assert.match(list.data.items[0].phone, /\*{4}/)
+assert.ok(list.data.items.some(item => item.name === '上线前审计测试' && item.phone === '+86138****0000'))
 const invalidPagination = await jsonRequest('/api/admin/leads?pageSize=51', { headers: { Cookie: `kwzg_admin_session=${sessionCookie}` } })
 assert.equal(invalidPagination.response.status, 422)
 const invalidSort = await jsonRequest('/api/admin/leads?sort=id%3BDROP%20TABLE%20leads', { headers: { Cookie: `kwzg_admin_session=${sessionCookie}` } })
