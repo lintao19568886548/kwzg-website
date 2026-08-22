@@ -1,4 +1,5 @@
 <script setup>
+import HomeMagneticParticleField from '~/components/effects/HomeMagneticParticleField.vue'
 import { siteConfig } from '~/config/site'
 
 const parks = [
@@ -67,6 +68,7 @@ const deployment = [
   <div class="kw-home">
     <section v-motion-active class="kw-home-hero kw-tech-field">
       <div class="kw-home-hero__pattern" aria-hidden="true" />
+      <HomeMagneticParticleField />
       <div class="kw-container kw-home-hero__grid">
         <div v-reveal class="kw-home-hero__copy">
           <UiBaseTag>面向工业园区的经营管理系统</UiBaseTag>

@@ -1,6 +1,7 @@
 const siteUrl = process.env.NUXT_PUBLIC_SITE_URL || 'https://yizuw.org'
 const indexable = process.env.NUXT_PUBLIC_INDEXABLE === 'true'
 const hstsEnabled = process.env.NUXT_ENABLE_HSTS === 'true'
+const brandIntroPrepaint = `(()=>{const root=document.documentElement;const key='kwzg_brand_intro_seen_v1';if(window.location.pathname!=='/'){root.dataset.kwzgIntro='skip';return}try{if(window.sessionStorage.getItem(key)){root.dataset.kwzgIntro='skip';return}window.sessionStorage.setItem(key,'1');root.dataset.kwzgIntro='show'}catch{root.dataset.kwzgIntro='skip'}})();`
 
 const securityHeaders = {
   'Content-Security-Policy': "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests",
@@ -50,6 +51,13 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/png', sizes: '64x64', href: '/favicon.png' },
         { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
+      script: [
+        {
+          id: 'kwzg-brand-intro-prepaint',
+          innerHTML: brandIntroPrepaint,
+          tagPosition: 'head',
+        },
       ],
     },
   },
