@@ -1578,7 +1578,7 @@
 }
 
 .kw-about-hero {
-  min-height: calc(100vh - 4.75rem);
+  min-height: auto;
   padding: clamp(4rem, 8vw, 7rem) 0;
   background:
     radial-gradient(circle at 20% 20%, rgba(45, 108, 223, 0.08), transparent 24rem),

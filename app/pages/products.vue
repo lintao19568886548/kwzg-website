@@ -1,5 +1,5 @@
 <script setup>
-import { capabilityStatuses, productCapabilities } from '~/data/product-capabilities'
+import { deliveryModes, productCapabilities } from '~/data/product-capabilities'
 
 usePageSeo({
   title: '产品能力全景',
@@ -15,25 +15,25 @@ const activeCapability = computed(() => verifiedInterfaceGroups.find(item => ite
   <div class="kw-stage2-page kw-products-page kw-full-products">
     <section v-motion-active class="kw-stage2-hero kw-tech-field">
       <div class="kw-container kw-stage2-hero__grid">
-        <div v-reveal><UiBaseTag>完整能力全景</UiBaseTag><h1>一套系统，管好园区经营全流程</h1><p>从经营决策、资产招商、合同账单，到设备门禁、维护人事、AI 与部署接入，每项能力都给出当前状态和交付边界。</p><div class="kw-stage2-hero__actions"><UiBaseButton to="/demo" size="large">预约完整产品演示</UiBaseButton><a class="kw-text-link" href="#capability-operations">开始查看能力</a></div></div>
-        <aside v-reveal:right class="kw-stage2-hero__aside"><strong>状态透明</strong><span v-for="meta in capabilityStatuses" :key="meta.id"><b>{{ meta.label }}</b>{{ meta.description }}</span></aside>
+        <div v-reveal><UiBaseTag>完整能力全景</UiBaseTag><h1>一套系统，管好园区经营全流程</h1><p>从经营决策、资产招商、合同账单，到设备门禁、维护人事、AI 与部署接入，每项能力都给出产品能力和交付方式。</p><div class="kw-stage2-hero__actions"><UiBaseButton to="/demo" size="large">预约完整产品演示</UiBaseButton><a class="kw-text-link" href="#capability-operations">开始查看能力</a></div></div>
+        <aside v-reveal:right class="kw-stage2-hero__aside"><strong>能力已完善</strong><span v-for="meta in deliveryModes" :key="meta.id"><b>{{ meta.label }}</b>{{ meta.description }}</span></aside>
       </div>
     </section>
 
     <section class="kw-section kw-product-status-legend" aria-labelledby="status-legend-title">
-      <div class="kw-container"><div v-reveal class="kw-section-heading kw-section-heading--split"><div><span class="kw-section-kicker">能力状态</span><h2 id="status-legend-title">客户可以直接理解的四种状态</h2></div><p>状态说明交付边界，不代表经营结果保证；鼠标悬停、键盘聚焦或点击状态标签可查看解释。</p></div><div class="kw-product-status-legend__grid"><article v-for="meta in capabilityStatuses" :key="meta.id" v-reveal><CapabilityStatusTag :status="meta.id" /><p>{{ meta.description }}</p></article></div></div>
+      <div class="kw-container"><div v-reveal class="kw-section-heading kw-section-heading--split"><div><span class="kw-section-kicker">交付方式</span><h2 id="status-legend-title">四种清晰的交付方式</h2></div><p>交付方式说明实施边界，不代表经营结果保证；鼠标悬停、键盘聚焦或点击状态标签可查看解释。</p></div><div class="kw-product-status-legend__grid"><article v-for="meta in deliveryModes" :key="meta.id" v-reveal><CapabilityStatusTag :status="meta.id" /><p>{{ meta.description }}</p></article></div></div>
     </section>
 
     <nav class="kw-product-anchor-nav" aria-label="产品能力板块"><div class="kw-container"><a v-for="(capability, index) in productCapabilities" :key="capability.id" :href="`#capability-${capability.slug}`"><small>{{ String(index + 1).padStart(2, '0') }}</small>{{ capability.shortName }}</a></div></nav>
 
     <section class="kw-section kw-product-capability-sections" aria-labelledby="all-capabilities-title">
       <div class="kw-container">
-        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">十二个能力板块</span><h2 id="all-capabilities-title">功能、价值、关联与边界一次说清楚</h2></div>
+        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">十二个能力板块</span><h2 id="all-capabilities-title">功能、价值、关联与交付方式一次说清楚</h2></div>
         <article v-for="(capability, index) in productCapabilities" :id="`capability-${capability.slug}`" :key="capability.id" v-reveal class="kw-product-capability-section">
-          <header class="kw-product-capability-section__header"><div><small>{{ String(index + 1).padStart(2, '0') }} / {{ capability.group }}</small><h2>{{ capability.name }}</h2><p>{{ capability.heroValue }}</p></div><CapabilityStatusTag :status="capability.status" /></header>
+          <header class="kw-product-capability-section__header"><div><small>{{ String(index + 1).padStart(2, '0') }} / {{ capability.group }}</small><h2>{{ capability.name }}</h2><p>{{ capability.heroValue }}</p></div><CapabilityStatusTag :status="capability.deliveryMode" /></header>
           <div class="kw-product-capability-section__story"><section><span>客户面临的问题</span><p>{{ capability.customerProblem }}</p></section><section><span>系统如何处理</span><p>{{ capability.systemAction }}</p></section><section><span>经营与协同价值</span><p>{{ capability.businessValue }}</p></section></div>
           <div class="kw-product-capability-section__body">
-            <div class="kw-product-feature-list"><h3>核心子功能与状态</h3><div><article v-for="feature in capability.features" :key="feature.name"><strong>{{ feature.name }}</strong><CapabilityStatusTag :status="feature.status" compact /><small v-if="feature.boundary">{{ feature.boundary }}</small></article></div></div>
+            <div class="kw-product-feature-list"><h3>核心子功能与交付方式</h3><div><article v-for="feature in capability.features" :key="feature.name"><strong>{{ feature.name }}</strong><CapabilityStatusTag :status="feature.deliveryMode" compact /><small v-if="feature.boundary">{{ feature.boundary }}</small></article></div></div>
             <aside class="kw-product-capability-section__meta"><div><span>适用岗位</span><ul><li v-for="role in capability.roles" :key="role">{{ role }}</li></ul></div><div><span>关联模块</span><ul><li v-for="related in capability.relatedCapabilities" :key="related">{{ productCapabilities.find(item => item.id === related)?.shortName }}</li></ul></div><p>{{ capability.boundary }}</p><UiBaseButton :to="capability.cta.to">{{ capability.cta.label }}</UiBaseButton></aside>
           </div>
 
@@ -44,7 +44,7 @@ const activeCapability = computed(() => verifiedInterfaceGroups.find(item => ite
             <HomeInterfacePreview v-if="capability.id === 'leasing-crm'" type="followup" title="客户详情" />
           </div>
           <div v-else class="kw-product-capability-section__concept">
-            <div><UiLinearIcon :name="capability.icon" :size="30" /><span>能力关系示意</span><CapabilityStatusTag :status="capability.status" compact /></div><p>本区只展示能力名称、协同关系和状态，不制作成看似真实的后台页面。</p><ol><li v-for="item in capability.features.slice(0, 5)" :key="item.name"><span>{{ item.name }}</span><CapabilityStatusTag :status="item.status" compact /></li></ol>
+            <div><UiLinearIcon :name="capability.icon" :size="30" /><span>能力关系示意</span><CapabilityStatusTag :status="capability.deliveryMode" compact /></div><p>本区只展示能力名称、协同关系和交付方式，不制作成看似真实的后台页面。</p><ol><li v-for="item in capability.features.slice(0, 5)" :key="item.name"><span>{{ item.name }}</span><CapabilityStatusTag :status="item.deliveryMode" compact /></li></ol>
           </div>
         </article>
       </div>

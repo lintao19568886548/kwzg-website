@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { systemModuleGroups } from '../../app/config/system-modules.js'
+import { publicSystemDemoData } from '../../app/data/public-system-demo-data.js'
 const source = readFileSync(new URL('../../app/components/home/DashboardOverview.vue', import.meta.url), 'utf8')
 const homepageSource = readFileSync(new URL('../../app/components/home/HomeStageOne.vue', import.meta.url), 'utf8')
 const motionSource = readFileSync(new URL('../../app/assets/css/motion.css', import.meta.url), 'utf8')
@@ -21,16 +23,22 @@ describe('verified operating overview presentation', () => {
   })
 
   it('keeps the payment figures internally consistent', () => {
-    expect(source).toContain('126.8 万')
-    expect(source).toContain('118.6 万')
-    expect(source).toContain('8.2 万')
-    expect(source).toContain('width: 93.5%')
+    expect(publicSystemDemoData.overview.received + publicSystemDemoData.overview.outstanding).toBeCloseTo(publicSystemDemoData.overview.receivable, 5)
+    expect((publicSystemDemoData.overview.received / publicSystemDemoData.overview.receivable) * 100).toBeCloseTo(publicSystemDemoData.overview.collectionRate, 1)
+    expect(source).toContain('demo.overview.receivable')
+    expect(source).toContain('demo.overview.received')
+    expect(source).toContain('demo.overview.outstanding')
+    expect(source).toContain('demo.overview.collectionRate')
   })
 
-  it('shows only the directly verified overview navigation inside the overview mockup', () => {
-    expect(source).toContain("group: '工作台'")
-    expect(source).toContain("label: '运营总览'")
-    expect(source).not.toMatch(/待租厂房|房态矩阵|员工移动工作台|设备巡检|数据地图|设备管理|人事|门禁管理|public/)
+  it('shows all audited system modules only in the homepage hero workbench', () => {
+    expect(systemModuleGroups.flatMap(group => group.items.map(item => item.label))).toEqual([
+      '运营总览', '数据地图', '设备管理', '租赁', '招商管理', '人事', '财务', '门禁管理', '维护管理',
+    ])
+    expect(source).toContain('showAllModules: Boolean')
+    expect(source).toContain('props.showAllModules ? systemModuleGroups : verifiedNavigation')
+    expect(homepageSource.match(/<HomeDashboardOverview[^>]*\bshow-all-modules\b[^>]*>/g)).toHaveLength(1)
+    expect(source).not.toMatch(/待租厂房|房态矩阵|员工移动工作台|设备巡检/)
   })
 
   it('floats only the homepage hero workbench with motion and performance fallbacks', () => {
@@ -40,6 +48,8 @@ describe('verified operating overview presentation', () => {
     expect(motionSource).toContain('@keyframes kw-dashboard-float')
     expect(motionSource).toContain('@keyframes kw-dashboard-shadow-float')
     expect(motionSource).toMatch(/\.kw-dashboard-source--floating > \.kw-dashboard \{[\s\S]*?animation: none;[\s\S]*?transform: none;[\s\S]*?will-change: auto;/)
+    expect(motionSource).not.toContain(".kw-home-hero[data-motion-active='true'] .kw-dashboard-source--floating > .kw-dashboard")
+    expect(motionSource).toContain(".kw-home-hero[data-motion-active='true'] .kw-dashboard-source--floating::before")
     expect(motionSource).toMatch(/\.kw-dashboard-source--floating::before,[\s\S]*?\.kw-dashboard-source--floating::after/)
     expect(motionSource).toContain("html[data-document-visibility='hidden'] .kw-dashboard-source--floating")
     expect(motionSource).toContain("html[data-motion='off'] .kw-dashboard-source--floating")

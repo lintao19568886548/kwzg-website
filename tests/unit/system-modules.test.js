@@ -12,11 +12,12 @@ describe('full public capability coverage', () => {
     expect(systemMenuAudit).toHaveLength(9)
     expect(systemMenuAudit.flatMap(item => item.items)).toHaveLength(32)
     expect(productCapabilities).toHaveLength(12)
-    expect(homeSource).toContain('完整能力矩阵')
+    expect(homeSource).toContain('完整能力查看器')
+    expect(homeSource).toContain('<HomeSystemModuleShowcase />')
     expect(productSource).toContain('十二个能力板块')
   })
 
-  it('keeps menu-only and planned modules out of fabricated system previews', () => {
+  it('keeps menu-only evidence out of fabricated system previews', () => {
     const interfaceGroups = productCapabilities.filter(item => item.interfaceType)
     expect(interfaceGroups.map(item => item.id)).toEqual(['operations', 'leasing-crm', 'contracts', 'billing', 'maintenance'])
     expect(productSource).toContain('能力关系示意')
@@ -25,7 +26,7 @@ describe('full public capability coverage', () => {
   })
 
   it('retains the verified operating overview and interface component', () => {
-    expect(homeSource).toContain('<HomeDashboardOverview v-reveal:right floating />')
+    expect(homeSource).toContain('<HomeDashboardOverview v-reveal:right floating show-all-modules />')
     expect(productSource).toContain("capability.interfaceType === 'overview'")
   })
 })

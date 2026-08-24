@@ -1,21 +1,21 @@
 <script setup>
+import { systemModuleGroups } from '~/config/system-modules'
+import { formatDemoNumber, publicSystemDemoData } from '~/data/public-system-demo-data'
+
 const props = defineProps({
   floating: Boolean,
+  showAllModules: Boolean,
 })
 
+const demo = publicSystemDemoData
 const metrics = [
-  { label: '累计应收', value: '126.8 万', note: '账单应收总额 · 演示', tone: 'blue' },
-  { label: '累计实收', value: '118.6 万', note: '回款率 93.5% · 演示', tone: 'blue' },
-  { label: '待收余额', value: '8.2 万', note: '3 笔账单待跟进 · 演示', tone: 'red' },
-  { label: '在租面积', value: '28,600 ㎡', note: '12 个租赁客户 · 演示', tone: 'blue' },
+  { label: '累计应收', value: `${demo.overview.receivable.toFixed(1)} 万`, note: '账单应收总额 · 演示', tone: 'blue' },
+  { label: '累计实收', value: `${demo.overview.received.toFixed(1)} 万`, note: `回款率 ${demo.overview.collectionRate.toFixed(1)}% · 演示`, tone: 'blue' },
+  { label: '待收余额', value: `${demo.overview.outstanding.toFixed(1)} 万`, note: '存在余额账单待跟进 · 演示', tone: 'red' },
+  { label: '在租面积', value: `${formatDemoNumber(demo.overview.leasedArea)} ㎡`, note: `${demo.overview.leasedCustomers} 家在租客户 · 演示`, tone: 'blue' },
 ]
 
-const tasks = [
-  { title: '未收租提醒', description: '存在余额的应收账单', count: '3' },
-  { title: '合同到期提醒', description: '90 天内到期合同', count: '2' },
-  { title: '待处理报销', description: '等待审批或复核', count: '1' },
-  { title: '报修工单', description: '尚未完成的维修任务', count: '3' },
-]
+const tasks = demo.tasks
 
 const verifiedNavigation = [
   {
@@ -23,6 +23,10 @@ const verifiedNavigation = [
     items: [{ label: '运营总览', icon: 'chart', active: true }],
   },
 ]
+
+const navigationGroups = computed(() => (
+  props.showAllModules ? systemModuleGroups : verifiedNavigation
+))
 </script>
 
 <template>
@@ -42,7 +46,7 @@ const verifiedNavigation = [
       <div class="kw-dashboard__body">
         <aside class="kw-dashboard__sidebar" aria-label="已核实功能导航示意">
           <section
-            v-for="navigationGroup in verifiedNavigation"
+            v-for="navigationGroup in navigationGroups"
             :key="navigationGroup.group"
             class="kw-dashboard__nav-group"
           >
@@ -91,7 +95,7 @@ const verifiedNavigation = [
               <div
                 class="kw-dashboard__payment-snapshot"
                 role="img"
-                aria-label="演示数据当前口径对比：累计应收 126.8 万元，累计实收 118.6 万元，待收余额 8.2 万元，回款完成度 93.5%"
+                :aria-label="`演示数据当前口径对比：累计应收 ${demo.overview.receivable.toFixed(1)} 万元，累计实收 ${demo.overview.received.toFixed(1)} 万元，待收余额 ${demo.overview.outstanding.toFixed(1)} 万元，回款完成度 ${demo.overview.collectionRate.toFixed(1)}%`"
               >
                 <p class="kw-dashboard__payment-caption">
                   <span>当前口径对比</span>
@@ -100,7 +104,7 @@ const verifiedNavigation = [
                 <div class="kw-dashboard__payment-row">
                   <div>
                     <span>累计应收</span>
-                    <strong>126.8 <small>万</small></strong>
+                    <strong>{{ demo.overview.receivable.toFixed(1) }} <small>万</small></strong>
                   </div>
                   <i class="kw-dashboard__payment-track" aria-hidden="true">
                     <b style="--kw-payment-value: 1" />
@@ -109,7 +113,7 @@ const verifiedNavigation = [
                 <div class="kw-dashboard__payment-row kw-dashboard__payment-row--received">
                   <div>
                     <span>累计实收</span>
-                    <strong>118.6 <small>万</small></strong>
+                    <strong>{{ demo.overview.received.toFixed(1) }} <small>万</small></strong>
                   </div>
                   <i class="kw-dashboard__payment-track" aria-hidden="true">
                     <b style="--kw-payment-value: 0.935" />
@@ -117,17 +121,17 @@ const verifiedNavigation = [
                 </div>
                 <p class="kw-dashboard__payment-balance">
                   <span>待收余额</span>
-                  <strong>8.2 万</strong>
+                  <strong>{{ demo.overview.outstanding.toFixed(1) }} 万</strong>
                   <em>当前余额 · 演示</em>
                 </p>
               </div>
-              <div class="kw-dashboard__progress"><span>回款完成度</span><i><b style="width: 93.5%" /></i><em>93.5% · 演示</em></div>
+              <div class="kw-dashboard__progress"><span>回款完成度</span><i><b :style="{ width: `${demo.overview.collectionRate}%` }" /></i><em>{{ demo.overview.collectionRate.toFixed(1) }}% · 演示</em></div>
             </section>
 
             <section class="kw-dashboard__tasks">
               <div class="kw-dashboard__tasks-heading">
                 <h3>待办事项</h3>
-                <strong>演示</strong>
+                <strong>{{ demo.overview.uniqueTaskTotal }} 项 · 演示</strong>
               </div>
               <ul>
                 <li v-for="task in tasks" :key="task.title">

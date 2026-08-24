@@ -21,3 +21,4 @@ npm-debug.log*
 *.bak
 docs/*
 !docs/website-full-capability-source-matrix.md
+!docs/homepage-capability-screen-source-matrix.md

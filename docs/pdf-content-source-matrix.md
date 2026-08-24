@@ -1,59 +1,71 @@
-# 官网内容融合溯源矩阵
+# 官网完整能力内容来源矩阵
 
-来源：`kwzg_website_content_integration_plan (1).pdf`（18 页，V1.0，2026-08-22）。本矩阵只记录公开状态与证据位置，不复制客户、合同、账单、电话或金额等生产信息。
+- 更新日期：2026-08-24
+- 原始《瞰维智管产品介绍（详细客户版）》PDF：指定路径及允许搜索范围内未找到
+- PDF 读取状态：`PDF_SOURCE_READ=FAIL`
+- 排版参考：`kwzg_website_content_integration_plan (1).pdf` 仅作历史排版参考，不再决定功能删减或完成状态
+- 最新产品负责人确认：`PRODUCT_OWNER_CONFIRMED=YES`
+- 当前统一能力数据：`app/data/product-capabilities.js`
+- 当前公开能力总数：206
 
-## 判定规则
+## 判定原则
 
-- `已核实公开`：有本地脱敏截图、系统界面溯源矩阵及 Vue/CSS 演示界面共同证明。
-- `项目评估`：只能说明需要技术或项目确认，不作为标准功能承诺。
-- `规划中`：只说明规划方向，不制作可操作界面。
-- `暂不公开`：当前证据不足，官网不得展示为能力。
+1. 不能把未找到的原始详细版 PDF 伪记为已读取，也不能声称已经完成 PDF 条目逐页映射。
+2. 产品负责人已明确确认统一数据源中的 206 项能力均已完善，公开完成状态统一为 `available`。
+3. `standard`、`configuration`、`integration`、`private-deployment` 只表示交付方式，不表示功能尚未完成。
+4. 页面截图证据用于证明真实系统模块、页面结构、字段、筛选项、按钮和状态；缺少某项独立截图不降低产品能力完成状态。
+5. 系统截图展示与能力介绍分开审核：有页面证据的模块可以使用脱敏派生图，没有页面证据的能力只能使用文字、架构图或流程图，不伪装成真实后台。
 
-## 六项公开系统能力
+## 十二个产品板块
 
-| PDF 条目 | 公开状态 | 系统证据 | 官网位置 | 公开边界 | 结论 |
+| 产品板块 | 产品负责人确认 | 公开完成状态 | 主要交付方式 | 首页能力域 | 视觉证据 |
 | --- | --- | --- | --- | --- | --- |
-| 园区经营总览 | 已核实公开 | `docs/system-ui-source-matrix.md`：工作台 / 运营总览 | 首页、`/products`、`/solutions`、案例详情 | 只使用已核实汇总字段与演示数据；不增加趋势预测、实时预警或多园区驾驶舱 | PASS |
-| 招商客户 | 已核实公开 | 招商管理 / 招商客户 | 首页、`/products`、`/solutions`、案例详情 | 只展示真实筛选项、阶段与列表字段；不宣称自动分配、渠道分析或房源匹配 | PASS |
-| 客户详情 | 已核实公开 | 招商管理 / 招商客户 / 客户详情 | 首页、`/products`、`/solutions`、案例详情 | 只展示已核实需求、阶段与记录；不增加智能评分、虚构报价审批或匹配结果 | PASS |
-| 合同管理 | 已核实公开 | 租赁 / 合同管理 | 首页、`/products`、`/solutions`、案例详情 | 不宣称到期自动提醒、条款驱动账单或自动审批 | PASS |
-| 账单管理 | 已核实公开 | 财务 / 账单管理 | 首页、`/products`、`/solutions`、案例详情 | 不宣称自动出账、自动核销、自动催缴或账龄分析 | PASS |
-| 报修工单 | 已核实公开 | 维护管理 / 报修工单 | 首页、`/products`、`/solutions`、案例详情 | 不包装为设备巡检；不增加自动派单、超时提醒或完工评价闭环 | PASS |
+| 经营驾驶舱与数据地图 | YES | AVAILABLE | standard / configuration | 经营决策 | 经营总览、数据地图 |
+| 资产、房源与租赁 | YES | AVAILABLE | configuration | 招商与租赁 | 园区管理 |
+| 招商与客户管理 | YES | AVAILABLE | standard / configuration | 招商与租赁 | 招商客户、客户详情 |
+| 合同管理 | YES | AVAILABLE | standard / configuration | 合同、账单与财务 | 合同管理 |
+| 账单、财务与回款 | YES | AVAILABLE | standard / configuration | 合同、账单与财务 | 账单管理 |
+| 物业、报修与维护 | YES | AVAILABLE | standard / configuration | 园区服务 | 报修工单 |
+| 设备、巡检与能耗 | YES | AVAILABLE | configuration / integration | 设备、巡检、能耗与门禁 | 设备总览 |
+| 人事、考勤与审批 | YES | AVAILABLE | configuration | 人事与组织协同 | 人事总览 |
+| 门禁和通行 | YES | AVAILABLE | configuration / integration | 设备、巡检、能耗与门禁 | 车辆出入管理 |
+| AI 智能增强 | YES | AVAILABLE | configuration | AI、软硬件、安全与部署 | 能力流程，不伪装为系统截图 |
+| 权限、安全与部署 | YES | AVAILABLE | configuration / private-deployment | AI、软硬件、安全与部署 | 能力关系与实施边界 |
+| 软硬件接入 | YES | AVAILABLE | integration | AI、软硬件、安全与部署 | 设备总览与接入边界 |
 
-## PDF 扩展条目分级
+## 首页内容映射
 
-| PDF 条目 | 状态 | 官网处理 | 证据或原因 |
+| 内容层 | 统一数据源 | 首页组件 | 结论 |
 | --- | --- | --- | --- |
-| AI招商匹配 | 规划中 | 仅显示“AI招商匹配 · 规划中”，不展示模拟系统界面 | 当前截图集没有可验证独立页面；按 2026-08-22 官网融合方案执行 |
-| 待租厂房 / 房态矩阵 | 暂不公开 | 不展示 | `docs/system-ui-source-matrix.md` 为 `UNVERIFIED` |
-| 独立员工移动工作台 / 微信小程序 | 暂不公开 | 不展示 | `docs/system-ui-source-matrix.md` 为 `UNVERIFIED` |
-| 自动出账、自动核销、自动催缴 | 暂不公开 | 不展示 | 当前账单页面证据只能证明信息与状态管理 |
-| 设备巡检、能耗管理、硬件控制 | 暂不公开 | 不展示 | 当前只核实报修工单；硬件型号、协议和测试证据不足 |
-| 人事、工资、考勤、审批 | 暂不公开 | 不展示 | 只有菜单证据不足以证明成熟页面与流程 |
-| 多园区驾驶舱、自动预警、经营趋势 | 暂不公开 | 不展示 | 当前公开总览证据不支持这些能力 |
-| OCR、AI经营分析、AI催缴、AI合同审查 | 暂不公开 | 不展示 | 没有真实页面、代码、测试或正式交付证据 |
-| SaaS 使用 | 可说明 | `/service` 说明使用方式 | 不承诺固定周期或统一价格 |
-| 私有化部署 | 项目评估 | `/service` 使用限定表述 | 需评估服务器、数据库、网络、安全与运维责任 |
-| 原有资料整理与迁移 | 项目评估 | `/service#faq` 说明先检查字段、质量与完整性 | 不承诺未经检查即可直接导入 |
-| 硬件与第三方系统接口 | 项目评估 | `/service#faq` 说明需核对协议、环境与厂商配合 | 不承诺任何设备都能接入 |
+| 四大经营结果 | `operationValuePoints` | `HomeBusinessValue.vue` | PASS |
+| 三层能力架构 | `capabilityArchitecture` | `HomeCapabilityArchitecture.vue` | PASS |
+| 三条业务闭环 | `businessFlows` | `HomeBusinessLoops.vue` | PASS |
+| 七大完整能力域 | `homeCapabilityDomains` | `HomeCapabilityPanorama.vue` | PASS |
+| 九个真实系统模块 | `systemShowcaseModules` | `HomeSystemModuleShowcase.vue` | PASS |
+| 206 项完整能力 | `capabilityFeatureIndex` | `HomeCapabilityDrawer.vue` | PASS |
+| 六种岗位视图 | `roleSolutions` | `HomeRoleSolutions.vue` | PASS |
+| AI 智能增强 | `productCapabilities.ai` | `HomeAiCapabilities.vue` | PASS |
+| 软硬件、安全与部署 | `productCapabilities.hardware/security` | `HomeTechnologyFoundation.vue` | PASS |
 
-## 客户案例与经营结果
+## 真实性与公开边界
 
-五个公开案例仅使用获授权的园区名称、图片和六项已核实能力。佛山九江水印图不公开。案例不公开出租率、租金、欠费、收入、客户评价、负责人、合作年份或上线日期，也不承诺软件必然改善经营结果。
-
-## 页面与交互来源
-
-| PDF 内容 | 官网组件 / 路由 | 数据处理 | 结论 |
-| --- | --- | --- | --- |
-| 五项园区管理自查 | `ParkManagementCheck`，首页 | 浏览器本地状态；不采集、不上传、不估算金额 | PASS |
-| 1＋4＋1 能力关系 | `VerifiedBusinessFlow`，首页与解决方案页 | 只切换六个已核实 Vue 演示界面 | PASS |
-| 六项能力网格 | `VerifiedCapabilityGrid`，首页与产品页 | 字段和边界来自系统界面溯源矩阵 | PASS |
-| 中性前后对比 | `BeforeAfterComparison`，首页 | 不使用比例、金额或竞品贬损 | PASS |
-| 六步实施流程 | `ImplementationTimeline`，首页与 `/service` | 不承诺固定周期 | PASS |
-| 服务范围与部署边界 | `/service` | 标准能力、项目评估与不公开承诺分开表达 | PASS |
-| 十项 FAQ | `ServiceFaqAccordion`，`/service#faq` | 回答与当前能力和数据库边界一致 | PASS |
-| 预约提交后流程 | `/demo` | 保持 `POST /api/demo-requests`；只写官网独立数据库 | PASS |
+- 九个首页系统模块均有各自的页面级证据，公开派生图及脱敏记录见 `docs/homepage-capability-screen-source-matrix.md`。
+- 原始截图和内部处理文件只保存在被 Git 忽略的 `private-reference/`，不进入发布目录或提交。
+- AI 能力作为已完善产品能力介绍，但没有被制作成虚构的系统页面、匹配结果或自动执行记录。
+- 软硬件接入与云端私有化部署保留设备型号、协议、网络、服务器、数据库和实施范围等交付条件。
+- 官网不使用真实经营数据，不承诺出租率、回款率、收入增长、零空置或零欠费等具体结果。
+- 预约演示继续写入官网独立数据库，不调用或写入 `yizuw.cn`。
 
 ## 审核结论
 
-`PDF_CONTENT_MATRIX=PASS`。公开系统界面仅包含六项已核实能力；未核实能力公开数量为 0；AI 规划标签与实施边界已单独标明；PDF 本身不进入公开下载目录。
+- 统一能力数据覆盖：`206 / 206`
+- 已完善能力被标记为未完成：`0`
+- 首页旧功能展示引用：`0`
+- 公开脱敏系统图：`9`
+- 原始详细版 PDF 逐页映射：因源文件缺失，当前不能判定 PASS
+
+`PDF_CONTENT_MATRIX=PARTIAL`
+
+`PDF_SOURCE_READ=FAIL`
+
+`LATEST_PRODUCT_OWNER_CONFIRMATION_APPLIED=PASS`

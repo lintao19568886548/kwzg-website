@@ -41,6 +41,7 @@
   opacity: 1;
   transform: none;
   transition: opacity var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms), transform var(--kw-motion-slow) var(--kw-motion-ease) var(--kw-reveal-delay, 0ms);
+  will-change: auto;
 }
 
 a,
@@ -161,6 +162,7 @@ html[data-document-visibility='hidden'] .kw-dashboard-source--floating::after {
   50% { box-shadow: 0 0 0 0.3rem rgba(159, 57, 40, 0.1); }
 }
 
+html[data-motion='off'],
 html[data-motion='off'] *,
 html[data-motion='off'] *::before,
 html[data-motion='off'] *::after {
@@ -183,6 +185,7 @@ html[data-motion='off'] .kw-case-card__media img {
   transform: none !important;
 }
 
+html[data-motion='off'] .kw-dashboard-source--floating > .kw-dashboard,
 html[data-motion='off'] .kw-dashboard-source--floating::before,
 html[data-motion='off'] .kw-dashboard-source--floating::after {
   animation: none !important;
@@ -212,6 +215,7 @@ html[data-motion='off'] .kw-dashboard-source--floating::after {
     transform: none !important;
   }
 
+  .kw-dashboard-source--floating > .kw-dashboard,
   .kw-dashboard-source--floating::before,
   .kw-dashboard-source--floating::after {
     animation: none !important;
@@ -221,6 +225,7 @@ html[data-motion='off'] .kw-dashboard-source--floating::after {
 }
 
 @media (max-width: 48rem) {
+  .kw-dashboard-source--floating > .kw-dashboard,
   .kw-dashboard-source--floating::before,
   .kw-dashboard-source--floating::after {
     animation: none;
@@ -242,6 +247,7 @@ html[data-motion='off'] .kw-dashboard-source--floating::after {
 }
 
 @media (update: slow) {
+  .kw-dashboard-source--floating > .kw-dashboard,
   .kw-dashboard-source--floating::before,
   .kw-dashboard-source--floating::after {
     animation: none !important;

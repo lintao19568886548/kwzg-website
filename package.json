@@ -20,6 +20,7 @@
     "admin:hash": "node scripts/generate-admin-hash.js",
     "qr:generate": "node scripts/generate-contact-qr.js",
     "qualification:images": "node scripts/process-qualification-images.js",
+    "demo:check": "node scripts/check-public-demo-data.js",
     "security:scan": "node scripts/security-scan.js",
     "audit:local": "node scripts/prelaunch-local-audit.js",
     "check": "npm run lint && npm run test && npm run build"

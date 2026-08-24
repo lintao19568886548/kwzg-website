@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { serviceFaqs } from '../../app/data/verified-capabilities.js'
-import { productCapabilities } from '../../app/data/product-capabilities.js'
+import { capabilityFeatureIndex, homeCapabilityDomains, productCapabilities } from '../../app/data/product-capabilities.js'
 
 const readSource = path => readFileSync(new URL(path, import.meta.url), 'utf8')
 const homeSource = readSource('../../app/components/home/HomeStageOne.vue')
@@ -13,9 +13,11 @@ const headerSource = readSource('../../app/components/SiteHeader.vue')
 const nuxtSource = readSource('../../nuxt.config.js')
 
 describe('website content integration', () => {
-  it('publishes a complete shared capability landscape with status boundaries', () => {
+  it('publishes a complete shared capability landscape with delivery boundaries', () => {
     expect(productCapabilities).toHaveLength(12)
-    expect(homeSource).toContain('productCapabilities')
+    expect(capabilityFeatureIndex).toHaveLength(206)
+    expect(homeCapabilityDomains).toHaveLength(7)
+    expect(homeSource).toContain('homeCapabilityDomains')
     expect(productSource).toContain('productCapabilities')
     expect(solutionSource).toContain('getCapability')
     expect(headerSource).toContain('megaMenuGroups')
@@ -34,10 +36,10 @@ describe('website content integration', () => {
   })
 
   it('organizes home and solutions around landscape, flow and roles', () => {
-    expect(homeSource).toContain('<ParkManagementCheck')
-    expect(homeSource).toContain('<CapabilityFlowMap />')
-    expect(homeSource).toContain('<CapabilityLandscape compact />')
-    expect(homeSource).toContain('<RoleSolutionExplorer />')
+    expect(homeSource).toContain('<HomeBusinessLoops />')
+    expect(homeSource).toContain('<HomeCapabilityPanorama')
+    expect(homeSource).toContain('<HomeSystemModuleShowcase />')
+    expect(homeSource).toContain('<HomeRoleSolutions />')
     expect(homeSource).toContain('to="/service#faq"')
     expect(solutionSource).toContain('按园区类型')
     expect(solutionSource).toContain('按岗位角色')

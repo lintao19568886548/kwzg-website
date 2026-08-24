@@ -7,19 +7,24 @@ const stageOneSectionsCss = readFileSync(new URL('../../app/assets/css/stage1-se
 const stageTwoCss = readFileSync(new URL('../../app/assets/css/stage2.css', import.meta.url), 'utf8')
 const motionCss = readFileSync(new URL('../../app/assets/css/motion.css', import.meta.url), 'utf8')
 const floatingContactCss = readFileSync(new URL('../../app/assets/css/floating-contact.css', import.meta.url), 'utf8')
+const typographyClarityCss = readFileSync(new URL('../../app/assets/css/typography-clarity.css', import.meta.url), 'utf8')
 const nuxtConfig = readFileSync(new URL('../../nuxt.config.js', import.meta.url), 'utf8')
 const brandLogo = readFileSync(new URL('../../app/components/BrandLogo.vue', import.meta.url), 'utf8')
 
 describe('typography rendering safeguards', () => {
   it('uses a local Windows-first Chinese font stack without remote font dependencies', () => {
-    expect(mainCss).toContain('"Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei"')
-    expect(mainCss).toContain('"PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC"')
+    expect(mainCss).toContain('"Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC"')
+    expect(mainCss).toContain('"Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Segoe UI"')
+    expect(mainCss).toContain('font-kerning: normal')
     expect(mainCss).toContain('font-synthesis: none')
-    expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}\n${nuxtConfig}`).not.toMatch(/@font-face|fonts\.googleapis|font-smoothing|text-rendering:\s*optimizeLegibility/)
+    expect(mainCss).toContain('text-rendering: auto')
+    expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}\n${typographyClarityCss}\n${nuxtConfig}`).not.toMatch(/@font-face|fonts\.googleapis|font-smoothing|text-rendering:\s*optimizeLegibility/)
+    expect(nuxtConfig.indexOf('~/assets/css/typography-clarity.css')).toBeGreaterThan(nuxtConfig.indexOf('~/assets/css/full-capability.css'))
   })
 
   it('removes the reveal transform after the entrance transition', () => {
     expect(motionCss).toMatch(/\[data-reveal-state='visible'\] \{[^}]*opacity: 1;[^}]*transform: none;/)
+    expect(motionCss).toMatch(/\[data-reveal-state='visible'\] \{[^}]*will-change: auto;/)
     expect(motionCss).not.toMatch(/\[data-reveal-state='visible'\] \{[^}]*transform:\s*translate3d\(0, 0, 0\)/)
   })
 
@@ -31,6 +36,13 @@ describe('typography rendering safeguards', () => {
 
   it('keeps all configured text weights on supported 100-step values', () => {
     expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}`).not.toMatch(/font-weight:\s*(650|750|850)/)
+  })
+
+  it('uses integer-sized responsive display type and fixed Chinese title tracking', () => {
+    expect(typographyClarityCss).toContain('--kw-type-display-size: 4.75rem')
+    expect(typographyClarityCss).toContain('--kw-type-title-spacing: -1px')
+    expect(typographyClarityCss).toMatch(/@media \(max-width: 64rem\)[\s\S]*--kw-type-display-size: 3rem/)
+    expect(typographyClarityCss).toMatch(/@media \(max-width: 34rem\)[\s\S]*--kw-type-title-spacing: 0/)
   })
 
   it('does not keep the desktop contact panel on a transformed text layer', () => {

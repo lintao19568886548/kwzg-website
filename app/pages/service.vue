@@ -22,7 +22,7 @@ usePageSeo({
         </div>
         <aside v-reveal:right class="kw-stage2-hero__aside">
           <strong>服务原则</strong>
-          <span>演示已上线页面</span>
+          <span>演示当前产品页面</span>
           <span>配置组织与业务规则</span>
           <span>评估软硬件和部署条件</span>
           <span>规划能力单独说明</span>
@@ -81,7 +81,7 @@ usePageSeo({
             <span class="kw-section-kicker">常见问题</span>
             <h2 id="faq-title">购买、部署和使用前常见的问题</h2>
           </div>
-          <p>所有回答都以当前能力状态、项目配置与评估接入边界为准。</p>
+          <p>所有回答都以当前产品能力、项目配置与实施边界为准。</p>
         </div>
         <ServiceFaqAccordion />
       </div>

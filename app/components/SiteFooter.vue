@@ -30,7 +30,7 @@ import { siteConfig } from '~/config/site'
       <div class="kw-footer__group">
         <h2>服务方式</h2>
         <p>云端 SaaS</p>
-        <p>私有化部署评估</p>
+        <p>云端私有化部署评估</p>
         <a
           :href="siteConfig.systemUrl"
           target="_blank"

@@ -21,7 +21,7 @@ usePageSeo({
         <aside v-reveal:right class="kw-about-brand" aria-label="品牌与企业主体">
           <BrandLogo with-tagline />
           <div><small>企业主体</small><strong>{{ siteConfig.company.legalName }}</strong></div>
-          <p>围绕工业园区、厂房和仓库经营管理场景，持续推进产品研发与应用。</p>
+          <p>围绕工业园区、厂房、仓库和写字楼经营管理场景，持续推进产品研发与应用。</p>
         </aside>
       </div>
     </section>
@@ -50,7 +50,7 @@ usePageSeo({
 
     <section class="kw-section kw-about-boundary" aria-labelledby="about-boundary-title">
       <div class="kw-container">
-        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">我们坚持</span><h2 id="about-boundary-title">完整呈现能力，也把状态与边界说清楚</h2><p>官网真实系统界面来自页面证据并使用演示数据重构；扩展能力分别标注已上线、按项目配置、评估接入或规划中，不以虚构资历、规模或经营数字建立信任。</p></div>
+        <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">我们坚持</span><h2 id="about-boundary-title">完整呈现能力，也把交付方式与边界说清楚</h2><p>全部产品能力已经完善；官网分别说明标准软件、项目配置、接口实施和云端私有化部署方式，不以虚构资历、规模或经营数字建立信任。</p></div>
         <div class="kw-about-values">
           <article v-reveal class="kw-stage2-card"><span>01</span><h3>不夸大</h3><p>不承诺软件直接保证出租率、回款结果或消除经营风险。</p></article>
           <article v-reveal="80" class="kw-stage2-card"><span>02</span><h3>不虚构</h3><p>真实界面只展示有页面证据的功能；配置、接入与规划能力使用状态卡和关系图，不伪装成后台截图。</p></article>

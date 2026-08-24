@@ -2,7 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { siteConfig } from '~/config/site'
-import { capabilityStatuses, megaMenuGroups, productCapabilities } from '~/data/product-capabilities'
+import { deliveryModes, megaMenuGroups, productCapabilities } from '~/data/product-capabilities'
 
 const mobileOpen = ref(false)
 const mobileProductsOpen = ref(false)
@@ -147,12 +147,12 @@ onBeforeUnmount(() => {
     <Transition name="kw-menu">
       <div v-if="productMenuOpen" id="product-mega-menu" class="kw-mega-menu">
         <div class="kw-container kw-mega-menu__inner">
-          <div class="kw-mega-menu__intro"><span>能力全景</span><strong>从经营决策到园区服务</strong><p>每项能力都明确标注已上线、按项目配置、评估接入或规划中。</p><NuxtLink to="/products" @click="productMenuOpen = false">查看完整产品能力 →</NuxtLink></div>
+          <div class="kw-mega-menu__intro"><span>能力全景</span><strong>从经营决策到园区服务</strong><p>全部能力均已完善；具体交付方式按标准、项目配置、接口实施或云端私有化部署说明。</p><NuxtLink to="/products" @click="productMenuOpen = false">查看完整产品能力 →</NuxtLink></div>
           <div class="kw-mega-menu__groups">
             <section v-for="group in megaMenuGroups" :key="group.name">
               <h2>{{ group.name }}</h2>
               <NuxtLink v-for="id in group.items" :key="id" :to="`/products#capability-${capabilityIndex[id].slug}`" @click="productMenuOpen = false">
-                <span>{{ capabilityIndex[id].shortName }}</span><CapabilityStatusTag :status="capabilityIndex[id].status" compact />
+                <span>{{ capabilityIndex[id].shortName }}</span><CapabilityStatusTag :status="capabilityIndex[id].deliveryMode" compact />
               </NuxtLink>
             </section>
           </div>
@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
           <div class="kw-mobile-products">
             <div><NuxtLink to="/products" :class="{ 'is-active': route.path === '/products' }" @click="mobileOpen = false">产品能力</NuxtLink><button type="button" :aria-expanded="mobileProductsOpen" aria-controls="mobile-product-groups" @click="mobileProductsOpen = !mobileProductsOpen">{{ mobileProductsOpen ? '收起' : '展开' }}</button></div>
             <div v-if="mobileProductsOpen" id="mobile-product-groups" class="kw-mobile-products__groups">
-              <section v-for="group in megaMenuGroups" :key="group.name"><h2>{{ group.name }}</h2><NuxtLink v-for="id in group.items" :key="id" :to="`/products#capability-${capabilityIndex[id].slug}`" @click="mobileOpen = false">{{ capabilityIndex[id].shortName }} <span>{{ capabilityStatuses?.[capabilityIndex[id].status]?.label }}</span></NuxtLink></section>
+              <section v-for="group in megaMenuGroups" :key="group.name"><h2>{{ group.name }}</h2><NuxtLink v-for="id in group.items" :key="id" :to="`/products#capability-${capabilityIndex[id].slug}`" @click="mobileOpen = false">{{ capabilityIndex[id].shortName }} <span>{{ deliveryModes?.[capabilityIndex[id].deliveryMode]?.label }}</span></NuxtLink></section>
             </div>
           </div>
           <NuxtLink v-for="item in navigation.filter(item => !item.exact && !item.mega)" :key="item.to" :to="item.to" :class="{ 'is-active': isCurrentNavigation(item) }" :aria-current="isCurrentNavigation(item) ? 'page' : undefined" @click="handleNavigation(item, $event)">{{ item.label }} <span aria-hidden="true">→</span></NuxtLink>

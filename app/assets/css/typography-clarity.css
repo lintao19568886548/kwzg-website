@@ -1,0 +1,70 @@
+/*
+ * Rendering baseline for crisp Chinese type on Windows and standard-density displays.
+ * This file intentionally loads last so older fluid heading rules cannot reintroduce
+ * fractional glyph sizes or overly tight proportional tracking.
+ */
+
+:root {
+  --kw-type-display-size: 4.75rem;
+  --kw-type-section-size: 3.25rem;
+  --kw-type-title-spacing: -1px;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+}
+
+.kw-site-shell {
+  --kw-muted: #506077;
+  --kw-text-secondary: #4C5D74;
+  font-family: var(--font-sans);
+}
+
+/* Keep the public display type on whole CSS pixels at the supported breakpoints. */
+.kw-site-shell :is(.kw-home-hero, .kw-stage2-hero, .kw-demo-hero, .kw-about-hero, .kw-case-detail-hero) h1,
+.kw-site-shell .kw-v3-hero h1 {
+  font-size: var(--kw-type-display-size);
+  letter-spacing: var(--kw-type-title-spacing);
+}
+
+.kw-site-shell .kw-section-heading h2,
+.kw-site-shell .kw-ai-card h2,
+.kw-site-shell .kw-final-cta h2,
+.kw-site-shell .kw-case-section-heading h2 {
+  font-size: var(--kw-type-section-size);
+  letter-spacing: var(--kw-type-title-spacing);
+}
+
+@media (max-width: 80rem) {
+  :root {
+    --kw-type-display-size: 4rem;
+    --kw-type-section-size: 3rem;
+  }
+}
+
+@media (max-width: 64rem) {
+  :root {
+    --kw-type-display-size: 3rem;
+    --kw-type-section-size: 2.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  :root {
+    --kw-type-display-size: 2.75rem;
+    --kw-type-section-size: 2.25rem;
+  }
+}
+
+@media (max-width: 34rem) {
+  :root {
+    --kw-type-display-size: 2.25rem;
+    --kw-type-section-size: 2rem;
+    --kw-type-title-spacing: 0;
+  }
+}
