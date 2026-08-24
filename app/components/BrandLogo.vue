@@ -8,6 +8,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  headerTagline: {
+    type: String,
+    default: '',
+  },
 })
 
 const logoImage = computed(() => {
@@ -26,9 +30,12 @@ const logoWidth = computed(() => props.withTagline ? 670 : 778)
     :class="{
       'kw-brand-logo--inverse': inverse,
       'kw-brand-logo--tagline': withTagline,
+      'kw-brand-logo--header': headerTagline,
     }"
     to="/"
-    :aria-label="withTagline
+    :aria-label="headerTagline
+      ? '返回瞰维智管官网首页'
+      : withTagline
       ? '瞰维智管官网首页：给园区管理装上大脑和翅膀，少操心，赚更多。'
       : '瞰维智管官网首页'"
   >
@@ -41,5 +48,9 @@ const logoWidth = computed(() => props.withTagline ? 670 : 778)
       height="160"
       decoding="async"
     >
+    <span v-if="headerTagline" class="kw-brand-logo__header-tagline" aria-hidden="true">
+      <span class="kw-brand-logo__header-tagline-line" />
+      <span class="kw-brand-logo__header-tagline-text">{{ headerTagline }}</span>
+    </span>
   </NuxtLink>
 </template>

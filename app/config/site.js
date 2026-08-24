@@ -6,6 +6,7 @@ export const siteConfig = Object.freeze({
   brand: Object.freeze({
     name: '瞰维智管',
     tagline: '给园区管理装上大脑和翅膀，少操心，赚更多。',
+    headerTagline: '告别事务缠身，指尖掌控全局',
   }),
   company: Object.freeze({
     legalName: '东莞市宜租网络科技有限公司',

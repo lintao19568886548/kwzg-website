@@ -37,7 +37,7 @@ async function mountHeader(path = '/') {
       plugins: [router],
       stubs: {
         NuxtLink: RouterLink,
-        BrandLogo: { template: '<RouterLink class="logo-stub" to="/" aria-label="瞰维智管官网首页"><span>瞰维智管</span></RouterLink>' },
+        BrandLogo: { props: ['headerTagline'], template: '<RouterLink class="logo-stub" to="/" aria-label="返回瞰维智管官网首页"><span>瞰维智管</span><span class="tagline-stub">{{ headerTagline }}</span></RouterLink>' },
         CapabilityStatusTag: { props: ['status'], template: '<span class="status-stub">{{ status }}</span>' },
         UiBaseButton: { props: ['to'], template: '<RouterLink :to="to"><slot /></RouterLink>' },
       },
@@ -72,7 +72,7 @@ describe('SiteHeader home navigation', () => {
   it('uses the centralized production system login target on desktop and mobile', async () => {
     const { wrapper } = await mountHeader('/')
     expect(siteConfig.systemUrl).toBe('https://yizuw.cn')
-    expect(wrapper.find('.kw-header__tagline').exists()).toBe(false)
+    expect(wrapper.get('.tagline-stub').text()).toBe('告别事务缠身，指尖掌控全局')
     expect(wrapper.text()).not.toContain(siteConfig.brand.tagline)
     const desktopLogin = wrapper.get('.kw-header__login')
     expect(desktopLogin.attributes('href')).toBe(siteConfig.systemUrl)
@@ -153,7 +153,7 @@ describe('SiteHeader home navigation', () => {
     const { router, wrapper } = await mountHeader('/about')
     const logo = wrapper.get('.logo-stub')
     expect(logo.attributes('href')).toBe('/')
-    expect(logo.attributes('aria-label')).toBe('瞰维智管官网首页')
+    expect(logo.attributes('aria-label')).toBe('返回瞰维智管官网首页')
     await logo.trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.path).toBe('/')
@@ -182,7 +182,7 @@ describe('SiteHeader home navigation', () => {
     expect(caseSource).toContain('<li aria-current="page">{{ item.name }}</li>')
     expect(caseSource).not.toContain('javascript:history.back()')
     expect(logoSource).toContain("to=\"/\"")
-    expect(logoSource).toContain("'瞰维智管官网首页'")
+    expect(logoSource).toContain("'返回瞰维智管官网首页'")
     expect(headerSource).not.toMatch(/127\.0\.0\.1|window\.location|yizuw\.cn/)
   })
 })

@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
 <template>
   <header ref="headerElement" class="kw-header" :class="{ 'is-scrolled': scrolled, 'is-menu-open': mobileOpen, 'has-mega-open': productMenuOpen }">
     <div class="kw-container kw-header__bar">
-      <div class="kw-header__brand"><BrandLogo @click="handleHomeLink" /></div>
+      <div class="kw-header__brand"><BrandLogo :header-tagline="siteConfig.brand.headerTagline" @click="handleHomeLink" /></div>
 
       <nav class="kw-header__nav" aria-label="主导航">
         <template v-for="item in navigation" :key="item.to">
