@@ -78,8 +78,8 @@ describe('homepage complete capability system', () => {
     for (const source of [homeSource, productsSource, solutionsSource, headerSource]) {
       expect(source).not.toMatch(/六项已核实|六项能力|仅展示六项|规划中|未核实|证据不足|暂不公开/)
     }
-    expect(homeSource).toContain('从靠人盯，变成系统协同')
-    expect(homeSource).toContain('让招商、合同、收费、物业、设备、人事与经营决策')
+    expect(homeSource).toContain('从靠人盯，<br>变成系统协同')
+    expect(homeSource).toContain('贯通招商、租赁、合同、账单、收款、设备、门禁、维护、人事与经营决策')
     expect(homeSource).not.toMatch(/保证出租率|保证没有空置|保证没有欠费|100%/)
   })
 

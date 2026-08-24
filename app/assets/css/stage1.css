@@ -23,7 +23,7 @@
   --kw-radius-lg: 1rem;
   --kw-shadow-card: 0 0.5rem 1.5rem rgba(0, 35, 89, 0.06);
   --kw-shadow-panel: 0 1.5rem 4rem rgba(0, 35, 89, 0.14);
-  --kw-container: 78rem;
+  --kw-container: 80rem;
 }
 
 body {
@@ -218,14 +218,14 @@ button {
   flex: 0 0 auto;
   border-radius: 999px;
   background: var(--kw-red);
-  animation: kw-header-tagline-line-in 340ms var(--kw-motion-ease, ease-out) both;
+  animation: kw-header-tagline-line-in 340ms var(--kw-motion-ease, ease-out);
 }
 
 .kw-brand-logo__header-tagline-text {
   filter: none;
   opacity: 1;
   transform: none;
-  animation: kw-header-tagline-text-in 360ms 70ms var(--kw-motion-ease, ease-out) both;
+  animation: kw-header-tagline-text-in 360ms 70ms var(--kw-motion-ease, ease-out);
 }
 
 @keyframes kw-header-tagline-line-in {
@@ -253,7 +253,7 @@ button {
 
 .kw-header__bar {
   display: grid;
-  min-height: 4.6875rem;
+  min-height: 4.8125rem;
   align-items: center;
   gap: 2rem;
   grid-template-columns: auto 1fr auto;
@@ -338,7 +338,7 @@ button {
 }
 
 .kw-section {
-  padding: clamp(5rem, 8vw, 7.5rem) 0;
+  padding: 6.5rem 0;
 }
 
 .kw-section-heading {

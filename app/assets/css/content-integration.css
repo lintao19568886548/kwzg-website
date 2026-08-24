@@ -103,9 +103,9 @@
 .kw-service-faq h3 { margin: 0; }
 .kw-service-faq button { display: grid; width: 100%; min-height: 4.5rem; align-items: center; padding: 0.8rem 0; border: 0; color: var(--kw-blue); background: transparent; text-align: left; gap: 1rem; grid-template-columns: auto 1fr auto; font-size: 1rem; font-weight: 800; }
 .kw-service-faq button > span { color: var(--kw-red); font-size: 0.7rem; }
-.kw-service-faq button i { font-size: 1.25rem; font-style: normal; transition: transform var(--kw-motion-base) var(--kw-motion-ease); }
+.kw-service-faq button i { font-size: 1.25rem; font-style: normal; }
 .kw-service-faq button:focus-visible { outline: 0.2rem solid var(--kw-red); outline-offset: -0.2rem; }
-.kw-service-faq article.is-open button i { transform: rotate(45deg); }
+.kw-service-faq article.is-open button i { color: var(--kw-red); }
 .kw-service-faq article > div { padding: 0 3rem 1.25rem; }
 .kw-service-faq p { margin: 0; color: var(--kw-muted); }
 .kw-service-page .kw-stage2-hero__actions { display: flex; align-items: center; margin-top: 1.5rem; gap: 1rem; flex-wrap: wrap; }

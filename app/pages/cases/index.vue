@@ -3,7 +3,7 @@ import { caseStudies } from '~/data/cases'
 
 usePageSeo({
   title: '客户案例',
-  description: '查看五个真实园区的瞰维智管使用案例；内容基于已授权园区名称、实景图片及已核实功能整理，不披露客户经营数据。',
+  description: '查看多个真实园区的瞰维智管使用案例；内容基于已授权园区名称、实景图片及已核实功能整理，不披露客户经营数据。',
 })
 
 const activeRegion = ref('全部案例')
@@ -22,7 +22,7 @@ const filteredCases = computed(() => activeRegion.value === '全部案例'
           <p class="kw-cases-hero__notice">案例内容基于已授权园区名称、实景图片及瞰维智管已核实功能整理，不披露出租率、租金、欠费、收入或租户经营信息。</p>
         </div>
         <aside v-reveal:right class="kw-case-fact">
-          <strong>公开原则</strong><span>五个授权园区案例</span><span>已核实系统功能</span><span>零经营数据披露</span>
+          <strong>公开原则</strong><span>多个授权园区案例</span><span>已核实系统功能</span><span>零经营数据披露</span>
         </aside>
       </div>
     </section>

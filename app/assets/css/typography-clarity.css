@@ -1,70 +1,568 @@
 /*
- * Rendering baseline for crisp Chinese type on Windows and standard-density displays.
- * This file intentionally loads last so older fluid heading rules cannot reintroduce
- * fractional glyph sizes or overly tight proportional tracking.
+ * Clear and spacious Chinese typography baseline.
+ * Loaded last so the public site resolves to real Microsoft YaHei weights,
+ * whole-pixel type sizes and solid text colours after legacy component CSS.
  */
 
 :root {
-  --kw-type-display-size: 4.75rem;
-  --kw-type-section-size: 3.25rem;
-  --kw-type-title-spacing: -1px;
+  --font-cn: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --font-sans: var(--font-cn);
+  --font-display: var(--font-cn);
+  --text-primary: #062b5c;
+  --text-body: #35475d;
+  --text-secondary: #52647a;
+  --text-on-dark: #f8f5ee;
+  --font-body: 17px;
+  --line-body: 30px;
+  --font-helper: 14px;
+  --line-helper: 22px;
+  --kw-type-display-size: 50px;
+  --kw-type-display-line: 62px;
+  --kw-type-section-size: 38px;
+  --kw-type-section-line: 50px;
+  --kw-type-card-title-size: 21px;
+  --kw-type-card-title-line: 32px;
+  --kw-muted: var(--text-secondary);
+  --kw-text-secondary: var(--text-secondary);
 }
 
-html,
+html {
+  font-family: var(--font-cn);
+  font-synthesis: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
 body,
 button,
 input,
 select,
 textarea {
-  font-family: var(--font-sans);
+  font-family: var(--font-cn);
 }
 
-.kw-site-shell {
-  --kw-muted: #506077;
-  --kw-text-secondary: #4C5D74;
-  font-family: var(--font-sans);
+body {
+  color: var(--text-body);
+  font-size: var(--font-body);
+  font-weight: 400;
+  line-height: var(--line-body);
+  letter-spacing: normal;
 }
 
-/* Keep the public display type on whole CSS pixels at the supported breakpoints. */
+/* Disable synthetic intermediate weights throughout the rendered site. */
+body * {
+  font-synthesis: none;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+  text-shadow: none !important;
+}
+
+body :is(h1, h2, h3, h4, h5, h6, strong, b, button, [aria-current='page'], [role='tab'][aria-selected='true'], .is-active) {
+  font-weight: 700 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b {
+  color: var(--text-primary);
+  letter-spacing: normal !important;
+  text-shadow: none !important;
+}
+
+p,
+li,
+dt,
+dd,
+label,
+input,
+select,
+textarea,
+button,
+a {
+  letter-spacing: normal;
+}
+
+body p {
+  font-size: 17px !important;
+}
+
+body :is(a, button, label, input, select, textarea) {
+  font-size: 16px !important;
+}
+
+body :is(p, li, dd) {
+  line-height: 28px !important;
+}
+
+body :is(a, button, label, input, select, textarea) {
+  line-height: 24px !important;
+}
+
+body :is(dt, figcaption) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-site-shell b,
+.kw-site-shell .kw-breadcrumb li {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+body :is(
+  [class*='eyebrow'],
+  [class*='kicker'],
+  [class*='label'],
+  [class*='meta'],
+  [class*='tag'],
+  [class*='badge'],
+  [class*='note'],
+  [class*='caption']
+) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 16px !important;
+  line-height: 24px;
+}
+
+small,
+.text-helper,
+.kw-section-kicker,
+.kw-section-label,
+.kw-stage2-eyebrow,
+.kw-v3-eyebrow,
+.kw-cap-status__tip {
+  font-size: var(--font-helper) !important;
+  line-height: var(--line-helper) !important;
+}
+
 .kw-site-shell :is(.kw-home-hero, .kw-stage2-hero, .kw-demo-hero, .kw-about-hero, .kw-case-detail-hero) h1,
-.kw-site-shell .kw-v3-hero h1 {
-  font-size: var(--kw-type-display-size);
-  letter-spacing: var(--kw-type-title-spacing);
+.kw-site-shell .kw-v3-hero h1,
+.kw-site-shell .kw-home-hero__content h1 {
+  font-size: var(--kw-type-display-size) !important;
+  line-height: var(--kw-type-display-line) !important;
+  letter-spacing: normal !important;
 }
 
 .kw-site-shell .kw-section-heading h2,
 .kw-site-shell .kw-ai-card h2,
 .kw-site-shell .kw-final-cta h2,
-.kw-site-shell .kw-case-section-heading h2 {
-  font-size: var(--kw-type-section-size);
-  letter-spacing: var(--kw-type-title-spacing);
+.kw-site-shell .kw-case-section-heading h2,
+.kw-site-shell .kw-home-dashboard-proof h2,
+.kw-site-shell .kw-v3-showcase h2 {
+  font-size: var(--kw-type-section-size) !important;
+  line-height: var(--kw-type-section-line) !important;
+  letter-spacing: normal !important;
 }
 
-@media (max-width: 80rem) {
-  :root {
-    --kw-type-display-size: 4rem;
-    --kw-type-section-size: 3rem;
+.kw-site-shell h2 {
+  font-size: var(--kw-type-section-size) !important;
+  line-height: var(--kw-type-section-line) !important;
+}
+
+.kw-site-shell h4 {
+  font-size: var(--kw-type-card-title-size) !important;
+  line-height: var(--kw-type-card-title-line) !important;
+}
+
+.kw-site-shell article h3,
+.kw-site-shell .kw-demo-interface h4,
+.kw-site-shell .kw-system-modal h2 {
+  font-size: var(--kw-type-card-title-size) !important;
+  line-height: var(--kw-type-card-title-line) !important;
+}
+
+.kw-site-shell h3 {
+  font-size: 24px !important;
+  line-height: 34px !important;
+}
+
+.kw-site-shell article h3 {
+  font-size: var(--kw-type-card-title-size) !important;
+  line-height: var(--kw-type-card-title-line) !important;
+}
+
+.kw-header__nav a,
+.kw-header__actions a,
+.kw-mobile-nav a {
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
+.kw-brand-logo__header-tagline,
+.kw-brand-logo__header-tagline-text {
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+
+.kw-brand__tagline,
+.kw-footer p,
+.kw-footer a {
+  font-size: 16px !important;
+  line-height: 28px !important;
+}
+
+.kw-brand-logo__header-tagline,
+.kw-brand-logo__header-tagline-text {
+  letter-spacing: normal !important;
+}
+
+.kw-site-shell :is(.kw-section-heading p, .kw-final-cta p, .kw-stage2-hero > .kw-container > p) {
+  max-width: 780px;
+  font-size: 17px !important;
+  line-height: 30px !important;
+}
+
+.kw-site-shell :is(article, .kw-card, .kw-stage2-card) > p,
+.kw-site-shell article :is(p, li, dd) {
+  font-size: 16px !important;
+  line-height: 28px !important;
+}
+
+.kw-site-shell :is(.kw-product-tabs, .kw-v3-roles__tabs, .kw-v3-showcase nav) button {
+  font-size: 20px !important;
+  line-height: 32px !important;
+}
+
+.kw-site-shell .kw-brand-logo__header-tagline,
+.kw-site-shell .kw-brand-logo__header-tagline-text {
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+
+.kw-site-shell :is(.kw-home-hero__copy > p, .kw-v3-hero__promise) {
+  max-width: 620px;
+  color: #52647a !important;
+  font-size: 18px !important;
+  line-height: 32px !important;
+}
+
+.kw-site-shell .kw-v3-hero__value {
+  display: block;
+  max-width: 620px;
+  font-size: 18px !important;
+  line-height: 32px !important;
+}
+
+.kw-site-shell .kw-home-hero h1 {
+  max-width: 620px;
+}
+
+@media (min-width: 1025px) {
+  .kw-site-shell .kw-home-hero__grid {
+    gap: 40px;
+    grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
   }
 }
 
-@media (max-width: 64rem) {
+.kw-site-shell dt,
+.kw-home-hero .kw-tag,
+.kw-v3-showcase__copy > span,
+.kw-park-card :is(figcaption span, .kw-park-card__media > span),
+.kw-implementation-timeline li > span,
+.kw-service-faq button > span,
+.kw-qualification-media span,
+.kw-qr-placeholder :is(strong, span) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-site-shell :is(
+  .kw-cap-status__tip,
+  .kw-case-card span,
+  .kw-case-section-heading span,
+  .kw-case-disclosure,
+  .kw-case-navigation span,
+  .kw-case-gallery-thumb span,
+  .kw-privacy-layout nav span,
+  .kw-demo-form-card span,
+  .kw-call-card__eyebrow
+) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-site-shell :is(
+  .kw-product-capability-section__story span,
+  .kw-park-type-solutions__panel > header > span,
+  .kw-role-explorer header > span,
+  .kw-case-scene-grid article > span,
+  .kw-case-function-tabs button > span,
+  .kw-case-function-panel__copy > span,
+  .kw-case-reading-grid li > span,
+  .kw-case-demo-cta > div > span,
+  .kw-case-index-cta span,
+  .kw-case-card strong,
+  .kw-product-feature-list strong,
+  .kw-product-capability-section__proof span,
+  .kw-readiness-grid article > span,
+  .kw-product-panel__copy > span,
+  .kw-demo-next__steps li > span
+) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-cases-hero__lead {
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+.kw-call-card__number {
+  font-size: 38px !important;
+  line-height: 48px !important;
+}
+
+.kw-v3-hero__promise {
+  font-size: 18px !important;
+  line-height: 30px !important;
+}
+
+.kw-qualification-content h2 {
+  font-size: 38px !important;
+  line-height: 50px !important;
+}
+
+/* The hero dashboard is also a Vue/CSS system preview, never a scaled screenshot. */
+.kw-dashboard,
+.kw-dashboard :is(span, small, strong, p, li, dt, dd, label, button, em) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-dashboard__metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.kw-dashboard :is(.kw-dashboard__heading h2, .kw-dashboard__metric strong, .kw-dashboard__payment-row strong, .kw-dashboard__payment-balance strong, .kw-dashboard__tasks-heading strong) {
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+.kw-dashboard h3 {
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
+/* System previews are dense application UIs: keep every visible field at 14px. */
+.kw-demo-interface,
+.kw-demo-interface :is(span, small, strong, p, li, dt, dd, th, td, label, button, a) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-demo-interface :is(.kw-demo-metric strong, .kw-demo-kpi strong, .kw-demo-progress strong, .kw-demo-compact-grid article strong) {
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+.kw-interface,
+.kw-interface :is(span, small, strong, p, li, dt, dd, label, button, a, em) {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-interface .kw-interface-key-grid strong {
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+/* Solid, high-contrast text colours for the light and dark product surfaces. */
+.kw-dashboard__topbar .kw-dashboard__brand strong {
+  color: var(--text-on-dark) !important;
+}
+
+.kw-dashboard__sidebar :is(strong, span),
+.kw-dashboard__metric small,
+.kw-dashboard__tasks small,
+.kw-v3-panorama__grid article small,
+.kw-demo-interface__sidebar span,
+.kw-demo-interface__identity small,
+.kw-demo-interface__heading small,
+.kw-v3-all-capabilities article > span {
+  color: var(--text-secondary) !important;
+}
+
+.kw-dashboard__sidebar li.is-active span {
+  color: #fff !important;
+}
+
+.kw-demo-interface__sidebar span:first-of-type {
+  color: #fff !important;
+}
+
+.kw-dashboard__payment-caption em {
+  color: #164a9f !important;
+}
+
+.kw-v3-values__grid article header > span,
+.kw-v3-panorama__grid article header > span {
+  color: var(--text-secondary) !important;
+}
+
+.kw-v3-ai__grid p,
+.kw-v3-all-capabilities .kw-container > div:last-child span {
+  color: var(--text-secondary) !important;
+}
+
+.kw-cases-hero__notice {
+  color: #d7e0eb !important;
+}
+
+.kw-v3-architecture .kw-section-kicker,
+.kw-v3-showcase [role='tab'].is-active small {
+  color: #ffb4a8 !important;
+}
+
+.kw-v3-architecture .kw-section-heading p {
+  color: #d7e0eb !important;
+}
+
+.kw-v3-architecture [role='tab'] strong,
+.kw-v3-roles__panel :is(h3, strong) {
+  color: var(--text-on-dark) !important;
+}
+
+.kw-v3-roles__panel :is(p, li, small) {
+  color: #d7e0eb !important;
+}
+
+.kw-v3-architecture__layers strong {
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+.kw-v3-panorama__grid article header > span {
+  font-size: 22px !important;
+  line-height: 32px !important;
+}
+
+.kw-v3-all-capabilities strong {
+  font-size: 54px !important;
+  line-height: 54px !important;
+}
+
+.kw-qualification-facts dd {
+  font-size: 16px !important;
+  line-height: 28px !important;
+}
+
+.kw-product-capability-section__meta span {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-contact-panel__header span {
+  font-size: 14px !important;
+  line-height: 22px !important;
+}
+
+.kw-product-capability-section__concept p {
+  color: var(--text-secondary) !important;
+}
+
+.kw-product-tabs button.is-active small,
+.kw-case-function-panel__copy > span {
+  color: #ffb4a8 !important;
+}
+
+.kw-case-function-panel__copy :is(h3, strong, a) {
+  color: var(--text-on-dark) !important;
+}
+
+.kw-case-function-panel__copy :is(p, li, small) {
+  color: #d7e0eb !important;
+}
+
+.kw-button--primary :is(span, strong),
+.kw-policy-contact :is(h2, h3, strong) {
+  color: var(--text-on-dark) !important;
+}
+
+.kw-solution-flow .kw-full-flow {
+  background: #002359 !important;
+}
+
+.kw-full-flow li > span {
+  color: #8f2f22 !important;
+}
+
+.kw-full-flow li strong {
+  color: var(--text-primary) !important;
+}
+
+.kw-full-flow li small {
+  color: var(--text-secondary) !important;
+}
+
+.kw-demo-interface__label,
+.kw-demo-interface figcaption {
+  color: #40536d !important;
+}
+
+/* Solid text colours avoid the false softness caused by low-opacity copy. */
+.kw-site-shell {
+  --kw-muted: var(--text-secondary);
+  --kw-text-secondary: var(--text-secondary);
+  color: var(--text-body);
+  font-family: var(--font-cn);
+}
+
+.kw-site-shell :is(.kw-muted, .kw-section-heading p, .kw-stage2-hero p, .kw-v3-showcase__copy dd) {
+  color: var(--text-secondary);
+}
+
+.kw-site-shell :is(.kw-dark-section, .kw-full-flow, .kw-footer) :is(h1, h2, h3, h4, p, li, dt, dd, a, span, small, strong),
+.kw-site-shell .kw-v3-showcase > .kw-container > .kw-section-heading :is(h2, p, span),
+.kw-site-shell .kw-v3-showcase__copy :is(h3, dt, dd, a, span, li) {
+  color: var(--text-on-dark);
+}
+
+@media (max-width: 1024px) {
   :root {
-    --kw-type-display-size: 3rem;
-    --kw-type-section-size: 2.5rem;
+    --kw-type-display-size: 42px;
+    --kw-type-display-line: 54px;
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: 540px) {
   :root {
-    --kw-type-display-size: 2.75rem;
-    --kw-type-section-size: 2.25rem;
+    --kw-type-display-size: 36px;
+    --kw-type-display-line: 46px;
+    --kw-type-section-size: 30px;
+    --kw-type-section-line: 40px;
+    --kw-type-card-title-size: 19px;
+    --kw-type-card-title-line: 28px;
   }
-}
 
-@media (max-width: 34rem) {
-  :root {
-    --kw-type-display-size: 2.25rem;
-    --kw-type-section-size: 2rem;
-    --kw-type-title-spacing: 0;
+  body {
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  .kw-site-shell :is(.kw-section-heading p, .kw-final-cta p, .kw-stage2-hero > .kw-container > p),
+  .kw-site-shell :is(.kw-home-hero__copy > p, .kw-v3-hero__promise),
+  .kw-site-shell .kw-v3-hero__value {
+    font-size: 16px !important;
+    line-height: 28px !important;
+  }
+
+  .kw-site-shell :is(.kw-product-tabs, .kw-v3-roles__tabs, .kw-v3-showcase nav) button {
+    font-size: 17px !important;
+    line-height: 26px !important;
   }
 }

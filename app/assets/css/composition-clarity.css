@@ -1,0 +1,92 @@
+/*
+ * Second-pass composition guardrails.
+ * Text-bearing controls and cards keep their feedback in colour, border and shadow;
+ * decorative pseudo-elements and media may continue to animate independently.
+ */
+
+.kw-site-shell * {
+  backdrop-filter: none !important;
+  will-change: auto !important;
+}
+
+.kw-cap-status__tip {
+  right: 0 !important;
+  left: auto !important;
+  visibility: hidden !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.kw-cap-status:hover .kw-cap-status__tip,
+.kw-cap-status:focus-within .kw-cap-status__tip,
+.kw-cap-status.is-open .kw-cap-status__tip {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.kw-site-shell .kw-privacy-layout nav a.is-active {
+  transform: none !important;
+}
+
+.kw-site-shell :is(
+  a,
+  button,
+  .button,
+  .kw-button,
+  .kw-card,
+  .kw-stage2-card,
+  .kw-capability-card,
+  .kw-park-card,
+  .kw-case-card,
+  .kw-contact-action,
+  .kw-operation-values__grid article,
+  .kw-full-groups__grid > article,
+  .kw-management-check button
+) {
+  transition-property: color, border-color, background-color, box-shadow, opacity !important;
+}
+
+.kw-site-shell :is(
+  a,
+  button,
+  .button,
+  .kw-button,
+  .kw-card,
+  .kw-stage2-card,
+  .kw-capability-card,
+  .kw-park-card,
+  .kw-case-card,
+  .kw-contact-action,
+  .kw-operation-values__grid article,
+  .kw-full-groups__grid > article,
+  .kw-management-check button
+):is(:hover, :active, :focus-visible, :focus-within) {
+  transform: none !important;
+}
+
+/* The header tagline must return to a non-composited text layer after its entrance. */
+.kw-brand-logo__header-tagline,
+.kw-brand-logo__header-tagline-text {
+  filter: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-site-shell :is(a, button, article, section, nav, header, footer) {
+    transform: none !important;
+  }
+}
+
+html[data-motion='off'] .kw-site-shell :is(a, button, article, section, nav, header, footer) {
+  transform: none !important;
+}
+
+html[data-motion='off'] .kw-skip-link {
+  top: -100px !important;
+  transform: none !important;
+}
+
+html[data-motion='off'] .kw-skip-link:focus {
+  top: 12px !important;
+}

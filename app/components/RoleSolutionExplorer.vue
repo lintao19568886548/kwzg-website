@@ -28,7 +28,7 @@ const capabilities = computed(() => role.value.capabilities.map(getCapability).f
         <div>
           <article v-for="capability in capabilities" :key="capability.id">
             <div><UiLinearIcon :name="capability.icon" :size="22" /><strong>{{ capability.shortName }}</strong></div>
-            <CapabilityStatusTag :status="capability.status" compact />
+            <CapabilityStatusTag :status="capability.deliveryMode" compact />
             <p>{{ capability.businessValue }}</p>
           </article>
         </div>

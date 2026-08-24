@@ -71,7 +71,7 @@ afterEach(() => {
 describe('SiteHeader home navigation', () => {
   it('uses the centralized production system login target on desktop and mobile', async () => {
     const { wrapper } = await mountHeader('/')
-    expect(siteConfig.systemUrl).toBe('https://yizuw.cn')
+    expect(siteConfig.systemUrl).toBe('https://yz.furong.org')
     expect(wrapper.get('.tagline-stub').text()).toBe('告别事务缠身，指尖掌控全局')
     expect(wrapper.text()).not.toContain(siteConfig.brand.tagline)
     const desktopLogin = wrapper.get('.kw-header__login')

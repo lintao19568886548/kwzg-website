@@ -41,7 +41,7 @@ usePageSeo({
             <div class="kw-contact-action"><small>联系电话</small><a :href="siteConfig.contact.phoneHref">{{ siteConfig.contact.phone }}</a></div>
             <div class="kw-contact-action"><small>联系地址</small><strong>{{ siteConfig.contact.address }}</strong></div>
             <div><small>官方网站</small><a class="kw-about-contact__site" :href="siteConfig.siteUrl">yizuw.org</a></div>
-            <div><small>系统登录</small><a class="kw-about-contact__site" :href="siteConfig.systemUrl" target="_blank" rel="noopener noreferrer nofollow">yizuw.cn</a></div>
+            <div><small>系统登录</small><a class="kw-about-contact__site" :href="siteConfig.systemUrl" target="_blank" rel="noopener noreferrer nofollow">yz.furong.org</a></div>
           </address>
           <HomeQrPlaceholder />
         </aside>

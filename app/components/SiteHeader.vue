@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
               :aria-current="isCurrentNavigation(item) ? 'page' : undefined"
               @click="handleNavigation(item, $event)"
             >{{ item.label }}</NuxtLink>
-            <button type="button" :aria-expanded="productMenuOpen" aria-controls="product-mega-menu" aria-label="展开产品能力分组" @click="productMenuOpen = !productMenuOpen">⌄</button>
+            <button type="button" :aria-expanded="productMenuOpen" aria-controls="product-mega-menu" aria-label="展开产品能力分组" @click="productMenuOpen = true">⌄</button>
           </div>
           <NuxtLink
             v-else

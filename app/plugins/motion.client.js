@@ -1,9 +1,27 @@
 export default defineNuxtPlugin((nuxtApp) => {
+  const revealCleanupTimers = new WeakMap()
+
+  const clearRevealState = (element) => {
+    const timer = revealCleanupTimers.get(element)
+    if (timer) clearTimeout(timer)
+    revealCleanupTimers.delete(element)
+    delete element.dataset.revealState
+    delete element.dataset.reveal
+    element.style.removeProperty('--kw-reveal-delay')
+  }
+
+  const finishReveal = (element) => {
+    const delay = Number.parseFloat(element.style.getPropertyValue('--kw-reveal-delay')) || 0
+    const timer = window.setTimeout(() => clearRevealState(element), delay + 760)
+    revealCleanupTimers.set(element, timer)
+  }
+
   const revealObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (entry.isIntersecting) {
         entry.target.dataset.revealState = 'visible'
         revealObserver.unobserve(entry.target)
+        finishReveal(entry.target)
       }
     }
   }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' })
@@ -34,6 +52,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (binding.value) element.style.setProperty('--kw-reveal-delay', `${Number(binding.value)}ms`)
       if (document.documentElement.dataset.motion === 'off') {
         element.dataset.revealState = 'visible'
+        finishReveal(element)
         return
       }
       element.dataset.revealState = 'pending'
@@ -41,6 +60,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
     unmounted(element) {
       revealObserver.unobserve(element)
+      clearRevealState(element)
     },
   })
 

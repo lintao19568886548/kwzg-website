@@ -29,7 +29,7 @@ function toggle(index) {
         >
           <span>{{ String(index + 1).padStart(2, '0') }}</span>
           {{ item.question }}
-          <i aria-hidden="true">+</i>
+          <i aria-hidden="true">{{ openIndex === index ? '−' : '+' }}</i>
         </button>
       </h3>
       <div v-show="openIndex === index" :id="`faq-panel-${index}`" role="region" :aria-labelledby="`faq-button-${index}`">

@@ -72,7 +72,7 @@ describe('FloatingContactBar', () => {
     const wecom = wrapper.get('[data-contact-action="wecom"]')
     const phone = wrapper.get('[data-contact-action="phone-desktop"]')
 
-    expect(wrapper.get('[data-contact-action="phone-mobile"]').attributes('href')).toBe(siteConfig.contact.phoneHref)
+    expect(wrapper.get('.kw-floating-contact__mobile-trigger').attributes('aria-expanded')).toBe('false')
     expect(wrapper.find('[data-contact-action="back-top"]').exists()).toBe(false)
 
     await wecom.trigger('mouseenter')
@@ -115,22 +115,30 @@ describe('FloatingContactBar', () => {
     expect(document.activeElement?.id).toBe('main-content')
   })
 
-  it('uses an accessible mobile dialog and direct telephone link', async () => {
+  it('uses one accessible mobile launcher with contact, telephone and back-to-top actions', async () => {
     mobileViewport = true
     const { wrapper } = await mountBar()
-    const wecom = wrapper.get('[data-contact-action="wecom"]')
+    const launcher = wrapper.get('.kw-floating-contact__mobile-trigger')
 
-    expect(wrapper.get('[data-contact-action="phone-mobile"]').attributes('href')).toBe(siteConfig.contact.phoneHref)
-    await wecom.trigger('click')
+    expect(launcher.attributes('aria-expanded')).toBe('false')
+    await launcher.trigger('click')
     expect(wrapper.get('[role="dialog"]').attributes('aria-modal')).toBe('true')
+    expect(wrapper.get('[role="dialog"]').text()).toContain('联系客服')
+    expect(wrapper.get('[role="dialog"]').text()).toContain('电话咨询')
+    expect(wrapper.get('[role="dialog"]').text()).toContain('返回顶部')
     expect(document.body.style.overflow).toBe('hidden')
     expect(document.activeElement).toBe(wrapper.get('[aria-label="关闭联系面板"]').element)
+
+    const phoneAction = wrapper.findAll('.kw-contact-panel__mobile-actions button')
+      .find(button => button.text().includes('电话咨询'))
+    await phoneAction.trigger('click')
+    expect(wrapper.get('.kw-contact-panel__phone').attributes('href')).toBe(siteConfig.contact.phoneHref)
 
     await wrapper.get('.kw-contact-overlay').trigger('click')
     await vi.runAllTimersAsync()
     expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
     expect(document.body.style.overflow).toBe('')
-    expect(document.activeElement).toBe(wecom.element)
+    expect(document.activeElement).toBe(launcher.element)
   })
 
   it('closes on route changes and stays absent from every admin-prefixed route', async () => {

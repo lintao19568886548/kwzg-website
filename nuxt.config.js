@@ -28,8 +28,10 @@ export default defineNuxtConfig({
     '~/assets/css/modern-chinese.css',
     '~/assets/css/content-integration.css',
     '~/assets/css/full-capability.css',
-    '~/assets/css/typography-clarity.css',
     '~/assets/css/public-demo-showcase.css',
+    '~/assets/css/typography-clarity.css',
+    '~/assets/css/composition-clarity.css',
+    '~/assets/css/grand-visual-system.css',
   ],
   runtimeConfig: {
     databaseUrl: process.env.NUXT_DATABASE_URL || '',

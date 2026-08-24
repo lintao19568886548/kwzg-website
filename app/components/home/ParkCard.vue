@@ -1,5 +1,9 @@
 <script setup>
 defineProps({
+  to: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -16,7 +20,7 @@ defineProps({
 </script>
 
 <template>
-  <figure class="kw-park-card">
+  <NuxtLink :to="to" class="kw-park-card" :aria-label="`查看${name}案例详情`">
     <div v-if="images.length" class="kw-park-card__media">
       <img
         :src="images[0]"
@@ -32,9 +36,10 @@ defineProps({
       <UiLinearIcon name="building" :size="30" />
       <span>图片待更新</span>
     </div>
-    <figcaption>
+    <span class="kw-park-card__caption">
       <strong>{{ name }}</strong>
       <span>{{ location }}</span>
-    </figcaption>
-  </figure>
+      <em>查看案例 →</em>
+    </span>
+  </NuxtLink>
 </template>

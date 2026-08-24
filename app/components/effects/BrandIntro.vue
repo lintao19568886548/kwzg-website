@@ -57,8 +57,8 @@ function handleSkip(event) {
         </div>
         <div class="kw-brand-intro__name">瞰维智管</div>
         <div class="kw-brand-intro__tagline">
-          <span>给园区管理装上大脑和翅膀，</span>
-          <span>让您<span class="kw-brand-intro__accent">少操心</span>，赚更多。</span>
+          <span>告别事务缠身，</span>
+          <span><span class="kw-brand-intro__accent">指尖掌控全局</span></span>
         </div>
       </div>
 

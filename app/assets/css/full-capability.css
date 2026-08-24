@@ -90,10 +90,10 @@
 
 .kw-mega-menu__inner { display: grid; grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 2.7fr); gap: 2rem; padding-top: 1.5rem; padding-bottom: 1.6rem; }
 .kw-mega-menu__intro { padding: 1.2rem; border-radius: 1rem; background: #002359; color: #fff; }
-.kw-mega-menu__intro > span { color: #e6b2a6; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; }
-.kw-mega-menu__intro strong { display: block; margin-top: 0.65rem; font-size: 1.35rem; }
-.kw-mega-menu__intro p { margin: 0.75rem 0 1rem; color: rgba(255,255,255,.72); font-size: 0.82rem; line-height: 1.7; }
-.kw-mega-menu__intro a { color: #fff; font-size: 0.82rem; font-weight: 750; }
+.kw-mega-menu__intro > span { color: #e6b2a6; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
+.kw-mega-menu__intro strong { display: block; margin-top: 0.65rem; font-size: 22px; }
+.kw-mega-menu__intro p { margin: 0.75rem 0 1rem; color: rgba(255,255,255,.82); font-size: 14px; line-height: 22px; }
+.kw-mega-menu__intro a { color: #fff; font-size: 14px; font-weight: 700; }
 .kw-mega-menu__groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 1.2rem; }
 .kw-mega-menu__groups section { min-width: 0; }
 .kw-mega-menu__groups h2 { margin: 0 0 0.45rem; color: #a83a2a; font-size: 0.72rem; letter-spacing: 0.08em; }
@@ -337,8 +337,8 @@
 .kw-v3-outline-button:hover, .kw-v3-outline-button:focus-visible { border-color: var(--kw-color-brick); color: var(--kw-color-brick); background: #fff; }
 .kw-v3-principle { padding: 28px 0; background: var(--kw-color-navy); color: #fff; }
 .kw-v3-principle .kw-container { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
-.kw-v3-principle span { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 800; }
-.kw-v3-principle p { max-width: 610px; margin: 0; color: #cad7e9; line-height: 1.8; }
+.kw-v3-principle span { font-size: 20px; font-weight: 700; line-height: 30px; }
+.kw-v3-principle p { max-width: 610px; margin: 0; color: #cad7e9; line-height: 28px; }
 .kw-v3-values__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .kw-v3-values__grid article { min-height: 330px; padding: 26px; border: 1px solid #d6dfea; border-radius: 18px; background: rgba(255,255,255,.92); box-shadow: 0 18px 50px rgba(0,35,89,.05); }
 .kw-v3-values__grid article:hover { border-color: #a9b9ce; box-shadow: 0 22px 58px rgba(0,35,89,.09); }

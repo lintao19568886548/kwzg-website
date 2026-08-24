@@ -3,12 +3,12 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import ContactPopover from '~/components/ContactPopover.vue'
 import UiLinearIcon from '~/components/ui/LinearIcon.vue'
-import { siteConfig } from '~/config/site'
 
 const route = useRoute()
 const rootElement = ref(null)
 const wecomButton = ref(null)
 const phoneButton = ref(null)
+const mobileMenuButton = ref(null)
 const panelComponent = ref(null)
 const activePanel = ref(null)
 const pinnedPanel = ref(null)
@@ -42,7 +42,11 @@ function setBodyLock(shouldLock) {
 }
 
 function focusTrigger(kind) {
-  const target = kind === 'phone' ? phoneButton.value : wecomButton.value
+  const target = isMobile.value || kind === 'menu'
+    ? mobileMenuButton.value
+    : kind === 'phone'
+      ? phoneButton.value
+      : wecomButton.value
   target?.focus()
 }
 
@@ -81,12 +85,26 @@ function toggleDesktopPanel(kind) {
 }
 
 function handleWecomClick() {
-  if (isMobile.value) {
-    activePanel.value = 'wecom'
-    pinnedPanel.value = 'wecom'
+  toggleDesktopPanel('wecom')
+}
+
+function toggleMobileMenu() {
+  if (activePanel.value === 'menu') {
+    closePanel({ restoreFocus: true })
     return
   }
-  toggleDesktopPanel('wecom')
+  activePanel.value = 'menu'
+  pinnedPanel.value = 'menu'
+}
+
+function handleMobileSelect(kind) {
+  activePanel.value = kind
+  pinnedPanel.value = kind
+}
+
+async function handleMobileBackTop() {
+  await closePanel()
+  backToTop()
 }
 
 function updateScrollState() {
@@ -123,7 +141,7 @@ function handleDocumentKeydown(event) {
 
 function handleMobileChange(event) {
   isMobile.value = event.matches
-  if (event.matches && activePanel.value === 'phone') closePanel()
+  if (activePanel.value) closePanel()
   queueScrollUpdate()
 }
 
@@ -179,6 +197,8 @@ onBeforeUnmount(() => {
         :variant="activePanel"
         :mobile="isMobile"
         @close="closePanel({ restoreFocus: true })"
+        @select="handleMobileSelect"
+        @back-top="handleMobileBackTop"
         @mouseenter="clearCloseTimer"
         @mouseleave="scheduleHoverClose"
       />
@@ -186,9 +206,23 @@ onBeforeUnmount(() => {
 
     <div class="kw-floating-contact__rail" role="group" aria-label="快捷联系">
       <button
+        ref="mobileMenuButton"
+        type="button"
+        class="kw-floating-contact__action kw-floating-contact__mobile-trigger"
+        :class="{ 'is-active': activePanel }"
+        aria-label="打开联系与页面服务"
+        aria-controls="kw-floating-contact-panel"
+        :aria-expanded="Boolean(activePanel)"
+        @click="toggleMobileMenu"
+      >
+        <UiLinearIcon name="message" :size="24" />
+        <span>联系服务</span>
+      </button>
+
+      <button
         ref="wecomButton"
         type="button"
-        class="kw-floating-contact__action"
+        class="kw-floating-contact__action kw-floating-contact__desktop-action"
         :class="{ 'is-active': activePanel === 'wecom' }"
         aria-label="联系客服"
         aria-controls="kw-floating-contact-panel"
@@ -205,7 +239,7 @@ onBeforeUnmount(() => {
       <button
         ref="phoneButton"
         type="button"
-        class="kw-floating-contact__action kw-floating-contact__desktop-phone"
+        class="kw-floating-contact__action kw-floating-contact__desktop-phone kw-floating-contact__desktop-action"
         :class="{ 'is-active': activePanel === 'phone' }"
         aria-label="电话咨询"
         aria-controls="kw-floating-contact-panel"
@@ -219,21 +253,11 @@ onBeforeUnmount(() => {
         <span>电话咨询</span>
       </button>
 
-      <a
-        class="kw-floating-contact__action kw-floating-contact__mobile-phone"
-        :href="siteConfig.contact.phoneHref"
-        :aria-label="`电话咨询，拨打${siteConfig.contact.phone}`"
-        data-contact-action="phone-mobile"
-      >
-        <UiLinearIcon name="phone" :size="24" />
-        <span>电话咨询</span>
-      </a>
-
       <Transition name="kw-back-top">
         <button
           v-if="showBackTop"
           type="button"
-          class="kw-floating-contact__action kw-floating-contact__back-top"
+          class="kw-floating-contact__action kw-floating-contact__back-top kw-floating-contact__desktop-action"
           aria-label="返回页面顶部"
           data-contact-action="back-top"
           :style="{ '--kw-scroll-progress': `${scrollProgress * 360}deg` }"

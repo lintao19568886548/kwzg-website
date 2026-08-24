@@ -94,8 +94,8 @@ describe('朱砂聚印 · 智慧启幕', () => {
     await nextTick()
 
     expect(intro.text()).toContain('瞰维智管')
-    expect(intro.text()).toContain('给园区管理装上大脑和翅膀，')
-    expect(intro.text()).toContain('让您少操心，赚更多。')
+    expect(intro.text()).toContain('告别事务缠身，')
+    expect(intro.text()).toContain('指尖掌控全局')
     expect(intro.findAll('h1')).toHaveLength(0)
     expect(intro.get('.kw-brand-intro__skip').attributes('aria-label')).toBe('跳过品牌开场，进入首页')
     expect(intro.get('img').attributes('src')).toBe('/assets/logo/kwzg-logo-symbol.png')

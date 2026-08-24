@@ -18,8 +18,10 @@ describe('typography rendering safeguards', () => {
     expect(mainCss).toContain('font-kerning: normal')
     expect(mainCss).toContain('font-synthesis: none')
     expect(mainCss).toContain('text-rendering: auto')
-    expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}\n${typographyClarityCss}\n${nuxtConfig}`).not.toMatch(/@font-face|fonts\.googleapis|font-smoothing|text-rendering:\s*optimizeLegibility/)
-    expect(nuxtConfig.indexOf('~/assets/css/typography-clarity.css')).toBeGreaterThan(nuxtConfig.indexOf('~/assets/css/full-capability.css'))
+    expect(typographyClarityCss).toContain('-webkit-font-smoothing: auto')
+    expect(typographyClarityCss).toContain('-moz-osx-font-smoothing: auto')
+    expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}\n${typographyClarityCss}\n${nuxtConfig}`).not.toMatch(/@font-face|fonts\.googleapis|text-rendering:\s*optimizeLegibility|font-smoothing:\s*(antialiased|grayscale)/)
+    expect(nuxtConfig.indexOf('~/assets/css/typography-clarity.css')).toBeGreaterThan(nuxtConfig.indexOf('~/assets/css/public-demo-showcase.css'))
   })
 
   it('removes the reveal transform after the entrance transition', () => {
@@ -39,10 +41,12 @@ describe('typography rendering safeguards', () => {
   })
 
   it('uses integer-sized responsive display type and fixed Chinese title tracking', () => {
-    expect(typographyClarityCss).toContain('--kw-type-display-size: 4.75rem')
-    expect(typographyClarityCss).toContain('--kw-type-title-spacing: -1px')
-    expect(typographyClarityCss).toMatch(/@media \(max-width: 64rem\)[\s\S]*--kw-type-display-size: 3rem/)
-    expect(typographyClarityCss).toMatch(/@media \(max-width: 34rem\)[\s\S]*--kw-type-title-spacing: 0/)
+    expect(typographyClarityCss).toContain('--font-body: 17px')
+    expect(typographyClarityCss).toContain('--kw-type-display-size: 50px')
+    expect(typographyClarityCss).toContain('--kw-type-section-size: 38px')
+    expect(typographyClarityCss).toContain('letter-spacing: normal !important')
+    expect(typographyClarityCss).toMatch(/@media \(max-width: 1024px\)[\s\S]*--kw-type-display-size: 42px/)
+    expect(typographyClarityCss).toMatch(/@media \(max-width: 540px\)[\s\S]*--kw-type-display-size: 36px/)
   })
 
   it('does not keep the desktop contact panel on a transformed text layer', () => {

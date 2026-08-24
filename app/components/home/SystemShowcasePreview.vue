@@ -75,6 +75,81 @@ const maintenanceFields = computed(() => [
   ['响应时间', demo.maintenance.order.respondedAt],
   ['计划完成', demo.maintenance.order.plannedCompletion],
 ])
+
+const compactFields = computed(() => ({
+  operations: [
+    ['累计应收', `${money(demo.overview.receivable)}元`],
+    ['累计实收', `${money(demo.overview.received)}元`],
+    ['待收余额', `${money(demo.overview.outstanding)}元`, 'alert'],
+    ['在租面积', area(demo.overview.leasedArea)],
+    ['回款率', `${demo.overview.collectionRate.toFixed(1)}%`],
+    ['经营待办', `${demo.overview.uniqueTaskTotal}项`],
+  ],
+  'data-map': [
+    ['园区楼栋', `${demo.buildings.length}栋`],
+    ['可租面积', area(demo.overview.rentableArea)],
+    ['在租面积', area(demo.overview.leasedArea)],
+    ['空置面积', area(demo.overview.vacantArea), 'alert'],
+    ['出租率', `${demo.overview.occupancyRate.toFixed(1)}%`],
+    ['设备状态', demo.buildings[0].deviceStatus, 'ok'],
+  ],
+  equipment: [
+    ['设备总数', `${demo.equipment.summary.total}台`],
+    ['传感器', `${demo.equipment.summary.sensors}台`],
+    ['执行终端', `${demo.equipment.summary.controllers}台`],
+    ['在线设备', `${demo.equipment.summary.online}台`, 'ok'],
+    ['设备类型', demo.equipment.primary.type],
+    ['运行状态', demo.equipment.primary.runningStatus, 'ok'],
+  ],
+  leasing: [
+    ['在租房源', `${area(demo.leasing[0].area)} · ${demo.leasing[0].status}`, 'ok'],
+    ['空置房源', `${area(demo.leasing[1].area)} · ${demo.leasing[1].status}`, 'alert'],
+    ['即将到期', `${area(demo.leasing[2].area)} · ${demo.leasing[2].contractStatus}`],
+    ['计租方式', demo.leasing[0].billingMethod],
+    ['下次账单日', demo.leasing[0].nextBillingDate],
+    ['续租状态', demo.leasing[2].renewalStatus],
+  ],
+  investment: [
+    ['项目名称', demo.investment.lead.projectName],
+    ['线索来源', demo.investment.lead.source],
+    ['意向面积', demo.investment.lead.intendedArea],
+    ['客户阶段', demo.investment.lead.stage, 'ok'],
+    ['客户等级', demo.investment.lead.grade],
+    ['下一步计划', demo.investment.lead.nextPlan],
+  ],
+  'human-resources': [
+    ['在职员工', `${demo.humanResources.stats.activeEmployees}人`],
+    ['今日出勤', `${demo.humanResources.stats.presentToday}人`, 'ok'],
+    ['今日请假', `${demo.humanResources.stats.leaveToday}人`],
+    ['考勤异常', `${demo.humanResources.stats.attendanceExceptions}人`, 'alert'],
+    ['所属部门', demo.humanResources.employee.department],
+    ['在职状态', demo.humanResources.employee.employmentStatus, 'ok'],
+  ],
+  finance: [
+    ['累计应收', money(demo.finance.receivable)],
+    ['累计实收', money(demo.finance.received)],
+    ['待收余额', money(demo.finance.outstanding), 'alert'],
+    ['回款率', `${demo.finance.collectionRate.toFixed(1)}%`],
+    ['演示账单', `${demo.finance.bills.length}条`],
+    ['核销状态', demo.finance.bills[0].writeOffStatus, 'ok'],
+  ],
+  'access-control': [
+    ['门禁点', demo.access.employeeRecord.accessPoint],
+    ['人员类型', demo.access.employeeRecord.personType],
+    ['验证方式', demo.access.employeeRecord.verification],
+    ['通行结果', demo.access.employeeRecord.result, 'ok'],
+    ['访客状态', demo.access.visitorRecord.status, 'ok'],
+    ['车辆标识', demo.access.visitorRecord.vehicle],
+  ],
+  maintenance: [
+    ['问题类型', demo.maintenance.order.issueType],
+    ['报修位置', demo.maintenance.order.location],
+    ['紧急程度', demo.maintenance.order.urgency],
+    ['当前状态', demo.maintenance.order.status, 'ok'],
+    ['提交时间', demo.maintenance.order.submittedAt],
+    ['处理人员', demo.maintenance.order.assignee],
+  ],
+})[moduleId.value] || [])
 </script>
 
 <template>
@@ -104,7 +179,22 @@ const maintenanceFields = computed(() => [
           <span>{{ demo.overview.period }}</span>
         </div>
 
-        <template v-if="moduleId === 'operations'">
+        <template v-if="!modal">
+          <div class="kw-demo-compact-grid">
+            <article
+              v-for="field in compactFields"
+              :key="field[0]"
+              :class="{ 'is-alert': field[2] === 'alert', 'is-ok': field[2] === 'ok' }"
+            >
+              <span>{{ field[0] }}</span>
+              <strong>{{ field[1] }}</strong>
+              <small>安全演示数据</small>
+            </article>
+          </div>
+          <p class="kw-demo-inline-note">当前预览仅保留 6 个关键字段；查看高清界面可阅读完整演示结构。</p>
+        </template>
+
+        <template v-else-if="moduleId === 'operations'">
           <div class="kw-demo-stat-grid kw-demo-stat-grid--overview">
             <article v-for="item in overviewMetrics" :key="item.label" :class="{ 'is-alert': item.tone === 'red' }"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><small>演示口径</small></article>
           </div>
@@ -182,6 +272,6 @@ const maintenanceFields = computed(() => [
 
     <div class="kw-demo-interface__watermark" aria-hidden="true">{{ demo.meta.watermark }}</div>
     <figcaption>{{ demo.meta.footerNotice }}</figcaption>
-    <button v-if="!modal" class="kw-demo-interface__expand" type="button" :aria-label="`放大查看${module.name}演示界面`" @click="$emit('expand')">放大查看 <span aria-hidden="true">↗</span></button>
+    <button v-if="!modal" class="kw-demo-interface__expand" type="button" :aria-label="`查看${module.name}高清演示界面`" @click="$emit('expand')">查看高清界面 <span aria-hidden="true">↗</span></button>
   </figure>
 </template>
