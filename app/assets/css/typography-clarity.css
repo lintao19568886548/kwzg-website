@@ -5,7 +5,8 @@
  */
 
 :root {
-  --font-cn: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --kw-font-cn: "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --font-cn: var(--kw-font-cn);
   --font-sans: var(--font-cn);
   --font-display: var(--font-cn);
   --text-primary: #062b5c;
@@ -240,15 +241,15 @@ small,
 
 .kw-site-shell .kw-brand-logo__header-tagline,
 .kw-site-shell .kw-brand-logo__header-tagline-text {
-  font-size: 13px !important;
-  line-height: 18px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
 }
 
 .kw-site-shell :is(.kw-home-hero__copy > p, .kw-v3-hero__promise) {
   max-width: 620px;
   color: #52647a !important;
   font-size: 18px !important;
-  line-height: 32px !important;
+  line-height: 30px !important;
 }
 
 .kw-site-shell .kw-v3-hero__value {

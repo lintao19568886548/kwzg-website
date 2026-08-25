@@ -8,6 +8,7 @@ const stageTwoCss = readFileSync(new URL('../../app/assets/css/stage2.css', impo
 const motionCss = readFileSync(new URL('../../app/assets/css/motion.css', import.meta.url), 'utf8')
 const floatingContactCss = readFileSync(new URL('../../app/assets/css/floating-contact.css', import.meta.url), 'utf8')
 const typographyClarityCss = readFileSync(new URL('../../app/assets/css/typography-clarity.css', import.meta.url), 'utf8')
+const grandVisualCss = readFileSync(new URL('../../app/assets/css/grand-visual-system.css', import.meta.url), 'utf8')
 const nuxtConfig = readFileSync(new URL('../../nuxt.config.js', import.meta.url), 'utf8')
 const brandLogo = readFileSync(new URL('../../app/components/BrandLogo.vue', import.meta.url), 'utf8')
 
@@ -22,6 +23,20 @@ describe('typography rendering safeguards', () => {
     expect(typographyClarityCss).toContain('-moz-osx-font-smoothing: auto')
     expect(`${mainCss}\n${stageOneCss}\n${stageOneSectionsCss}\n${stageTwoCss}\n${typographyClarityCss}\n${nuxtConfig}`).not.toMatch(/@font-face|fonts\.googleapis|text-rendering:\s*optimizeLegibility|font-smoothing:\s*(antialiased|grayscale)/)
     expect(nuxtConfig.indexOf('~/assets/css/typography-clarity.css')).toBeGreaterThan(nuxtConfig.indexOf('~/assets/css/public-demo-showcase.css'))
+    expect(typographyClarityCss).toContain('--kw-font-cn: "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif')
+  })
+
+  it('keeps the benchmark container, gutters and hero proportions in one final override layer', () => {
+    expect(grandVisualCss).toContain('--kw-container-wide: 1300px')
+    expect(grandVisualCss).toContain('--kw-gutter-desktop: 2rem')
+    expect(grandVisualCss).toContain('--kw-gutter-mobile: 1.25rem')
+    expect(grandVisualCss).toContain('--kw-scrollbar-gutter-pair: 30px')
+    expect(grandVisualCss).toContain('scrollbar-gutter: stable both-edges')
+    expect(grandVisualCss).toMatch(/\.kw-container \{[^}]*width: min\(var\(--kw-container-wide\), calc\(100vw - var\(--kw-gutter-desktop\) \* 2 \+ var\(--kw-scrollbar-gutter-pair\)\)\)/)
+    expect(grandVisualCss).toMatch(/\.kw-home-hero__grid \{[\s\S]*?gap: 3\.5rem;[\s\S]*?grid-template-columns: minmax\(0, 31\.25rem\) minmax\(0, 1fr\)/)
+    expect(grandVisualCss).toMatch(/@media \(min-width: 100rem\)[\s\S]*?font-size: 3\.5rem !important;[\s\S]*?line-height: 4\.25rem !important;/)
+    expect(grandVisualCss).toMatch(/@media \(max-width: 64rem\)[\s\S]*?font-size: 2\.875rem !important;[\s\S]*?line-height: 3\.625rem !important;/)
+    expect(grandVisualCss).toMatch(/@media \(max-width: 47\.9375rem\)[\s\S]*?var\(--kw-gutter-mobile\)/)
   })
 
   it('removes the reveal transform after the entrance transition', () => {
