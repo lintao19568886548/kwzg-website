@@ -5,7 +5,8 @@
  */
 
 :root {
-  --kw-font-cn: "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --font-family-sans: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --kw-font-cn: var(--font-family-sans);
   --font-cn: var(--kw-font-cn);
   --font-sans: var(--font-cn);
   --font-display: var(--font-cn);
@@ -15,14 +16,34 @@
   --text-on-dark: #f8f5ee;
   --font-body: 17px;
   --line-body: 30px;
-  --font-helper: 14px;
-  --line-helper: 22px;
-  --kw-type-display-size: 50px;
-  --kw-type-display-line: 62px;
-  --kw-type-section-size: 38px;
-  --kw-type-section-line: 50px;
-  --kw-type-card-title-size: 21px;
-  --kw-type-card-title-line: 32px;
+  --font-helper: 15px;
+  --line-helper: 24px;
+  --font-size-hero: 60px;
+  --line-height-hero: 72px;
+  --font-size-page-title: 52px;
+  --line-height-page-title: 64px;
+  --font-size-section-title: 42px;
+  --line-height-section-title: 54px;
+  --font-size-card-title: 22px;
+  --line-height-card-title: 34px;
+  --font-size-body-large: 19px;
+  --line-height-body-large: 32px;
+  --font-size-body: 17px;
+  --line-height-body: 30px;
+  --font-size-nav: 17px;
+  --line-height-nav: 26px;
+  --font-size-button: 17px;
+  --line-height-button: 26px;
+  --font-size-helper: 15px;
+  --line-height-helper: 24px;
+  --font-size-system-ui: 15px;
+  --line-height-system-ui: 24px;
+  --kw-type-display-size: var(--font-size-page-title);
+  --kw-type-display-line: var(--line-height-page-title);
+  --kw-type-section-size: var(--font-size-section-title);
+  --kw-type-section-line: var(--line-height-section-title);
+  --kw-type-card-title-size: var(--font-size-card-title);
+  --kw-type-card-title-line: var(--line-height-card-title);
   --kw-muted: var(--text-secondary);
   --kw-text-secondary: var(--text-secondary);
 }
@@ -30,7 +51,7 @@
 html {
   font-family: var(--font-cn);
   font-synthesis: none;
-  text-rendering: auto;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
   text-size-adjust: 100%;
@@ -51,6 +72,7 @@ body {
   font-weight: 400;
   line-height: var(--line-body);
   letter-spacing: normal;
+  font-kerning: normal;
 }
 
 /* Disable synthetic intermediate weights throughout the rendered site. */
@@ -200,8 +222,8 @@ small,
 .kw-header__nav a,
 .kw-header__actions a,
 .kw-mobile-nav a {
-  font-size: 16px !important;
-  line-height: 24px !important;
+  font-size: var(--font-size-nav) !important;
+  line-height: var(--line-height-nav) !important;
 }
 
 .kw-brand-logo__header-tagline,
@@ -224,14 +246,14 @@ small,
 
 .kw-site-shell :is(.kw-section-heading p, .kw-final-cta p, .kw-stage2-hero > .kw-container > p) {
   max-width: 780px;
-  font-size: 17px !important;
-  line-height: 30px !important;
+  font-size: var(--font-size-body-large) !important;
+  line-height: var(--line-height-body-large) !important;
 }
 
 .kw-site-shell :is(article, .kw-card, .kw-stage2-card) > p,
 .kw-site-shell article :is(p, li, dd) {
-  font-size: 16px !important;
-  line-height: 28px !important;
+  font-size: var(--font-size-body) !important;
+  line-height: var(--line-height-body) !important;
 }
 
 .kw-site-shell :is(.kw-product-tabs, .kw-v3-roles__tabs, .kw-v3-showcase nav) button {
@@ -248,8 +270,8 @@ small,
 .kw-site-shell :is(.kw-home-hero__copy > p, .kw-v3-hero__promise) {
   max-width: 620px;
   color: #52647a !important;
-  font-size: 18px !important;
-  line-height: 30px !important;
+  font-size: var(--font-size-body-large) !important;
+  line-height: var(--line-height-body-large) !important;
 }
 
 .kw-site-shell .kw-v3-hero__value {
@@ -341,8 +363,8 @@ small,
 /* The hero dashboard is also a Vue/CSS system preview, never a scaled screenshot. */
 .kw-dashboard,
 .kw-dashboard :is(span, small, strong, p, li, dt, dd, label, button, em) {
-  font-size: 14px !important;
-  line-height: 22px !important;
+  font-size: var(--font-size-system-ui) !important;
+  line-height: var(--line-height-system-ui) !important;
 }
 
 .kw-dashboard__metrics {
@@ -350,7 +372,7 @@ small,
 }
 
 .kw-dashboard :is(.kw-dashboard__heading h2, .kw-dashboard__metric strong, .kw-dashboard__payment-row strong, .kw-dashboard__payment-balance strong, .kw-dashboard__tasks-heading strong) {
-  font-size: 20px !important;
+  font-size: 22px !important;
   line-height: 30px !important;
 }
 
@@ -535,19 +557,34 @@ small,
 
 @media (max-width: 1024px) {
   :root {
-    --kw-type-display-size: 42px;
-    --kw-type-display-line: 54px;
+    --kw-type-display-size: 48px;
+    --kw-type-display-line: 58px;
+    --kw-type-section-size: 38px;
+    --kw-type-section-line: 48px;
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 899px) {
   :root {
-    --kw-type-display-size: 36px;
-    --kw-type-display-line: 46px;
-    --kw-type-section-size: 30px;
-    --kw-type-section-line: 40px;
-    --kw-type-card-title-size: 19px;
-    --kw-type-card-title-line: 28px;
+    --kw-type-display-size: 42px;
+    --kw-type-display-line: 52px;
+    --kw-type-section-size: 34px;
+    --kw-type-section-line: 44px;
+    --font-size-body: 16px;
+    --line-height-body: 28px;
+  }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --kw-type-display-size: 38px;
+    --kw-type-display-line: 48px;
+    --kw-type-section-size: 32px;
+    --kw-type-section-line: 42px;
+    --kw-type-card-title-size: 20px;
+    --kw-type-card-title-line: 30px;
+    --font-size-system-ui: 14px;
+    --line-height-system-ui: 22px;
   }
 
   body {

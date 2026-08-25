@@ -44,6 +44,7 @@ describe('verified operating overview presentation', () => {
   it('floats only the homepage hero workbench with motion and performance fallbacks', () => {
     expect(source).toContain('floating: Boolean')
     expect(source).toContain("'kw-dashboard-source--floating': props.floating")
+    expect(source).toContain('v-if="!props.floating" class="kw-dashboard__progress"')
     expect(homepageSource.match(/<HomeDashboardOverview[^>]*\bfloating\b[^>]*>/g)).toHaveLength(1)
     expect(motionSource).toContain('@keyframes kw-dashboard-float')
     expect(motionSource).toContain('@keyframes kw-dashboard-shadow-float')

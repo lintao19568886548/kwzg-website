@@ -174,13 +174,14 @@ function handleSkip(event) {
 .kw-brand-intro__content {
   position: absolute;
   z-index: 4;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   display: grid;
   width: min(calc(100% - 3rem), 50rem);
+  height: max-content;
+  margin: auto;
   justify-items: center;
   text-align: center;
-  transform: translate(-50%, -51%);
+  transform: none;
 }
 
 .kw-brand-intro__seal {
@@ -396,7 +397,7 @@ function handleSkip(event) {
 
   .kw-brand-intro__content {
     width: min(calc(100% - 2.5rem), 27rem);
-    transform: translate(-50%, -53%);
+    transform: none;
   }
 
   .kw-brand-intro__seal {

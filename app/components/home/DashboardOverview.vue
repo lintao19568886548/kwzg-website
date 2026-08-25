@@ -125,7 +125,7 @@ const navigationGroups = computed(() => (
                   <em>当前余额 · 演示</em>
                 </p>
               </div>
-              <div class="kw-dashboard__progress"><span>回款完成度</span><i><b :style="{ width: `${demo.overview.collectionRate}%` }" /></i><em>{{ demo.overview.collectionRate.toFixed(1) }}% · 演示</em></div>
+              <div v-if="!props.floating" class="kw-dashboard__progress"><span>回款完成度</span><i><b :style="{ width: `${demo.overview.collectionRate}%` }" /></i><em>{{ demo.overview.collectionRate.toFixed(1) }}% · 演示</em></div>
             </section>
 
             <section class="kw-dashboard__tasks">
