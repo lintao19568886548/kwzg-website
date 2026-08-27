@@ -10,16 +10,19 @@
 4. 确认 DNS、根域名和 www 证书均由用户在部署窗口明确授权后处理。
 5. 将 `deploy/nginx/yizuw.org.conf.example` 复制为部署主机上的实际配置文件；私钥和证书不进入仓库。
 6. 本地或 CI 运行 `npm run lint`、`npm run test`、`npm run build`、`npm run security:scan` 和 `git diff --check`。
-7. 以指定提交构建 `kwzg-official-website:<不可变标签>`，显式传入 `NUXT_PUBLIC_SITE_URL=https://yizuw.org`、`NUXT_PUBLIC_INDEXABLE=false`、`NUXT_ENABLE_HSTS=false` 三个构建参数，并检查镜像用户不是 root。构建参数必须与运行时变量一致。
+7. 在 GitHub Linux Runner 以指定提交构建 `kwzg-website:<不可变标签>`，显式传入 `NUXT_PUBLIC_SITE_URL=https://yizuw.org`、`NUXT_PUBLIC_INDEXABLE=false`、`NUXT_ENABLE_HSTS=false` 三个构建参数，并检查镜像用户不是 root。构建参数必须与运行时变量一致。
+8. 构建机同时拉取固定版本 `mariadb:11.4.5`，使用 `docker save | gzip` 打包应用与数据库镜像，校验 SHA-256 后通过 SSH 管道传输到服务器执行 `docker load`；生产服务器不得直连 Docker Hub 或 GHCR。
+9. 官网只使用仓库专用 SSH 密钥；不得复用个人密钥或其他客户系统的 CI 密钥。
 
 ## 发布顺序
 
 1. 启动 MariaDB，并确认只位于 Compose 内部网络、未发布 3306。
 2. 只运行一个 `migrate` 服务。迁移脚本还会获取数据库 advisory lock，失败时停止发布，不启动应用副本。
 3. 确认迁移完成后启动应用；应用启动不会自动执行迁移。
-4. 应用健康后启动 Nginx。外部只开放 80/443，Nuxt 3000 和数据库端口不对公网发布。
-5. 验证 HTTP 根域名、HTTP www 和 HTTPS www 均 301 到 `https://yizuw.org`，无重定向循环。
-6. 验证 TLS 1.2/1.3、证书链、根域名与 www 覆盖，以及自动续期定时任务。
+4. 应用健康后，将官网应用确认绑定在 `127.0.0.1:9000`，数据库不得发布 3306。
+5. 只安装 `/etc/nginx/conf.d/yizuw-org.conf`，执行 `nginx -t && systemctl reload nginx`；测试或 reload 失败时立即恢复官网旧配置。禁止 restart，禁止修改其他站点文件。
+6. 验证 HTTP 根域名、HTTP www 和 HTTPS www 均 301 到 `https://yizuw.org`，无重定向循环。
+7. 验证 TLS 1.2/1.3、证书链、根域名与 www 覆盖，以及自动续期定时任务。
 
 ## 冒烟验收
 

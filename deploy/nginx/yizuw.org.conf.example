@@ -1,4 +1,12 @@
-server_tokens off;
+upstream kwzg_official_site {
+    server 127.0.0.1:9000;
+    keepalive 16;
+}
+
+map $http_upgrade $kwzg_connection_upgrade {
+    default upgrade;
+    '' close;
+}
 
 limit_req_zone $binary_remote_addr zone=kwzg_forms:10m rate=10r/m;
 
@@ -6,18 +14,30 @@ server {
     listen 80;
     listen [::]:80;
     server_name yizuw.org www.yizuw.org;
-    return 301 https://yizuw.org$request_uri;
+    server_tokens off;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/acme;
+        default_type text/plain;
+        try_files $uri =404;
+        access_log off;
+    }
+
+    location / {
+        return 301 https://yizuw.org$request_uri;
+    }
 }
 
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name www.yizuw.org;
+    server_tokens off;
 
-    ssl_certificate /etc/letsencrypt/live/yizuw.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yizuw.org/privkey.pem;
+    ssl_certificate /etc/nginx/certs/yizuw-org/yizuw.org.crt;
+    ssl_certificate_key /etc/nginx/certs/yizuw-org/yizuw.org.key;
     ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_session_cache shared:SSL:10m;
+    ssl_session_cache shared:KWZG_TLS:10m;
     ssl_session_timeout 1d;
 
     return 301 https://yizuw.org$request_uri;
@@ -27,31 +47,32 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name yizuw.org;
+    server_tokens off;
 
-    ssl_certificate /etc/letsencrypt/live/yizuw.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yizuw.org/privkey.pem;
+    ssl_certificate /etc/nginx/certs/yizuw-org/yizuw.org.crt;
+    ssl_certificate_key /etc/nginx/certs/yizuw-org/yizuw.org.key;
     ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_session_cache shared:SSL:10m;
+    ssl_session_cache shared:KWZG_TLS:10m;
     ssl_session_timeout 1d;
 
     client_max_body_size 1m;
     keepalive_timeout 65s;
 
     location /_nuxt/ {
-        proxy_pass http://app:3000;
+        proxy_pass http://kwzg_official_site;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
         expires 1y;
         add_header Cache-Control "public, max-age=31536000, immutable" always;
     }
 
     location /assets/ {
-        proxy_pass http://app:3000;
+        proxy_pass http://kwzg_official_site;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
         expires 7d;
         add_header Cache-Control "public, max-age=604800" always;
@@ -59,10 +80,10 @@ server {
 
     location = /api/demo-requests {
         limit_req zone=kwzg_forms burst=5 nodelay;
-        proxy_pass http://app:3000;
+        proxy_pass http://kwzg_official_site;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_connect_timeout 5s;
         proxy_read_timeout 30s;
@@ -71,10 +92,10 @@ server {
     }
 
     location ~ ^/(admin|api/admin)(/|$) {
-        proxy_pass http://app:3000;
+        proxy_pass http://kwzg_official_site;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_connect_timeout 5s;
         proxy_read_timeout 30s;
@@ -83,15 +104,17 @@ server {
     }
 
     location / {
-        proxy_pass http://app:3000;
+        proxy_pass http://kwzg_official_site;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $kwzg_connection_upgrade;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_connect_timeout 5s;
-        proxy_read_timeout 30s;
-        proxy_send_timeout 30s;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
         add_header Cache-Control "no-cache" always;
     }
 

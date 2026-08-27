@@ -10,8 +10,8 @@ RELEASE_ENV="$APP_DIR/.release.env"
 PREVIOUS_RELEASE_ENV="$APP_DIR/.previous-release.env"
 BACKUP_DIR="$APP_DIR/backups"
 
-if [[ ! "$IMAGE_REPOSITORY" =~ ^ghcr\.io/[a-z0-9._/-]+$ ]]; then
-  echo "Invalid GHCR image repository." >&2
+if [[ ! "$IMAGE_REPOSITORY" =~ ^[a-z0-9][a-z0-9._/-]*$ ]]; then
+  echo "Invalid preloaded image repository." >&2
   exit 2
 fi
 if [[ ! "$IMAGE_TAG" =~ ^sha-[0-9a-f]{40}$ ]]; then
@@ -59,9 +59,12 @@ restore_previous_release() {
       previous_image=$(sed -n 's/^KWZG_IMAGE=//p' "$RELEASE_ENV")
       previous_tag=$(sed -n 's/^KWZG_IMAGE_TAG=//p' "$RELEASE_ENV")
       if [[ -n "$previous_image" && -n "$previous_tag" ]]; then
-        docker pull "$previous_image:$previous_tag" || true
-        compose=(docker compose --env-file "$RUNTIME_ENV" --env-file "$RELEASE_ENV" -f "$COMPOSE_FILE")
-        "${compose[@]}" up -d --no-deps --force-recreate app || true
+        if docker image inspect "$previous_image:$previous_tag" >/dev/null 2>&1; then
+          compose=(docker compose --env-file "$RUNTIME_ENV" --env-file "$RELEASE_ENV" -f "$COMPOSE_FILE")
+          "${compose[@]}" up -d --no-deps --force-recreate app || true
+        else
+          echo "Previous preloaded image is unavailable; automatic application rollback was skipped." >&2
+        fi
       fi
     fi
   else
@@ -75,8 +78,9 @@ restore_previous_release() {
 }
 trap restore_previous_release ERR
 
-echo "Pulling immutable image $IMAGE_REPOSITORY:$IMAGE_TAG"
-docker pull "$IMAGE_REPOSITORY:$IMAGE_TAG"
+echo "Verifying preloaded immutable images"
+docker image inspect "$IMAGE_REPOSITORY:$IMAGE_TAG" >/dev/null
+docker image inspect mariadb:11.4.5 >/dev/null
 
 "${compose[@]}" up -d db
 db_id=$("${compose[@]}" ps -q db)
