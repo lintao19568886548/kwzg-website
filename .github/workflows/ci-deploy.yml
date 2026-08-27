@@ -128,8 +128,8 @@ jobs:
       - name: Install application deployment files only
         shell: bash
         run: |
-          SSH=(ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes)
-          SCP=(scp -i "$HOME/.ssh/kwzg_deploy" -P "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes)
+          SSH=(ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes)
+          SCP=(scp -i "$HOME/.ssh/kwzg_deploy" -P "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes)
           "${SSH[@]}" "$DEPLOY_USER@$DEPLOY_HOST" "install -d -m 700 '$DEPLOY_PATH'"
           "${SCP[@]}" docker-compose.prod.yml "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/docker-compose.prod.yml"
           "${SCP[@]}" deploy/production/deploy.sh "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/deploy.sh"
@@ -139,16 +139,16 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
         run: |
-          printf '%s' "$GHCR_TOKEN" | ssh -T -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker login ghcr.io --username '$GHCR_USER' --password-stdin"
+          printf '%s' "$GHCR_TOKEN" | ssh -T -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker login ghcr.io --username '$GHCR_USER' --password-stdin"
       - name: Pull, migrate and switch application containers
         shell: bash
         env:
           IMAGE: ${{ needs.build_image.outputs.image }}
           TAG: ${{ needs.build_image.outputs.tag }}
         run: |
-          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "chmod 700 '$DEPLOY_PATH/deploy.sh' && '$DEPLOY_PATH/deploy.sh' '$IMAGE' '$TAG'"
+          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes "$DEPLOY_USER@$DEPLOY_HOST" "chmod 700 '$DEPLOY_PATH/deploy.sh' && '$DEPLOY_PATH/deploy.sh' '$IMAGE' '$TAG'"
       - name: Remove temporary registry credential
         if: always()
         shell: bash
         run: |
-          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker logout ghcr.io >/dev/null 2>&1 || true" || true
+          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker logout ghcr.io >/dev/null 2>&1 || true" || true
