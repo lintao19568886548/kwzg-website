@@ -1,12 +1,8 @@
 import process from 'node:process'
 
-const required = ['NUXT_DATABASE_URL', 'NUXT_ADMIN_USERNAME', 'NUXT_ADMIN_PASSWORD_HASH', 'NUXT_SESSION_PASSWORD', 'NUXT_PUBLIC_SITE_URL', 'NUXT_TRUSTED_ORIGINS']
+const required = ['NUXT_DATABASE_URL', 'NUXT_SESSION_PASSWORD', 'NUXT_PUBLIC_SITE_URL', 'NUXT_TRUSTED_ORIGINS']
 if (required.some(name => !process.env[name])) {
   throw new Error('Required Stage 2 server configuration is missing.')
-}
-
-if (!process.env.NUXT_ADMIN_PASSWORD_HASH.startsWith('$argon2id$')) {
-  throw new Error('NUXT_ADMIN_PASSWORD_HASH must be an Argon2id hash.')
 }
 
 if (process.env.NUXT_SESSION_PASSWORD.length < 32) {

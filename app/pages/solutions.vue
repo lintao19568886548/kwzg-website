@@ -1,4 +1,6 @@
 <script setup>
+import { computed, nextTick, ref } from 'vue'
+import { useAutoplayCarousel } from '~/composables/useAutoplayCarousel'
 import { getCapability, parkTypeSolutions } from '~/data/product-capabilities'
 
 usePageSeo({
@@ -6,9 +8,43 @@ usePageSeo({
   description: '按工业园区、厂房、仓库、产业园、物流园、写字楼和多园区经营场景，以及老板、招商、财务、物业工程和人事角色查看瞰维智管方案。',
 })
 
-const activePark = ref(parkTypeSolutions[0].name)
-const park = computed(() => parkTypeSolutions.find(item => item.name === activePark.value) || parkTypeSolutions[0])
+const activeParkIndex = ref(0)
+const parkCarousel = ref(null)
+const parkTabs = ref([])
+const park = computed(() => parkTypeSolutions[activeParkIndex.value] || parkTypeSolutions[0])
+const activePark = computed(() => park.value.name)
 const parkCapabilities = computed(() => park.value.capabilities.map(getCapability).filter(Boolean))
+const {
+  allowResume,
+  autoplayState,
+  pause,
+  restartCycle,
+  resume,
+  setFocused,
+  setHovered,
+} = useAutoplayCarousel({
+  root: parkCarousel,
+  activeIndex: activeParkIndex,
+  itemCount: parkTypeSolutions.length,
+  interval: 6500,
+})
+
+function selectPark(index, { focus = false } = {}) {
+  activeParkIndex.value = index
+  restartCycle()
+  if (focus) nextTick(() => parkTabs.value[index]?.focus())
+}
+
+function moveParkTab(event, index) {
+  let nextIndex = index
+  if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % parkTypeSolutions.length
+  else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + parkTypeSolutions.length) % parkTypeSolutions.length
+  else if (event.key === 'Home') nextIndex = 0
+  else if (event.key === 'End') nextIndex = parkTypeSolutions.length - 1
+  else return
+  event.preventDefault()
+  selectPark(nextIndex, { focus: true })
+}
 </script>
 
 <template>
@@ -20,9 +56,18 @@ const parkCapabilities = computed(() => park.value.capabilities.map(getCapabilit
       </div>
     </section>
 
-    <section class="kw-section kw-park-type-solutions" aria-labelledby="park-type-title">
+    <section
+      ref="parkCarousel"
+      class="kw-section kw-park-type-solutions"
+      aria-labelledby="park-type-title"
+      @mouseenter="setHovered(true)"
+      @mouseleave="setHovered(false)"
+      @focusin="setFocused(true)"
+      @focusout="setFocused(false)"
+    >
       <div class="kw-container"><div v-reveal class="kw-section-heading kw-section-heading--split"><div><span class="kw-section-kicker">按园区类型</span><h2 id="park-type-title">从资产与经营场景出发</h2></div><p>适用范围随资产结构、岗位、资料和软硬件条件确认；不会把仓库经营扩写为库存物流系统。</p></div>
-        <div class="kw-park-type-solutions__tabs" role="tablist" aria-label="园区类型"><button v-for="item in parkTypeSolutions" :key="item.name" type="button" role="tab" :aria-selected="activePark === item.name" :class="{ 'is-active': activePark === item.name }" @click="activePark = item.name">{{ item.name }}</button></div>
+        <div class="kw-park-type-solutions__tabs" role="tablist" aria-label="园区类型"><button v-for="(item, index) in parkTypeSolutions" :key="item.name" :ref="element => { if (element) parkTabs[index] = element }" type="button" role="tab" :tabindex="activeParkIndex === index ? 0 : -1" :aria-selected="activePark === item.name" :class="{ 'is-active': activePark === item.name }" @click="selectPark(index)" @keydown="moveParkTab($event, index)">{{ item.name }}</button></div>
+        <UiContentCarouselControls :active-index="activeParkIndex" :item-count="parkTypeSolutions.length" :autoplay-state="autoplayState" :allow-resume="allowResume" @pause="pause" @resume="resume" />
         <Transition name="kw-product-panel" mode="out-in"><section :key="park.name" class="kw-park-type-solutions__panel" role="tabpanel"><header><span>场景方案</span><h3>{{ park.name }}</h3><p>{{ park.text }}</p></header><div><article v-for="capability in parkCapabilities" :key="capability.id"><div><UiLinearIcon :name="capability.icon" :size="22" /><h4>{{ capability.shortName }}</h4></div><CapabilityStatusTag :status="capability.deliveryMode" compact /><p>{{ capability.businessValue }}</p><NuxtLink :to="`/products#capability-${capability.slug}`">查看能力 →</NuxtLink></article></div></section></Transition>
       </div>
     </section>

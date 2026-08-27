@@ -65,6 +65,7 @@ export function getDatabase(config) {
   database = knexFactory({
     client: 'mysql2',
     connection: databaseUrl,
+    acquireConnectionTimeout: 8000,
     pool: {
       min: 0,
       max: 8,

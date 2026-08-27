@@ -5,7 +5,6 @@ export async function consumeRateLimit(db, options) {
   const expiresAt = new Date(now.getTime() + options.windowMs)
 
   return db.transaction(async (trx) => {
-    await trx('rate_limits').where('expires_at', '<=', now).delete()
     let bucket = await trx('rate_limits').where({ bucket_key: options.bucketKey }).forUpdate().first()
 
     if (!bucket) {
@@ -43,6 +42,13 @@ export async function consumeRateLimit(db, options) {
     await trx('rate_limits').where({ bucket_key: options.bucketKey }).increment('hits', 1)
     return { allowed: true, remaining: options.maxHits - bucket.hits - 1 }
   })
+}
+
+export async function cleanupExpiredRateLimits(db, now = new Date(), limit = 1000) {
+  return db('rate_limits')
+    .where('expires_at', '<=', now)
+    .limit(limit)
+    .delete()
 }
 
 export async function enforceRateLimit(db, options) {

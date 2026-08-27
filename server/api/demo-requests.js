@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
     setResponseStatus(event, result.duplicate ? 200 : 201)
     setResponseHeader(event, 'Cache-Control', 'no-store')
-    return { success: true, requestId }
+    return { success: true, requestId, referenceCode: result.referenceCode }
   } catch (error) {
     return businessErrorResponse(event, normalizeDatabaseError(error), requestId)
   }

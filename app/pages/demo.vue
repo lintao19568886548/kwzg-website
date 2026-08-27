@@ -11,6 +11,7 @@ const form = reactive({ name: '', phone: '', parkCount: '', privacy: false, comp
 const errors = reactive({ name: '', phone: '', parkCount: '', privacy: '' })
 const status = ref('idle')
 const statusMessage = ref('')
+const referenceCode = ref('')
 let startedAt = Date.now()
 let idempotencyKey = ''
 
@@ -41,12 +42,13 @@ async function handleSubmit() {
   if (status.value === 'submitting') return
   status.value = 'idle'
   statusMessage.value = ''
+  referenceCode.value = ''
   if (!validate()) return
   if (!idempotencyKey) newSubmissionIdentity()
 
   status.value = 'submitting'
   try {
-    await $fetch('/api/demo-requests', {
+    const result = await $fetch('/api/demo-requests', {
       method: 'POST',
       headers: { 'X-Idempotency-Key': idempotencyKey },
       body: {
@@ -59,7 +61,8 @@ async function handleSubmit() {
       },
     })
     status.value = 'success'
-    statusMessage.value = '我们已收到您的预约信息，工作人员将尽快与您联系。'
+    referenceCode.value = result.referenceCode || ''
+    statusMessage.value = '我们已收到您的预约信息，工作人员会尽快与您联系。'
     form.name = ''
     form.phone = ''
     form.parkCount = ''
@@ -94,10 +97,10 @@ async function handleSubmit() {
             <div class="kw-field" :class="{ 'has-error': errors.phone }"><label for="demo-phone">手机号 <span aria-hidden="true">*</span></label><input id="demo-phone" v-model="form.phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="例如：13800000000 或 +86 13800000000" :aria-describedby="errors.phone ? 'demo-phone-error' : undefined" :aria-invalid="Boolean(errors.phone)"><small v-if="errors.phone" id="demo-phone-error" role="alert">{{ errors.phone }}</small></div>
             <div class="kw-field" :class="{ 'has-error': errors.parkCount }"><label for="demo-park-count">园区数量 <span aria-hidden="true">*</span></label><input id="demo-park-count" v-model="form.parkCount" name="parkCount" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：2" :aria-describedby="errors.parkCount ? 'demo-park-count-error' : undefined" :aria-invalid="Boolean(errors.parkCount)"><small v-if="errors.parkCount" id="demo-park-count-error" role="alert">{{ errors.parkCount }}</small></div>
             <div class="kw-consent" :class="{ 'has-error': errors.privacy }"><label><input v-model="form.privacy" name="privacy" type="checkbox"><span>我已阅读并同意 <NuxtLink to="/privacy">《隐私政策》</NuxtLink></span></label><small v-if="errors.privacy" role="alert">{{ errors.privacy }}</small></div>
-            <button class="kw-button kw-button--primary kw-button--large kw-demo-submit" type="submit" :disabled="status === 'submitting'" :aria-busy="status === 'submitting'">{{ status === 'submitting' ? '提交中…' : '提交预约' }}</button>
+            <button class="kw-button kw-button--primary kw-button--large kw-demo-submit" type="submit" :disabled="status === 'submitting'" :aria-busy="status === 'submitting'">{{ status === 'submitting' ? '正在提交…' : '提交预约' }}</button>
             <p class="kw-demo-form-card__notice">写入成功后页面才会显示成功；不会发送企业微信、短信或邮件通知。</p>
           </form>
-          <Transition name="kw-form-status" mode="out-in"><div v-if="status === 'success'" key="success" class="kw-demo-success" role="status" aria-live="polite"><span><UiLinearIcon name="check" :size="22" /></span><div><strong>预约提交成功</strong><p>{{ statusMessage }}</p></div></div><div v-else-if="status === 'error'" key="error" class="kw-demo-error" role="alert" aria-live="assertive"><strong>提交未完成</strong><p>{{ statusMessage }}</p></div></Transition>
+          <Transition name="kw-form-status" mode="out-in"><div v-if="status === 'success'" key="success" class="kw-demo-success" role="status" aria-live="polite"><span><UiLinearIcon name="check" :size="22" /></span><div><strong>预约提交成功</strong><p>{{ statusMessage }}</p><small v-if="referenceCode">预约编号：{{ referenceCode }}</small><nav aria-label="预约提交成功后的操作"><NuxtLink to="/">返回首页</NuxtLink><NuxtLink to="/products">继续了解产品</NuxtLink></nav></div></div><div v-else-if="status === 'error'" key="error" class="kw-demo-error" role="alert" aria-live="assertive"><strong>提交未完成</strong><p>{{ statusMessage }}</p></div></Transition>
         </div>
       </div>
     </section>

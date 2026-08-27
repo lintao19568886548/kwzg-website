@@ -2318,3 +2318,47 @@ html[data-motion='off'] .kw-grand-value__signal i::after {
     line-height: 22px !important;
   }
 }
+
+/* Keep the five public park cases visually balanced without empty grid pockets. */
+@media (min-width: 75rem) {
+  .kw-grand-cases .kw-park-grid {
+    align-items: stretch;
+  }
+
+  .kw-grand-cases .kw-park-card {
+    height: clamp(14rem, 18vw, 16rem);
+  }
+
+  .kw-grand-cases .kw-park-card:nth-child(-n + 2) {
+    height: clamp(22rem, 28vw, 26rem);
+  }
+
+  .kw-grand-cases .kw-park-card__media,
+  .kw-grand-cases .kw-park-card__placeholder,
+  .kw-grand-cases .kw-park-card:first-child .kw-park-card__media {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+}
+
+@media (min-width: 56.25rem) and (max-width: 74.9375rem) {
+  .kw-grand-cases .kw-park-card:not(:last-child) {
+    aspect-ratio: 3 / 2;
+  }
+
+  .kw-grand-cases .kw-park-card:last-child {
+    aspect-ratio: 16 / 7;
+    grid-column: 1 / -1;
+  }
+
+  .kw-grand-cases .kw-park-card:not(:last-child) .kw-park-card__media,
+  .kw-grand-cases .kw-park-card:not(:last-child) .kw-park-card__placeholder,
+  .kw-grand-cases .kw-park-card:first-child .kw-park-card__media,
+  .kw-grand-cases .kw-park-card:last-child .kw-park-card__media,
+  .kw-grand-cases .kw-park-card:last-child .kw-park-card__placeholder {
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+}

@@ -39,7 +39,10 @@ describe('demo request validation', () => {
   })
 
   it('never reports success when the database rejects the operation', async () => {
-    const unavailableDatabase = { transaction: async () => { throw new Error('database unavailable') } }
+    const unavailableDatabase = Object.assign(
+      () => ({ select() { return this }, where() { return this }, first: async () => null }),
+      { transaction: async () => { throw new Error('database unavailable') } },
+    )
     await expect(createDemoRequest(unavailableDatabase, { name: '演示', phone: '+8613800000000', parkCount: 1 }, { secret: 's'.repeat(32), clientAddress: '127.0.0.1', idempotencyKey: 'database-failure-key-000000000', now: new Date() })).rejects.toThrow('database unavailable')
   })
 })

@@ -5,6 +5,19 @@
 .kw-v3-showcase__panel {
   grid-template-columns: minmax(250px, 0.62fr) minmax(0, 2fr);
   align-items: start;
+  animation: kw-showcase-panel-enter var(--kw-motion-base) var(--kw-motion-ease) both;
+}
+
+@keyframes kw-showcase-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .kw-demo-interface {
@@ -1200,17 +1213,21 @@ body.kw-has-system-modal {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .kw-v3-showcase__panel,
   .kw-system-modal,
   .kw-system-modal__dialog,
   .kw-product-panel-enter-active,
   .kw-product-panel-leave-active {
+    animation: none !important;
     transition: none !important;
   }
 }
 
 html[data-motion='off'] .kw-system-modal,
 html[data-motion='off'] .kw-system-modal__dialog,
+html[data-motion='off'] .kw-v3-showcase__panel,
 html[data-motion='off'] .kw-product-panel-enter-active,
 html[data-motion='off'] .kw-product-panel-leave-active {
+  animation: none !important;
   transition: none !important;
 }

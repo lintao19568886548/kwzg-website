@@ -1,12 +1,21 @@
 :root {
-  --kw-motion-fast: 160ms;
-  --kw-motion-base: 320ms;
-  --kw-motion-slow: 680ms;
+  --motion-duration-fast: 160ms;
+  --motion-duration-base: 320ms;
+  --motion-duration-slow: 600ms;
+  --motion-duration-hero: 900ms;
+  --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-distance-small: 0.5rem;
+  --motion-distance-base: 1rem;
+  --motion-distance-large: 1.75rem;
+  --kw-motion-fast: var(--motion-duration-fast);
+  --kw-motion-base: var(--motion-duration-base);
+  --kw-motion-slow: var(--motion-duration-slow);
   --kw-motion-ambient: 18s;
   --kw-motion-float: 7.5s;
-  --kw-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --kw-motion-ease: var(--motion-ease-standard);
   --kw-motion-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  --kw-motion-shift: 1.25rem;
+  --kw-motion-shift: var(--motion-distance-base);
 }
 
 .kw-page-enter-active,
@@ -21,7 +30,7 @@
 
 .kw-page-leave-to {
   opacity: 0;
-  transform: translateY(-0.25rem);
+  transform: translateY(calc(var(--motion-distance-small) * -1));
 }
 
 [data-reveal-state='pending'] {
@@ -44,6 +53,19 @@
   will-change: auto;
 }
 
+[data-motion-stagger] > :nth-child(1) { --kw-reveal-delay: 0ms; }
+[data-motion-stagger] > :nth-child(2) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 1); }
+[data-motion-stagger] > :nth-child(3) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 2); }
+[data-motion-stagger] > :nth-child(4) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 3); }
+[data-motion-stagger] > :nth-child(5) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 4); }
+[data-motion-stagger] > :nth-child(6) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 5); }
+[data-motion-stagger] > :nth-child(7) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 6); }
+[data-motion-stagger] > :nth-child(8) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 7); }
+[data-motion-stagger] > :nth-child(9) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 8); }
+[data-motion-stagger] > :nth-child(10) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 9); }
+[data-motion-stagger] > :nth-child(11) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 10); }
+[data-motion-stagger] > :nth-child(12) { --kw-reveal-delay: calc(var(--kw-stagger-step, 80ms) * 11); }
+
 a,
 button,
 input,
@@ -61,11 +83,26 @@ button:active,
   transform: translateY(1px) scale(0.99);
 }
 
+:is(a, button, input, select, textarea):focus-visible {
+  outline: 0.1875rem solid rgba(45, 108, 223, 0.42);
+  outline-offset: 0.1875rem;
+}
+
 .kw-stage2-card:hover,
 .kw-capability-card:hover,
 .kw-park-card:hover {
-  transform: translateY(-0.25rem);
   box-shadow: 0 1.25rem 2.5rem rgba(0, 35, 89, 0.12);
+}
+
+.kw-park-card__media img,
+.kw-case-card__media img,
+.kw-case-detail-hero__media img {
+  animation: kw-media-arrive var(--kw-motion-slow) var(--kw-motion-ease) both;
+}
+
+@keyframes kw-media-arrive {
+  from { opacity: 0.01; }
+  to { opacity: 1; }
 }
 
 .kw-tech-field::before,
@@ -141,6 +178,11 @@ html[data-document-visibility='hidden'] .kw-dashboard-source--floating::after {
   animation-play-state: paused;
 }
 
+.kw-dashboard-source--floating:is(:hover, :focus-within)::before,
+.kw-dashboard-source--floating:is(:hover, :focus-within)::after {
+  animation-play-state: paused;
+}
+
 @keyframes kw-dashboard-float {
   0%, 100% { transform: translate3d(0, 0, 0); }
   42% { transform: translate3d(0, -0.5rem, 0); }
@@ -182,6 +224,7 @@ html[data-motion='off'] [data-reveal-state='pending'] {
 html[data-motion='off'] .kw-case-detail-hero__media img,
 html[data-motion='off'] .kw-case-gallery-thumb img,
 html[data-motion='off'] .kw-case-card__media img {
+  animation: none !important;
   transform: none !important;
 }
 
@@ -212,6 +255,7 @@ html[data-motion='off'] .kw-dashboard-source--floating::after {
   .kw-case-detail-hero__media img,
   .kw-case-gallery-thumb img,
   .kw-case-card__media img {
+    animation: none !important;
     transform: none !important;
   }
 
@@ -231,6 +275,12 @@ html[data-motion='off'] .kw-dashboard-source--floating::after {
     animation: none;
     transform: none;
     will-change: auto;
+  }
+
+  .kw-park-card__media img,
+  .kw-case-card__media img,
+  .kw-case-detail-hero__media img {
+    transform: none !important;
   }
 }
 

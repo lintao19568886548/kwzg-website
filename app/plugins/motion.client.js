@@ -1,5 +1,7 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const revealCleanupTimers = new WeakMap()
+  const motionPreference = useMotionPreference()
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)')
 
   const clearRevealState = (element) => {
     const timer = revealCleanupTimers.get(element)
@@ -11,7 +13,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const finishReveal = (element) => {
-    const delay = Number.parseFloat(element.style.getPropertyValue('--kw-reveal-delay')) || 0
+    const delay = Number.parseFloat(window.getComputedStyle(element).getPropertyValue('--kw-reveal-delay')) || 0
     const timer = window.setTimeout(() => clearRevealState(element), delay + 760)
     revealCleanupTimers.set(element, timer)
   }
@@ -32,19 +34,39 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   }, { threshold: 0.05 })
 
-  const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-  const updateMotionMode = () => {
-    const disabledByQuery = new URLSearchParams(window.location.search).get('motion') === 'off'
-    document.documentElement.dataset.motion = media.matches || disabledByQuery ? 'off' : 'on'
-  }
-  const updateVisibility = () => {
-    document.documentElement.dataset.documentVisibility = document.hidden ? 'hidden' : 'visible'
+  const revealPendingImmediately = () => {
+    document.querySelectorAll('[data-reveal-state="pending"]').forEach((element) => {
+      revealObserver.unobserve(element)
+      element.dataset.revealState = 'visible'
+      finishReveal(element)
+    })
   }
 
-  updateMotionMode()
+  const updateMotionMode = (search) => {
+    const mode = motionPreference.sync({
+      search,
+      reducedMotion: media.matches,
+      hidden: document.hidden,
+    })
+    if (mode === 'off') revealPendingImmediately()
+  }
+  const syncMotionFromLocation = () => updateMotionMode(window.location.search)
+  const updateVisibility = () => {
+    motionPreference.sync({
+      search: window.location.search,
+      reducedMotion: media.matches,
+      hidden: document.hidden,
+    })
+  }
+
+  syncMotionFromLocation()
   updateVisibility()
-  media.addEventListener('change', updateMotionMode)
+  media.addEventListener('change', syncMotionFromLocation)
   document.addEventListener('visibilitychange', updateVisibility)
+  const removeRouteHook = nuxtApp.$router.afterEach((to) => {
+    const targetSearch = new URL(to.fullPath, window.location.origin).search
+    updateMotionMode(targetSearch)
+  })
 
   nuxtApp.vueApp.directive('reveal', {
     mounted(element, binding) {
@@ -72,5 +94,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     unmounted(element) {
       activeObserver.unobserve(element)
     },
+  })
+
+  nuxtApp.hook('app:beforeUnmount', () => {
+    removeRouteHook()
+    revealObserver.disconnect()
+    activeObserver.disconnect()
+    media.removeEventListener('change', syncMotionFromLocation)
+    document.removeEventListener('visibilitychange', updateVisibility)
   })
 })

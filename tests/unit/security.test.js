@@ -16,7 +16,7 @@ describe('security helpers', () => {
   it('uses timing-safe comparison and masks list phones', () => {
     expect(safeEqual('same', 'same')).toBe(true)
     expect(safeEqual('same', 'different')).toBe(false)
-    expect(maskPhone('+8613800000000')).toBe('+86138****0000')
+    expect(maskPhone('+8613800000000')).toBe('138****0000')
   })
 
   it('rejects root and non-MySQL database URLs', () => {

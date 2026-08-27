@@ -43,6 +43,11 @@ import { siteConfig } from '~/config/site'
       <p>© 2026 {{ siteConfig.company.legalName }}</p>
       <div>
         <NuxtLink to="/privacy">隐私政策</NuxtLink>
+        <NuxtLink
+          class="kw-footer__admin-link"
+          to="/admin/login"
+          aria-label="进入瞰维智管官网后台登录页"
+        >后台管理</NuxtLink>
         <a :href="siteConfig.siteUrl">yizuw.org</a>
       </div>
     </div>

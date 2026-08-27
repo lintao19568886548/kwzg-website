@@ -1,5 +1,6 @@
 <script setup>
 import { siteConfig } from '~/config/site'
+import MotionReveal from '~/components/motion/MotionReveal.vue'
 import { createSingleDialAttempt, shouldAttemptAutomaticDial } from '~/utils/phone-call'
 
 definePageMeta({ layout: false })
@@ -47,7 +48,7 @@ onBeforeUnmount(() => {
 
 <template>
   <main id="main-content" class="kw-call-page" tabindex="-1">
-    <section class="kw-call-card" aria-labelledby="call-title">
+    <MotionReveal as="section" class="kw-call-card" aria-labelledby="call-title">
       <div class="kw-call-card__brand">
         <BrandLogo />
       </div>
@@ -69,6 +70,6 @@ onBeforeUnmount(() => {
       </a>
       <NuxtLink class="kw-call-card__back" to="/">返回瞰维智管官网</NuxtLink>
       <small>拨号前，手机系统可能会要求您确认。</small>
-    </section>
+    </MotionReveal>
   </main>
 </template>

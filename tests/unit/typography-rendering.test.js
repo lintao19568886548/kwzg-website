@@ -9,6 +9,7 @@ const motionCss = readFileSync(new URL('../../app/assets/css/motion.css', import
 const floatingContactCss = readFileSync(new URL('../../app/assets/css/floating-contact.css', import.meta.url), 'utf8')
 const typographyClarityCss = readFileSync(new URL('../../app/assets/css/typography-clarity.css', import.meta.url), 'utf8')
 const grandVisualCss = readFileSync(new URL('../../app/assets/css/grand-visual-system.css', import.meta.url), 'utf8')
+const cinnabarCss = readFileSync(new URL('../../app/assets/css/cinnabar-monochrome.css', import.meta.url), 'utf8')
 const nuxtConfig = readFileSync(new URL('../../nuxt.config.js', import.meta.url), 'utf8')
 const brandLogo = readFileSync(new URL('../../app/components/BrandLogo.vue', import.meta.url), 'utf8')
 const brandIntro = readFileSync(new URL('../../app/components/effects/BrandIntro.vue', import.meta.url), 'utf8')
@@ -52,6 +53,17 @@ describe('typography rendering safeguards', () => {
     expect(grandVisualCss).toMatch(/@media \(max-width: 75rem\)[\s\S]*?\.kw-home-v3 \.kw-dashboard \{[\s\S]*?height: 34rem;/)
     expect(grandVisualCss).toMatch(/@media \(max-width: 72rem\)[\s\S]*?grid-template-columns: minmax\(0, 1fr\);[\s\S]*?\.kw-home-v3 \.kw-dashboard-source \{[\s\S]*?max-width: none;/)
     expect(grandVisualCss).toMatch(/\.kw-home-v3 \.kw-dashboard__tasks li:nth-child\(n \+ 5\) \{[^}]*display: none;/)
+  })
+
+  it('keeps dashboard demo labels and task counts readable in every public placement', () => {
+    expect(cinnabarCss).toMatch(/\.kw-site-shell \.kw-dashboard__topbar \.kw-tag \{[\s\S]*?color: var\(--kw-red-800\) !important;[\s\S]*?white-space: nowrap !important;/)
+    expect(cinnabarCss).toMatch(/\.kw-site-shell \.kw-dashboard__tasks-heading > strong \{[\s\S]*?display: inline-flex !important;[\s\S]*?min-width: max-content !important;[\s\S]*?white-space: nowrap !important;/)
+    expect(cinnabarCss).toMatch(/\.kw-site-shell \.kw-dashboard__tasks li > em \{[\s\S]*?display: inline-flex !important;[\s\S]*?min-width: 1\.5rem !important;[\s\S]*?color: var\(--kw-text-on-red\) !important;/)
+  })
+
+  it('keeps the five-case mosaic balanced across desktop and tablet widths', () => {
+    expect(grandVisualCss).toMatch(/@media \(min-width: 75rem\)[\s\S]*?\.kw-grand-cases \.kw-park-card:nth-child\(-n \+ 2\) \{[\s\S]*?height: clamp\(22rem, 28vw, 26rem\);/)
+    expect(grandVisualCss).toMatch(/@media \(min-width: 56\.25rem\) and \(max-width: 74\.9375rem\)[\s\S]*?\.kw-grand-cases \.kw-park-card:last-child \{[\s\S]*?grid-column: 1 \/ -1;/)
   })
 
   it('removes the reveal transform after the entrance transition', () => {

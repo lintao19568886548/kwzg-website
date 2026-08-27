@@ -70,7 +70,7 @@ function resetToStaticGrid() {
     particle.radius = particle.baseRadius
     particle.opacity = particle.baseOpacity
     particle.colorMix = 0
-    particle.color = config.deepBlue
+    particle.color = config.paleCinnabar
   }
   drawParticles()
 }

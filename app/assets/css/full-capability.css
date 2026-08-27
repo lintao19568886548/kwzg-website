@@ -165,6 +165,7 @@
 .kw-role-section { background: #f7f3eb; }
 .kw-role-explorer { display: grid; grid-template-columns: minmax(11rem,.46fr) minmax(0,1.75fr); gap: 1rem; }
 .kw-role-explorer__tabs { display: grid; align-content: start; gap: 0.55rem; }
+.kw-role-explorer__stage { min-width: 0; }
 .kw-role-explorer__tabs button { min-height: 3.2rem; padding: 0.7rem 1rem; border: 1px solid rgba(0,35,89,.14); border-radius: 0.75rem; background: rgba(255,255,255,.72); color: #4d5f77; text-align: left; font: inherit; font-size: 0.82rem; font-weight: 750; cursor: pointer; }
 .kw-role-explorer__tabs button.is-active { border-color: #002359; background: #002359; color: #fff; }
 .kw-role-explorer__panel { min-width: 0; padding: clamp(1.2rem,3vw,2rem); border: 1px solid rgba(0,35,89,.12); border-radius: 1rem; background: #fff; }
@@ -352,6 +353,7 @@
 .kw-v3-architecture .kw-section-heading h2, .kw-v3-architecture .kw-section-heading p { color: #fff; }
 .kw-v3-architecture__shell { display: grid; grid-template-columns: 380px minmax(0,1fr); gap: 24px; }
 .kw-v3-architecture__layers { display: grid; gap: 12px; }
+.kw-v3-architecture__stage { min-width: 0; }
 .kw-v3-architecture__layers button { min-height: 122px; padding: 20px; text-align: left; border: 1px solid rgba(255,255,255,.15); border-radius: 16px; background: rgba(255,255,255,.05); color: #fff; cursor: pointer; }
 .kw-v3-architecture__layers button.is-active { border-color: #d45844; background: linear-gradient(120deg, rgba(181,58,42,.35), rgba(255,255,255,.08)); }
 .kw-v3-architecture__layers small, .kw-v3-architecture__layers strong, .kw-v3-architecture__layers span { display: block; }
