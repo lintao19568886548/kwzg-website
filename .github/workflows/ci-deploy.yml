@@ -1,0 +1,154 @@
+name: CI and production deployment
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  DEPLOY_HOST: 8.155.35.38
+  DEPLOY_PORT: "22"
+  DEPLOY_USER: root
+  DEPLOY_PATH: /opt/kwzg-website
+
+jobs:
+  quality:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.22.2
+          cache: npm
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Unit and integration tests
+        run: npm test
+      - name: Production build
+        env:
+          NUXT_PUBLIC_SITE_URL: https://yizuw.org
+          NUXT_PUBLIC_INDEXABLE: "false"
+          NUXT_ENABLE_HSTS: "false"
+        run: npm run build
+      - name: Security scan
+        run: npm run security:scan
+      - name: Git whitespace check
+        run: git diff --check
+
+  build_image:
+    name: Build and publish Linux image
+    if: github.event_name != 'pull_request'
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.release.outputs.image }}
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Prepare immutable image reference
+        id: release
+        shell: bash
+        run: |
+          echo "image=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "tag=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build and push immutable image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.release.outputs.image }}:${{ steps.release.outputs.tag }}
+          build-args: |
+            NUXT_PUBLIC_SITE_URL=https://yizuw.org
+            NUXT_PUBLIC_INDEXABLE=false
+            NUXT_ENABLE_HSTS=false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true
+
+  deploy_production:
+    name: Deploy production application
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build_image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read
+    environment:
+      name: production
+      url: https://yizuw.org
+    concurrency:
+      group: kwzg-production
+      cancel-in-progress: false
+    steps:
+      - name: Check out deployment files
+        uses: actions/checkout@v6
+      - name: Configure pinned SSH host and private key
+        shell: bash
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/kwzg_deploy"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/kwzg_deploy" "$HOME/.ssh/known_hosts"
+      - name: Install application deployment files only
+        shell: bash
+        run: |
+          SSH=(ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes)
+          SCP=(scp -i "$HOME/.ssh/kwzg_deploy" -P "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes)
+          "${SSH[@]}" "$DEPLOY_USER@$DEPLOY_HOST" "install -d -m 700 '$DEPLOY_PATH'"
+          "${SCP[@]}" docker-compose.prod.yml "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/docker-compose.prod.yml"
+          "${SCP[@]}" deploy/production/deploy.sh "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/deploy.sh"
+      - name: Authenticate server to GHCR for this deployment
+        shell: bash
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | ssh -T -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker login ghcr.io --username '$GHCR_USER' --password-stdin"
+      - name: Pull, migrate and switch application containers
+        shell: bash
+        env:
+          IMAGE: ${{ needs.build_image.outputs.image }}
+          TAG: ${{ needs.build_image.outputs.tag }}
+        run: |
+          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "chmod 700 '$DEPLOY_PATH/deploy.sh' && '$DEPLOY_PATH/deploy.sh' '$IMAGE' '$TAG'"
+      - name: Remove temporary registry credential
+        if: always()
+        shell: bash
+        run: |
+          ssh -i "$HOME/.ssh/kwzg_deploy" -p "$DEPLOY_PORT" -o BatchMode=yes -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" "docker logout ghcr.io >/dev/null 2>&1 || true" || true
