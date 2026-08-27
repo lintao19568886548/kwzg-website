@@ -13,6 +13,25 @@ const message = ref('')
 const showPassword = ref(false)
 const capsLock = ref(false)
 
+function clearFeedback() {
+  if (state.value !== 'error') return
+  state.value = 'idle'
+  message.value = ''
+}
+
+function readSubmittedCredentials(event) {
+  let username = form.username
+  let password = form.password
+  if (event?.currentTarget) {
+    const submitted = new FormData(event.currentTarget)
+    username = String(submitted.get('username') ?? username)
+    password = String(submitted.get('password') ?? password)
+  }
+  form.username = username
+  form.password = password
+  return { username: username.trim(), password }
+}
+
 async function loadCsrf() {
   state.value = 'loading'
   try {
@@ -51,9 +70,10 @@ function persistUsername() {
   }
 }
 
-async function login() {
+async function login(event) {
   if (state.value === 'submitting') return
-  if (!form.username || !form.password) {
+  const credentials = readSubmittedCredentials(event)
+  if (!credentials.username || !credentials.password) {
     state.value = 'error'
     message.value = '请输入账号和密码。'
     return
@@ -61,7 +81,7 @@ async function login() {
   state.value = 'submitting'
   message.value = ''
   try {
-    await $fetch('/api/admin/login', { method: 'POST', headers: { 'X-CSRF-Token': csrfToken.value }, body: { username: form.username, password: form.password } })
+    await $fetch('/api/admin/login', { method: 'POST', headers: { 'X-CSRF-Token': csrfToken.value }, body: credentials })
     persistUsername()
     form.password = ''
     state.value = 'success'
@@ -92,8 +112,8 @@ onMounted(async () => {
       <div class="kw-admin-login__brand"><BrandLogo /></div>
       <span>官网独立后台</span><h1>管理员登录</h1><p>登录后查看今日待办、跟进预约线索。后台与 yizuw.cn 生产系统完全隔离。</p>
       <form novalidate @submit.prevent="login">
-        <label for="admin-username">管理员账号</label><input id="admin-username" ref="usernameInput" v-model="form.username" type="text" autocomplete="username" maxlength="64">
-        <label for="admin-password">密码</label><div class="kw-admin-password-input"><input id="admin-password" v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" maxlength="256" @keydown="detectCapsLock" @keyup="detectCapsLock"><button type="button" :aria-label="showPassword ? '隐藏密码' : '显示密码'" @click="showPassword = !showPassword">{{ showPassword ? '隐藏' : '显示' }}</button></div>
+        <label for="admin-username">管理员账号</label><input id="admin-username" ref="usernameInput" v-model="form.username" name="username" type="text" autocomplete="username" maxlength="64" @input="clearFeedback">
+        <label for="admin-password">密码</label><div class="kw-admin-password-input"><input id="admin-password" v-model="form.password" name="password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" maxlength="256" @input="clearFeedback" @keydown="detectCapsLock" @keyup="detectCapsLock"><button type="button" :aria-label="showPassword ? '隐藏密码' : '显示密码'" @click="showPassword = !showPassword">{{ showPassword ? '隐藏' : '显示' }}</button></div>
         <p v-if="capsLock" class="kw-admin-caps-warning" role="status">大写锁定已开启</p>
         <label class="kw-admin-checkbox"><input v-model="form.rememberUsername" type="checkbox">记住管理员账号（不保存密码）</label>
         <button class="kw-button kw-button--primary kw-button--large" type="submit" :disabled="state === 'loading' || state === 'submitting'" :aria-busy="state === 'submitting'">{{ state === 'submitting' ? '正在验证…' : '登录并进入工作台' }}</button>
