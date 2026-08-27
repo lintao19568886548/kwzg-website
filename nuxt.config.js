@@ -32,11 +32,11 @@ export default defineNuxtConfig({
     '~/assets/css/typography-clarity.css',
     '~/assets/css/composition-clarity.css',
     '~/assets/css/grand-visual-system.css',
+    '~/assets/css/admin-workbench.css',
+    '~/assets/css/cinnabar-monochrome.css',
   ],
   runtimeConfig: {
     databaseUrl: process.env.NUXT_DATABASE_URL || '',
-    adminUsername: process.env.NUXT_ADMIN_USERNAME || '',
-    adminPasswordHash: process.env.NUXT_ADMIN_PASSWORD_HASH || '',
     sessionPassword: process.env.NUXT_SESSION_PASSWORD || '',
     trustedProxyAddresses: process.env.NUXT_TRUSTED_PROXY_ADDRESSES || '',
     trustedOrigins: process.env.NUXT_TRUSTED_ORIGINS || '',
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
       titleTemplate: '%s | 瞰维智管',
       meta: [
         { name: 'description', content: '瞰维智管连接园区招商、租赁、合同、账单、财务、设备、门禁、维护、人事和经营数据，让老板看清经营、团队协同执行。' },
-        { name: 'theme-color', content: '#002359' },
+        { name: 'theme-color', content: '#a9362a' },
         { property: 'og:site_name', content: '瞰维智管' },
         { property: 'og:locale', content: 'zh_CN' },
       ],

@@ -29,14 +29,14 @@ describe('homepage magnetic particle physics', () => {
     expect(first.length).toBeLessThanOrEqual(MAGNETIC_PARTICLE_CONFIG.desktopMaxParticles)
     expect(first.every(particle => Number.isFinite(particle.originX) && Number.isFinite(particle.originY))).toBe(true)
     expect(first.every(particle => particle.x === particle.originX && particle.y === particle.originY)).toBe(true)
-    expect(new Set(first.map(particle => particle.color))).toEqual(new Set(['#002359']))
+    expect(new Set(first.map(particle => particle.color))).toEqual(new Set(['#E7A597']))
 
     const redRatio = first.filter(particle => particle.redEligible).length / first.length
     expect(redRatio).toBeGreaterThanOrEqual(0.05)
     expect(redRatio).toBeLessThanOrEqual(0.1)
   })
 
-  it('transitions only a restrained subset near the pointer to vermilion and restores blue', () => {
+  it('transitions only a restrained subset near the pointer from pale to full cinnabar', () => {
     const particle = createParticleGrid(480, 320).find(item => item.redEligible)
     const pointer = {
       active: true,
@@ -48,13 +48,13 @@ describe('homepage magnetic particle physics', () => {
     for (let frame = 0; frame < 36; frame += 1) updateParticle(particle, pointer, frame, false)
 
     expect(particle.colorMix).toBeGreaterThan(0.9)
-    expect(particle.color).not.toBe(MAGNETIC_PARTICLE_CONFIG.deepBlue)
+    expect(particle.color).not.toBe(MAGNETIC_PARTICLE_CONFIG.paleCinnabar)
 
     pointer.active = false
     for (let frame = 0; frame < 80; frame += 1) updateParticle(particle, pointer, 100 + frame, false)
 
     expect(particle.colorMix).toBeLessThan(0.004)
-    expect(particle.color).toBe(MAGNETIC_PARTICLE_CONFIG.deepBlue)
+    expect(particle.color).toBe(MAGNETIC_PARTICLE_CONFIG.paleCinnabar)
   })
 
   it('reduces particle density and DPR limits for compact devices', () => {

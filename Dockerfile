@@ -31,9 +31,13 @@ COPY --chown=node:node knexfile.js ./knexfile.js
 COPY --chown=node:node migrations ./migrations
 COPY --chown=node:node scripts/migrate.js ./scripts/migrate.js
 COPY --chown=node:node scripts/validate-runtime.js ./scripts/validate-runtime.js
+COPY --chown=node:node scripts/create-admin.js ./scripts/create-admin.js
+COPY --chown=node:node scripts/reset-admin-password.js ./scripts/reset-admin-password.js
+COPY --chown=node:node server/utils/admin-credentials.js ./server/utils/admin-credentials.js
+COPY --chown=node:node server/utils/business-error.js ./server/utils/business-error.js
 COPY --chown=node:node package.json ./package.json
 USER node
 EXPOSE 3000
 STOPSIGNAL SIGTERM
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["node", "-e", "fetch('http://127.0.0.1:3000/api/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
 CMD ["npm", "run", "start"]

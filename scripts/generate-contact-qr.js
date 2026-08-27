@@ -19,4 +19,4 @@ await QRCode.toFile(outputPath, siteConfig.contact.callUrl, {
   },
 })
 
-console.log(`Generated public/assets/contact/kwzg-phone-call-qr.png -> ${siteConfig.contact.callUrl}`)
+console.log('Generated contact QR asset')

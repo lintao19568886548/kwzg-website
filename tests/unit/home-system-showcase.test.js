@@ -2,14 +2,37 @@
 
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import HomeSystemModuleShowcase from '~/components/home/HomeSystemModuleShowcase.vue'
 import SystemShowcaseModal from '~/components/home/SystemShowcaseModal.vue'
 import { systemShowcaseModules } from '~/data/product-capabilities'
 
 let wrapper
 
+class VisibleIntersectionObserver {
+  constructor(callback) {
+    this.callback = callback
+  }
+
+  observe() {
+    this.callback([{ isIntersecting: true, intersectionRatio: 1 }])
+  }
+
+  disconnect() {}
+}
+
 beforeEach(() => {
+  vi.useFakeTimers()
+  vi.stubGlobal('IntersectionObserver', VisibleIntersectionObserver)
+  Object.defineProperty(document, 'hidden', { configurable: true, value: false })
+  window.matchMedia = vi.fn(query => ({
+    matches: false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }))
+  document.documentElement.dataset.motion = 'on'
+  document.documentElement.dataset.kwzgIntro = 'skip'
   document.body.innerHTML = '<button id="showcase-trigger">打开</button><div id="mount-point"></div>'
   document.getElementById('showcase-trigger').focus()
 })
@@ -18,6 +41,10 @@ afterEach(() => {
   wrapper = undefined
   document.body.className = ''
   document.body.innerHTML = ''
+  vi.useRealTimers()
+  vi.unstubAllGlobals()
+  delete document.documentElement.dataset.motion
+  delete document.documentElement.dataset.kwzgIntro
 })
 
 describe('HomeSystemModuleShowcase', () => {
@@ -42,11 +69,15 @@ describe('HomeSystemModuleShowcase', () => {
     await tabs[0].trigger('keydown', { key: 'ArrowRight' })
     await nextTick()
     expect(wrapper.findAll('[role="tab"]')[1].attributes('aria-selected')).toBe('true')
+    expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(1)
+    expect(wrapper.get('[role="tabpanel"]').attributes('data-module-id')).toBe('data-map')
     expect(wrapper.get('[data-preview]').text()).toContain('数据地图')
 
     await wrapper.findAll('[role="tab"]')[1].trigger('keydown', { key: 'End' })
     await nextTick()
     expect(wrapper.findAll('[role="tab"]')[8].attributes('aria-selected')).toBe('true')
+    expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(1)
+    expect(wrapper.get('[role="tabpanel"]').attributes('data-module-id')).toBe('maintenance')
     expect(wrapper.get('[data-preview]').text()).toContain('维护管理')
   })
 
@@ -66,6 +97,31 @@ describe('HomeSystemModuleShowcase', () => {
     await wrapper.get('[data-expand]').trigger('click')
     expect(wrapper.get('[data-modal]').attributes('data-open')).toBe('true')
     expect(wrapper.get('[data-modal]').text()).toBe('运营总览')
+  })
+
+  it('automatically loops through modules and pauses while hovered', async () => {
+    wrapper = mount(HomeSystemModuleShowcase, {
+      attachTo: document.getElementById('mount-point'),
+      global: {
+        directives: { reveal: {} },
+        stubs: {
+          NuxtLink: { props: ['to'], template: '<a :href="to"><slot /></a>' },
+          SystemShowcasePreview: { props: ['module'], template: '<div data-preview>{{ module.name }}</div>' },
+          SystemShowcaseModal: { template: '<div />' },
+        },
+      },
+    })
+
+    await vi.advanceTimersByTimeAsync(7_200)
+    expect(wrapper.get('[role="tabpanel"]').attributes('data-module-id')).toBe('data-map')
+
+    await wrapper.get('.kw-v3-showcase').trigger('mouseenter')
+    await vi.advanceTimersByTimeAsync(12_000)
+    expect(wrapper.get('[role="tabpanel"]').attributes('data-module-id')).toBe('data-map')
+
+    await wrapper.get('.kw-v3-showcase').trigger('mouseleave')
+    await vi.advanceTimersByTimeAsync(6_000)
+    expect(wrapper.get('[role="tabpanel"]').attributes('data-module-id')).toBe('equipment')
   })
 })
 

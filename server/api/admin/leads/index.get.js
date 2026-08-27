@@ -1,16 +1,17 @@
-import { requireAdminSession } from '../../../utils/admin-auth.js'
+import { enforceAdminApiRateLimit, requireAdminSession } from '../../../utils/admin-auth.js'
 import { businessErrorResponse } from '../../../utils/business-error.js'
-import { getDatabase } from '../../../utils/database.js'
-import { listLeads, parseLeadQuery } from '../../../utils/leads.js'
+import { getDatabase, normalizeDatabaseError } from '../../../utils/database.js'
+import { listWorkflowLeads, parseLeadWorkflowQuery } from '../../../utils/lead-workflow.js'
 
 export default defineEventHandler(async (event) => {
   try {
     const config = useRuntimeConfig(event)
     const db = getDatabase(config)
-    await requireAdminSession(db, config, event)
-    const filters = parseLeadQuery(getQuery(event))
-    return { ok: true, ...(await listLeads(db, filters)) }
+    const session = await requireAdminSession(db, config, event)
+    await enforceAdminApiRateLimit(db, config, event, session, 'lead-list')
+    const filters = parseLeadWorkflowQuery(getQuery(event))
+    return { ok: true, ...(await listWorkflowLeads(db, filters, session.admin.id)) }
   } catch (error) {
-    return businessErrorResponse(event, error, event.context.requestId)
+    return businessErrorResponse(event, normalizeDatabaseError(error), event.context.requestId)
   }
 })

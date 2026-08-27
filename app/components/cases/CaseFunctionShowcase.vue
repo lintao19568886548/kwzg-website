@@ -1,4 +1,6 @@
 <script setup>
+import { computed, nextTick, ref } from 'vue'
+import { useAutoplayCarousel } from '~/composables/useAutoplayCarousel'
 import { verifiedCaseFunctions } from '~/data/cases'
 
 const props = defineProps({
@@ -8,12 +10,29 @@ const props = defineProps({
   },
 })
 
-const activeName = ref(props.functions[0])
+const activeIndex = ref(0)
+const root = ref(null)
+const activeName = computed(() => props.functions[activeIndex.value] || props.functions[0])
 const activeFunction = computed(() => verifiedCaseFunctions[activeName.value])
 const tabs = ref([])
+const {
+  allowResume,
+  autoplayState,
+  pause,
+  restartCycle,
+  resume,
+  setFocused,
+  setHovered,
+} = useAutoplayCarousel({
+  root,
+  activeIndex,
+  itemCount: props.functions.length,
+  interval: 6000,
+})
 
-function selectFunction(name) {
-  activeName.value = name
+function selectFunction(index) {
+  activeIndex.value = index
+  restartCycle()
 }
 
 function moveTab(event, index) {
@@ -24,13 +43,21 @@ function moveTab(event, index) {
   if (event.key === 'ArrowLeft') nextIndex = (index - 1 + props.functions.length) % props.functions.length
   if (event.key === 'Home') nextIndex = 0
   if (event.key === 'End') nextIndex = props.functions.length - 1
-  activeName.value = props.functions[nextIndex]
+  activeIndex.value = nextIndex
+  restartCycle()
   nextTick(() => tabs.value[nextIndex]?.focus())
 }
 </script>
 
 <template>
-  <div class="kw-case-functions">
+  <div
+    ref="root"
+    class="kw-case-functions"
+    @mouseenter="setHovered(true)"
+    @mouseleave="setHovered(false)"
+    @focusin="setFocused(true)"
+    @focusout="setFocused(false)"
+  >
     <div class="kw-case-function-tabs" role="tablist" aria-label="相关功能展示">
       <button
         v-for="(name, index) in functions"
@@ -39,24 +66,30 @@ function moveTab(event, index) {
         :ref="element => { if (element) tabs[index] = element }"
         type="button"
         role="tab"
-        :aria-selected="activeName === name"
+        :aria-selected="activeIndex === index"
         :aria-controls="`case-function-panel-${index}`"
-        :tabindex="activeName === name ? 0 : -1"
-        :class="{ 'is-active': activeName === name }"
-        @click="selectFunction(name)"
+        :tabindex="activeIndex === index ? 0 : -1"
+        :class="{ 'is-active': activeIndex === index }"
+        @click="selectFunction(index)"
         @keydown="moveTab($event, index)"
       >
         <span>{{ String(index + 1).padStart(2, '0') }}</span>{{ name }}
       </button>
     </div>
 
+    <div class="kw-case-function-carousel" aria-label="功能界面轮播状态">
+      <span>{{ String(activeIndex + 1).padStart(2, '0') }} / {{ String(functions.length).padStart(2, '0') }}</span>
+      <button v-if="autoplayState === 'playing'" type="button" @click="pause">暂停轮播</button>
+      <button v-else-if="allowResume" type="button" @click="resume">继续轮播</button>
+    </div>
+
     <Transition name="kw-product-panel" mode="out-in">
       <section
-        :id="`case-function-panel-${functions.indexOf(activeName)}`"
+        :id="`case-function-panel-${activeIndex}`"
         :key="activeName"
         class="kw-case-function-panel"
         role="tabpanel"
-        :aria-labelledby="`case-function-tab-${functions.indexOf(activeName)}`"
+        :aria-labelledby="`case-function-tab-${activeIndex}`"
       >
         <div class="kw-case-function-panel__copy">
           <span>相关功能展示</span>

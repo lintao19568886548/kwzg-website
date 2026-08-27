@@ -33,9 +33,9 @@ process.stdin.on('keypress', async (character, key) => {
   process.stdin.pause()
   process.stdout.write('\n')
 
-  if (password.length < 12 || password.length > 256) {
+  if (password.length === 0 || password.length > 256) {
     password = ''
-    throw new Error('Password must contain 12 to 256 characters.')
+    throw new Error('Password cannot be empty or exceed 256 characters.')
   }
 
   const encoded = await hash(password, {

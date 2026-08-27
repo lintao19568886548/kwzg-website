@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { createKwError } from './business-error.js'
 import { enforceRateLimit } from './rate-limit.js'
 import { keyedDigest, normalizePlainText } from './security.js'
@@ -54,7 +54,32 @@ export function validateIdempotencyKey(value) {
   return value
 }
 
+function submissionDigest(input) {
+  return createHash('sha256')
+    .update(`${input.name}|${input.phone}|${input.parkCount}`)
+    .digest('hex')
+}
+
+function createReferenceCode(now, leadId) {
+  const datePart = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now).replaceAll('-', '')
+  return `KW-${datePart}-${leadId.replaceAll('-', '').slice(0, 8).toUpperCase()}`
+}
+
 export async function createDemoRequest(db, input, context) {
+  const digest = submissionDigest(input)
+  const existing = await db('leads').select('reference_code', 'idempotency_digest').where({ idempotency_key: context.idempotencyKey }).first()
+  if (existing) {
+    if (existing.idempotency_digest !== digest) {
+      throw createKwError(409, 'IDEMPOTENCY_CONFLICT', '本次提交凭证与表单内容不一致，请刷新页面后重试。')
+    }
+    return { duplicate: true, referenceCode: existing.reference_code }
+  }
+
   const rateKey = keyedDigest(context.secret, 'demo-rate', `${context.clientAddress}|${input.phone}`)
   await enforceRateLimit(db, {
     bucketKey: rateKey,
@@ -64,13 +89,9 @@ export async function createDemoRequest(db, input, context) {
     now: context.now,
   })
 
-  const existing = await db('leads').select('id').where({ idempotency_key: context.idempotencyKey }).first()
-  if (existing) {
-    return { duplicate: true }
-  }
-
   const leadId = randomUUID()
   const now = context.now || new Date()
+  const referenceCode = createReferenceCode(now, leadId)
 
   try {
     await db.transaction(async (trx) => {
@@ -79,30 +100,38 @@ export async function createDemoRequest(db, input, context) {
         name: input.name,
         phone: input.phone,
         park_count: input.parkCount,
-        status: '待跟进',
+        status: 'PENDING',
+        source_page: '/demo',
         remark: '',
         privacy_consent_at: now,
         privacy_version: PRIVACY_VERSION,
         idempotency_key: context.idempotencyKey,
+        idempotency_digest: digest,
+        reference_code: referenceCode,
         version: 1,
         created_at: now,
         updated_at: now,
       })
       await trx('lead_audit').insert({
         lead_id: leadId,
-        operation_type: 'created',
+        operation_type: 'LEAD_CREATED',
         old_status: null,
-        new_status: '待跟进',
+        new_status: 'PENDING',
         remark_changed: false,
         operated_at: now,
       })
     })
   } catch (error) {
     if (error?.code === 'ER_DUP_ENTRY') {
-      return { duplicate: true }
+      const duplicate = await db('leads').select('reference_code', 'idempotency_digest').where({ idempotency_key: context.idempotencyKey }).first()
+      if (!duplicate) throw error
+      if (duplicate.idempotency_digest !== digest) {
+        throw createKwError(409, 'IDEMPOTENCY_CONFLICT', '本次提交凭证与表单内容不一致，请刷新页面后重试。')
+      }
+      return { duplicate: true, referenceCode: duplicate.reference_code }
     }
     throw error
   }
 
-  return { duplicate: false }
+  return { duplicate: false, referenceCode }
 }

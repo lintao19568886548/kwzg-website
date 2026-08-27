@@ -1,4 +1,6 @@
 <script setup>
+import { computed, nextTick, ref } from 'vue'
+import { useAutoplayCarousel } from '~/composables/useAutoplayCarousel'
 import { deliveryModes, productCapabilities } from '~/data/product-capabilities'
 
 usePageSeo({
@@ -7,8 +9,43 @@ usePageSeo({
 })
 
 const verifiedInterfaceGroups = productCapabilities.filter(item => item.interfaceType)
-const activeInterface = ref(verifiedInterfaceGroups[0].id)
-const activeCapability = computed(() => verifiedInterfaceGroups.find(item => item.id === activeInterface.value) || verifiedInterfaceGroups[0])
+const activeInterfaceIndex = ref(0)
+const interfaceCarousel = ref(null)
+const interfaceTabs = ref([])
+const activeCapability = computed(() => verifiedInterfaceGroups[activeInterfaceIndex.value] || verifiedInterfaceGroups[0])
+const activeInterface = computed(() => activeCapability.value.id)
+const {
+  allowResume,
+  autoplayState,
+  pause,
+  restartCycle,
+  resume,
+  setFocused,
+  setHovered,
+} = useAutoplayCarousel({
+  root: interfaceCarousel,
+  activeIndex: activeInterfaceIndex,
+  itemCount: verifiedInterfaceGroups.length,
+  interval: 6000,
+  visibilityThreshold: 0.35,
+})
+
+function selectInterface(index, { focus = false } = {}) {
+  activeInterfaceIndex.value = index
+  restartCycle()
+  if (focus) nextTick(() => interfaceTabs.value[index]?.focus())
+}
+
+function moveInterfaceTab(event, index) {
+  let nextIndex = index
+  if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (index + 1) % verifiedInterfaceGroups.length
+  else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (index - 1 + verifiedInterfaceGroups.length) % verifiedInterfaceGroups.length
+  else if (event.key === 'Home') nextIndex = 0
+  else if (event.key === 'End') nextIndex = verifiedInterfaceGroups.length - 1
+  else return
+  event.preventDefault()
+  selectInterface(nextIndex, { focus: true })
+}
 </script>
 
 <template>
@@ -52,8 +89,18 @@ const activeCapability = computed(() => verifiedInterfaceGroups.find(item => ite
 
     <section class="kw-section kw-product-browser" aria-labelledby="verified-interface-title">
       <div class="kw-container"><div v-reveal class="kw-section-heading kw-section-heading--split"><div><span class="kw-section-kicker">真实系统界面组</span><h2 id="verified-interface-title">选择一个已经有页面证据的界面</h2></div><p>切换只改变官网演示内容，不代表生产系统数据实时变化。</p></div>
-        <div v-reveal class="kw-product-tabs" role="tablist" aria-label="真实页面展示"><button v-for="(item, index) in verifiedInterfaceGroups" :id="`product-tab-${item.id}`" :key="item.id" type="button" role="tab" :aria-selected="activeInterface === item.id" :aria-controls="`product-panel-${item.id}`" :class="{ 'is-active': activeInterface === item.id }" @click="activeInterface = item.id"><small>{{ String(index + 1).padStart(2, '0') }}</small><span>{{ item.shortName }}</span></button></div>
-        <Transition name="kw-product-panel" mode="out-in"><article :id="`product-panel-${activeCapability.id}`" :key="activeCapability.id" class="kw-product-panel" role="tabpanel" :aria-labelledby="`product-tab-${activeCapability.id}`"><div class="kw-product-panel__copy"><span>{{ activeCapability.sourceReference }}</span><h2>{{ activeCapability.name }}</h2><p>{{ activeCapability.systemAction }}</p><small class="kw-product-panel__boundary">{{ activeCapability.boundary }}</small><NuxtLink to="/demo" class="kw-text-link">预约查看真实系统演示 →</NuxtLink></div><HomeDashboardOverview v-if="activeCapability.interfaceType === 'overview'" /><HomeInterfacePreview v-else :type="activeCapability.interfaceType" :title="activeCapability.name" /></article></Transition>
+        <div
+          ref="interfaceCarousel"
+          class="kw-content-carousel"
+          @mouseenter="setHovered(true)"
+          @mouseleave="setHovered(false)"
+          @focusin="setFocused(true)"
+          @focusout="setFocused(false)"
+        >
+          <div v-reveal class="kw-product-tabs" role="tablist" aria-label="真实页面展示"><button v-for="(item, index) in verifiedInterfaceGroups" :id="`product-tab-${item.id}`" :key="item.id" :ref="element => { if (element) interfaceTabs[index] = element }" type="button" role="tab" :tabindex="activeInterfaceIndex === index ? 0 : -1" :aria-selected="activeInterface === item.id" :aria-controls="`product-panel-${item.id}`" :class="{ 'is-active': activeInterface === item.id }" @click="selectInterface(index)" @keydown="moveInterfaceTab($event, index)"><small>{{ String(index + 1).padStart(2, '0') }}</small><span>{{ item.shortName }}</span></button></div>
+          <UiContentCarouselControls :active-index="activeInterfaceIndex" :item-count="verifiedInterfaceGroups.length" :autoplay-state="autoplayState" :allow-resume="allowResume" @pause="pause" @resume="resume" />
+          <Transition name="kw-product-panel" mode="out-in"><article :id="`product-panel-${activeCapability.id}`" :key="activeCapability.id" class="kw-product-panel" role="tabpanel" :aria-labelledby="`product-tab-${activeCapability.id}`"><div class="kw-product-panel__copy"><span>{{ activeCapability.sourceReference }}</span><h2>{{ activeCapability.name }}</h2><p>{{ activeCapability.systemAction }}</p><small class="kw-product-panel__boundary">{{ activeCapability.boundary }}</small><NuxtLink to="/demo" class="kw-text-link">预约查看真实系统演示 →</NuxtLink></div><HomeDashboardOverview v-if="activeCapability.interfaceType === 'overview'" /><HomeInterfacePreview v-else :type="activeCapability.interfaceType" :title="activeCapability.name" /></article></Transition>
+        </div>
       </div>
     </section>
   </div>

@@ -125,7 +125,7 @@ function handleSkip(event) {
   width: 50.2%;
   background:
     radial-gradient(circle at 50% 46%, rgba(178, 138, 80, 0.1), transparent 16rem),
-    linear-gradient(135deg, #001A43, #002359);
+    linear-gradient(135deg, #641c16, #8f2b21);
 }
 
 .kw-brand-intro__door::after {
@@ -294,7 +294,7 @@ function handleSkip(event) {
   border: 1px solid rgba(247, 242, 232, 0.3);
   border-radius: 0.35rem;
   color: rgba(252, 250, 245, 0.82);
-  background: rgba(0, 26, 67, 0.42);
+  background: rgba(100, 28, 22, 0.42);
   cursor: pointer;
   gap: 0.45rem;
   font-size: 0.9rem;

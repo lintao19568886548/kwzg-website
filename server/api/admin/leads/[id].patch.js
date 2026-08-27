@@ -1,19 +1,21 @@
-import { requireAdminSession } from '../../../utils/admin-auth.js'
+import { enforceAdminApiRateLimit, requireAdminSession } from '../../../utils/admin-auth.js'
 import { businessErrorResponse } from '../../../utils/business-error.js'
-import { getDatabase } from '../../../utils/database.js'
-import { updateLead } from '../../../utils/leads.js'
+import { getDatabase, normalizeDatabaseError } from '../../../utils/database.js'
+import { updateLeadStatus } from '../../../utils/lead-workflow.js'
 import { assertExactKeys, readStrictJsonBody } from '../../../utils/request-body.js'
+import { getClientAddress } from '../../../utils/security.js'
 
 export default defineEventHandler(async (event) => {
   try {
     const config = useRuntimeConfig(event)
     const db = getDatabase(config)
-    await requireAdminSession(db, config, event, { csrf: true })
+    const session = await requireAdminSession(db, config, event, { csrf: true })
+    await enforceAdminApiRateLimit(db, config, event, session, 'lead-update', 40)
     const body = await readStrictJsonBody(event, { limit: 4096 })
-    assertExactKeys(body, ['status', 'remark', 'version'])
-    const result = await updateLead(db, getRouterParam(event, 'id'), body)
+    assertExactKeys(body, ['status', 'note', 'version'])
+    const result = await updateLeadStatus(db, getRouterParam(event, 'id'), body, { admin: session.admin, requestId: event.context.requestId, sourceIp: getClientAddress(event, config.trustedProxyAddresses) })
     return { ok: true, ...result }
   } catch (error) {
-    return businessErrorResponse(event, error, event.context.requestId)
+    return businessErrorResponse(event, normalizeDatabaseError(error), event.context.requestId)
   }
 })

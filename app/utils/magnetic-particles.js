@@ -29,8 +29,8 @@ export const MAGNETIC_PARTICLE_CONFIG = Object.freeze({
   settleEnergy: 0.014,
   settleFrames: 24,
   epsilon: 0.001,
-  deepBlue: '#002359',
-  brickRed: '#A83A2A',
+  paleCinnabar: '#E7A597',
+  cinnabar: '#A9362A',
 })
 
 const rgbCache = new Map()
@@ -112,7 +112,7 @@ export function createParticleGrid(width, height, compact = false, config = MAGN
         opacity: baseOpacity,
         redEligible: index % 100 < config.redParticleRatio * 100,
         colorMix: 0,
-        color: config.deepBlue,
+        color: config.paleCinnabar,
       })
     }
   }
@@ -178,8 +178,8 @@ export function updateParticle(particle, pointer, timestamp, compact = false, co
   particle.radius += (targetRadius - particle.radius) * 0.16
   particle.colorMix += (targetColorMix - particle.colorMix) * 0.14
   particle.color = particle.colorMix < 0.004
-    ? config.deepBlue
-    : mixParticleColor(config.deepBlue, config.brickRed, particle.colorMix)
+    ? config.paleCinnabar
+    : mixParticleColor(config.paleCinnabar, config.cinnabar, particle.colorMix)
 
   return Math.abs(particle.vx) + Math.abs(particle.vy)
     + Math.abs(particle.x - particle.originX) * 0.02

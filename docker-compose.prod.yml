@@ -1,0 +1,81 @@
+name: kwzg_production
+
+services:
+  db:
+    image: mariadb:11.4.5
+    restart: unless-stopped
+    environment:
+      TZ: UTC
+      MARIADB_DATABASE: ${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+      MARIADB_USER: ${KWZG_DB_USER:?KWZG_DB_USER is required}
+      MARIADB_PASSWORD: ${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${KWZG_DB_ROOT_PASSWORD:?KWZG_DB_ROOT_PASSWORD is required}
+    volumes:
+      - kwzg_database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+    networks:
+      - kwzg_internal
+
+  migrate:
+    image: ${KWZG_IMAGE:?KWZG_IMAGE is required}:${KWZG_IMAGE_TAG:?KWZG_IMAGE_TAG is required}
+    pull_policy: never
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TZ: UTC
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:?KWZG_DB_USER is required}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+    command: ["npm", "run", "db:migrate"]
+    networks:
+      - kwzg_internal
+
+  app:
+    image: ${KWZG_IMAGE:?KWZG_IMAGE is required}:${KWZG_IMAGE_TAG:?KWZG_IMAGE_TAG is required}
+    pull_policy: never
+    restart: unless-stopped
+    init: true
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      TZ: UTC
+      NODE_ENV: production
+      NUXT_DATABASE_URL: mysql://${KWZG_DB_USER:?KWZG_DB_USER is required}:${KWZG_DB_PASSWORD:?KWZG_DB_PASSWORD is required}@db:3306/${KWZG_DB_NAME:?KWZG_DB_NAME is required}
+      NUXT_SESSION_PASSWORD: ${NUXT_SESSION_PASSWORD:?NUXT_SESSION_PASSWORD is required}
+      NUXT_TRUSTED_PROXY_ADDRESSES: ${NUXT_TRUSTED_PROXY_ADDRESSES:?NUXT_TRUSTED_PROXY_ADDRESSES is required}
+      NUXT_TRUSTED_ORIGINS: ${NUXT_TRUSTED_ORIGINS:-https://yizuw.org,https://www.yizuw.org}
+      NUXT_PUBLIC_SITE_URL: https://yizuw.org
+      NUXT_PUBLIC_INDEXABLE: "false"
+      NUXT_ENABLE_HSTS: "false"
+    ports:
+      - "127.0.0.1:${KWZG_APP_PORT:-3212}:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 12
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - kwzg_internal
+      - kwzg_public
+    stop_grace_period: 20s
+
+networks:
+  kwzg_internal:
+    internal: true
+  kwzg_public:
+    driver: bridge
+
+volumes:
+  kwzg_database:

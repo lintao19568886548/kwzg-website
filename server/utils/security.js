@@ -74,6 +74,17 @@ export function normalizePlainText(value, maxLength, fieldLabel) {
   return normalized
 }
 
+export function normalizeMultilinePlainText(value, maxLength, fieldLabel) {
+  if (typeof value !== 'string') throw createKwError(422, 'VALIDATION_ERROR', `${fieldLabel}格式不正确。`)
+  const hasControlCharacter = [...value].some((character) => {
+    const code = character.charCodeAt(0)
+    return code <= 31 && ![9, 10, 13].includes(code)
+  })
+  const normalized = value.normalize('NFKC').replace(/\r\n?/g, '\n').trim()
+  if (!normalized || normalized.length > maxLength || /[<>]/.test(normalized) || hasControlCharacter) throw createKwError(422, 'VALIDATION_ERROR', `${fieldLabel}必须为不超过 ${maxLength} 字的纯文本。`)
+  return normalized
+}
+
 export function maskPhone(phone) {
-  return phone.replace(/^(\+?86)?(\d{3})\d{4}(\d{4})$/, '$1$2****$3')
+  return phone.replace(/^(\+?86)?(\d{3})\d{4}(\d{4})$/, '$2****$3')
 }
