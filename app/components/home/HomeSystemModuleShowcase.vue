@@ -64,7 +64,7 @@ function openModal() {
     @focusout="setFocused(false)"
   >
     <div class="kw-container">
-      <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">九个真实系统模块</span><h2 id="showcase-title">真实系统结构，演示数据清晰可见</h2><p>页面结构、字段、状态与业务流程均源自瞰维智管，公开展示的名称与数字均为安全演示数据，不对应任何真实园区、客户或员工。</p></div>
+      <div v-reveal class="kw-section-heading"><span class="kw-section-kicker">九个真实系统模块</span><h2 id="showcase-title">真实系统结构，核心业务清晰可见</h2><p>数据地图经用户授权使用真实系统截图并原样展示当前数据；其余模块继续使用安全演示数据。</p></div>
       <div class="kw-v3-showcase__layout">
         <nav role="tablist" aria-label="系统模块">
           <button
@@ -91,7 +91,7 @@ function openModal() {
           :aria-labelledby="`home-system-tab-${active.id}`"
         >
           <div class="kw-v3-showcase__copy">
-            <span>真实页面结构 · 安全演示数据</span><h3>{{ active.name }}</h3>
+            <span>{{ active.id === 'data-map' ? '真实系统截图 · 实际业务数据' : '真实页面结构 · 安全演示数据' }}</span><h3>{{ active.name }}</h3>
             <dl><div><dt>客户问题</dt><dd>{{ active.problem }}</dd></div><div><dt>系统处理</dt><dd>{{ active.action }}</dd></div><div><dt>管理价值</dt><dd>{{ active.value }}</dd></div></dl>
             <ul><li v-for="id in active.capabilityIds" :key="id">{{ getCapability(id)?.shortName }}</li></ul>
             <div class="kw-v3-showcase__actions">

@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
           tabindex="-1"
         >
           <header>
-            <div><span>安全演示数据</span><h2 :id="`system-modal-${module.id}-title`">{{ module.name }}</h2></div>
+            <div><span>{{ module.id === 'data-map' ? '真实系统截图 · 实际业务数据' : '安全演示数据' }}</span><h2 :id="`system-modal-${module.id}-title`">{{ module.name }}</h2></div>
             <button ref="closeButton" type="button" aria-label="关闭放大界面" @click="close">×</button>
           </header>
           <div class="kw-system-modal__content">

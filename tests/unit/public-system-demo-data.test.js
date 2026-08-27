@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { publicSystemDemoData, publicSystemModuleIds } from '../../app/data/public-system-demo-data.js'
 import { systemShowcaseModules } from '../../app/data/product-capabilities.js'
@@ -15,15 +15,27 @@ function collectStrings(value, bucket = []) {
 }
 
 describe('public system demo data', () => {
-  it('uses one deterministic source for all nine reconstructed modules and the hero dashboard', () => {
+  it('uses deterministic demo data for eight modules and an authorized original screenshot for data map', () => {
     expect(publicSystemModuleIds).toHaveLength(9)
     expect(systemShowcaseModules.map(module => module.id)).toEqual(publicSystemModuleIds)
-    expect(systemShowcaseModules.every(module => module.evidenceLevel === 'reconstructed')).toBe(true)
-    expect(systemShowcaseModules.every(module => !('image' in module))).toBe(true)
+
+    const dataMap = systemShowcaseModules.find(module => module.id === 'data-map')
+    const reconstructedModules = systemShowcaseModules.filter(module => module.evidenceLevel === 'reconstructed')
+    expect(reconstructedModules).toHaveLength(8)
+    expect(reconstructedModules.every(module => !('image' in module))).toBe(true)
+    expect(dataMap).toMatchObject({
+      evidenceLevel: 'original',
+      image: '/assets/system/data-map-real.png',
+    })
+    expect(existsSync(new URL('../../public/assets/system/data-map-real.png', import.meta.url))).toBe(true)
     expect(showcaseSource).toContain('<SystemShowcasePreview :module="active"')
     expect(showcaseSource).toContain('<SystemShowcaseModal')
+    expect(showcaseSource).toContain('数据地图经用户授权使用真实系统截图并原样展示当前数据')
     expect(dashboardSource).toContain("publicSystemDemoData")
     expect(previewSource).toContain("publicSystemDemoData")
+    expect(previewSource).toContain('isOriginalScreenshot')
+    expect(previewSource).toContain(':src="module.image"')
+    expect(previewSource).toContain('经用户授权原样展示真实数据地图页面与当前业务数据')
     expect(previewSource).not.toContain('Math.random')
   })
 

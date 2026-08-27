@@ -41,6 +41,32 @@
   font: inherit;
 }
 
+.kw-demo-interface__original-screenshot {
+  min-height: 510px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #fff;
+}
+
+.kw-demo-interface__original-screenshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 510px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.kw-demo-interface--data-map.is-modal .kw-demo-interface__original-screenshot {
+  min-height: 0;
+  overflow: auto;
+}
+
+.kw-demo-interface--data-map.is-modal .kw-demo-interface__original-screenshot img {
+  max-height: none;
+}
+
 .kw-demo-interface__chrome {
   position: relative;
   z-index: 2;
@@ -1007,6 +1033,14 @@ body.kw-has-system-modal {
   .kw-demo-interface__body {
     min-height: 0;
     grid-template-columns: 1fr;
+  }
+
+  .kw-demo-interface__original-screenshot {
+    min-height: 0;
+  }
+
+  .kw-demo-interface--data-map.is-modal .kw-demo-interface__original-screenshot {
+    min-width: 1000px;
   }
 
   .kw-demo-interface__sidebar {

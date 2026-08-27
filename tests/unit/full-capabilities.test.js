@@ -50,13 +50,13 @@ describe('homepage complete capability system', () => {
     expect(motionSource).toContain("html[data-motion='off'],")
   })
 
-  it('maps every top-level module to a verified Vue/CSS demo interface', () => {
+  it('maps every top-level module to reconstructed or authorized original interface evidence', () => {
     expect(systemMenuAudit.map(item => item.module)).toEqual(['运营总览', '数据地图', '设备管理', '租赁', '招商管理', '人事', '财务', '门禁管理', '维护管理'])
     expect(systemMenuAudit.flatMap(item => item.items)).toHaveLength(32)
     expect(systemShowcaseModules).toHaveLength(9)
 
     const reconstructedModules = systemShowcaseModules.filter(module => module.evidenceLevel === 'reconstructed')
-    expect(reconstructedModules).toHaveLength(9)
+    expect(reconstructedModules).toHaveLength(8)
 
     for (const module of reconstructedModules) {
       expect(screenMatrixSource).toContain(module.name)
@@ -64,7 +64,12 @@ describe('homepage complete capability system', () => {
       expect(module.image).toBeUndefined()
     }
 
-    expect(reconstructedModules.map(module => module.name)).toEqual(['运营总览', '数据地图', '设备管理', '租赁', '招商管理', '人事', '财务', '门禁管理', '维护管理'])
+    expect(reconstructedModules.map(module => module.name)).toEqual(['运营总览', '设备管理', '租赁', '招商管理', '人事', '财务', '门禁管理', '维护管理'])
+    expect(systemShowcaseModules.find(module => module.id === 'data-map')).toMatchObject({
+      name: '数据地图',
+      evidenceLevel: 'original',
+      image: '/assets/system/data-map-real.png',
+    })
     expect(showcaseSource).toContain('<SystemShowcasePreview')
     expect(showcaseSource).toContain('<SystemShowcaseModal')
     expect(showcaseSource).not.toContain('<SystemScreenshotFrame')

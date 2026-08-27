@@ -11,6 +11,7 @@ defineEmits(['expand'])
 
 const demo = publicSystemDemoData
 const moduleId = computed(() => props.module.id)
+const isOriginalScreenshot = computed(() => moduleId.value === 'data-map' && Boolean(props.module.image))
 const money = value => `${Number(value).toFixed(1)}万`
 const area = value => `${formatDemoNumber(value)}㎡`
 
@@ -156,43 +157,55 @@ const compactFields = computed(() => ({
   <figure
     class="kw-demo-interface"
     :class="[`kw-demo-interface--${moduleId}`, { 'is-modal': modal }]"
-    :aria-label="`${module.name}安全演示数据界面`"
+    :aria-label="isOriginalScreenshot ? `${module.name}真实系统数据界面` : `${module.name}安全演示数据界面`"
   >
-    <header class="kw-demo-interface__chrome">
-      <div class="kw-demo-interface__dots" aria-hidden="true"><i /><i /><i /></div>
-      <div class="kw-demo-interface__identity">
-        <small>{{ demo.overview.parkName }}</small>
-        <strong>{{ module.name }}</strong>
-      </div>
-      <span class="kw-demo-interface__label" :title="demo.meta.privacyNotice">{{ demo.meta.label }}</span>
-    </header>
+    <div v-if="isOriginalScreenshot" class="kw-demo-interface__original-screenshot">
+      <img
+        :src="module.image"
+        :alt="module.imageAlt || `${module.name}真实系统界面`"
+        width="1904"
+        height="942"
+        :loading="modal ? 'eager' : 'lazy'"
+        decoding="async"
+      >
+    </div>
 
-    <div class="kw-demo-interface__body">
-      <aside class="kw-demo-interface__sidebar" aria-label="系统模块导航示意">
-        <strong>园区运营工作台</strong>
-        <span>运营总览</span><span>数据地图</span><span>设备管理</span><span>租赁</span><span>招商管理</span><span>人事</span><span>财务</span><span>门禁管理</span><span>维护管理</span>
-      </aside>
-
-      <section class="kw-demo-interface__workspace">
-        <div class="kw-demo-interface__heading">
-          <div><small>工作台 / {{ module.name }}</small><h4>{{ module.name }}</h4></div>
-          <span>{{ demo.overview.period }}</span>
+    <template v-else>
+      <header class="kw-demo-interface__chrome">
+        <div class="kw-demo-interface__dots" aria-hidden="true"><i /><i /><i /></div>
+        <div class="kw-demo-interface__identity">
+          <small>{{ demo.overview.parkName }}</small>
+          <strong>{{ module.name }}</strong>
         </div>
+        <span class="kw-demo-interface__label" :title="demo.meta.privacyNotice">{{ demo.meta.label }}</span>
+      </header>
 
-        <template v-if="!modal">
-          <div class="kw-demo-compact-grid">
-            <article
-              v-for="field in compactFields"
-              :key="field[0]"
-              :class="{ 'is-alert': field[2] === 'alert', 'is-ok': field[2] === 'ok' }"
-            >
-              <span>{{ field[0] }}</span>
-              <strong>{{ field[1] }}</strong>
-              <small>安全演示数据</small>
-            </article>
+      <div class="kw-demo-interface__body">
+        <aside class="kw-demo-interface__sidebar" aria-label="系统模块导航示意">
+          <strong>园区运营工作台</strong>
+          <span>运营总览</span><span>数据地图</span><span>设备管理</span><span>租赁</span><span>招商管理</span><span>人事</span><span>财务</span><span>门禁管理</span><span>维护管理</span>
+        </aside>
+
+        <section class="kw-demo-interface__workspace">
+          <div class="kw-demo-interface__heading">
+            <div><small>工作台 / {{ module.name }}</small><h4>{{ module.name }}</h4></div>
+            <span>{{ demo.overview.period }}</span>
           </div>
-          <p class="kw-demo-inline-note">当前预览仅保留 6 个关键字段；查看高清界面可阅读完整演示结构。</p>
-        </template>
+
+          <template v-if="!modal">
+            <div class="kw-demo-compact-grid">
+              <article
+                v-for="field in compactFields"
+                :key="field[0]"
+                :class="{ 'is-alert': field[2] === 'alert', 'is-ok': field[2] === 'ok' }"
+              >
+                <span>{{ field[0] }}</span>
+                <strong>{{ field[1] }}</strong>
+                <small>安全演示数据</small>
+              </article>
+            </div>
+            <p class="kw-demo-inline-note">当前预览仅保留 6 个关键字段；查看高清界面可阅读完整演示结构。</p>
+          </template>
 
         <template v-else-if="moduleId === 'operations'">
           <div class="kw-demo-stat-grid kw-demo-stat-grid--overview">
@@ -271,7 +284,16 @@ const compactFields = computed(() => ({
     </div>
 
     <div class="kw-demo-interface__watermark" aria-hidden="true">{{ demo.meta.watermark }}</div>
-    <figcaption>{{ demo.meta.footerNotice }}</figcaption>
-    <button v-if="!modal" class="kw-demo-interface__expand" type="button" :aria-label="`查看${module.name}高清演示界面`" @click="$emit('expand')">查看高清界面 <span aria-hidden="true">↗</span></button>
+    </template>
+    <figcaption>{{ isOriginalScreenshot ? '经用户授权原样展示真实数据地图页面与当前业务数据。' : demo.meta.footerNotice }}</figcaption>
+    <button
+      v-if="!modal"
+      class="kw-demo-interface__expand"
+      type="button"
+      :aria-label="isOriginalScreenshot ? `查看${module.name}高清真实界面` : `查看${module.name}高清演示界面`"
+      @click="$emit('expand')"
+    >
+      {{ isOriginalScreenshot ? '查看高清原图' : '查看高清界面' }} <span aria-hidden="true">↗</span>
+    </button>
   </figure>
 </template>
